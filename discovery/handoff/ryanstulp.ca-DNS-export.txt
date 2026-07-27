@@ -1,0 +1,75 @@
+============================================================
+ DNS ZONE EXPORT  —  ryanstulp.ca
+ Prepared for hosting handover, 2026-07-23
+ Give this to the new provider to rebuild the domain's DNS.
+============================================================
+
+HOW TO USE: Recreate the records below on the new provider's DNS panel.
+Records are grouped by type. Values in "quotes" are literal TXT values.
+
+Note: this was rebuilt from live DNS, so it includes every public record.
+It does NOT include DKIM keys (their names are private) — see the DKIM
+section at the bottom for what must be copied from the Mailgun/GoHighLevel
+dashboards, or outbound email will fail after the move.
+
+------------------------------------------------------------
+NAMESERVERS (current host: supercp / hosting.com reseller)
+------------------------------------------------------------
+  ns1.supercp.com
+  ns2.supercp.com
+  ns3.supercp.com
+  ns4.supercp.com
+
+------------------------------------------------------------
+A RECORDS  (all point to hosting IP 106.0.62.86)
+------------------------------------------------------------
+  ryanstulp.ca            A       106.0.62.86
+  mail                    A       106.0.62.86
+  ftp                     A       106.0.62.86
+  cpanel                  A       106.0.62.86
+  webmail                 A       106.0.62.86
+  autodiscover            A       106.0.62.86
+
+------------------------------------------------------------
+WWW
+------------------------------------------------------------
+  www                     CNAME   ryanstulp.ca
+
+------------------------------------------------------------
+MAIL ROUTING (inbound MX) — primary = own mailbox, Mailgun = backup
+------------------------------------------------------------
+  Priority 0    mail.ryanstulp.ca
+  Priority 1    mxa.mailgun.org
+  Priority 2    mxb.mailgun.org
+
+------------------------------------------------------------
+SPF  (outbound email authorization)
+------------------------------------------------------------
+  *** IMPORTANT: the domain currently has TWO SPF records, which is invalid
+      (only one is allowed) and hurts email deliverability. Do NOT recreate
+      both. Use the single consolidated record below. ***
+
+  Current (do not copy both):
+    "v=spf1 +a +mx +ip4:106.0.62.86 include:spf.supercp.com ~all"
+    "v=spf1 include:spf.leadconnectorhq.com include:mailgun.org ~all"
+
+  USE THIS ONE INSTEAD (drop supercp include once off that hosting):
+    "v=spf1 include:mailgun.org include:spf.leadconnectorhq.com ~all"
+
+  (If keeping the 106.0.62.86 mail host on the new provider, use:
+    "v=spf1 +a +mx +ip4:106.0.62.86 include:mailgun.org include:spf.leadconnectorhq.com ~all")
+
+------------------------------------------------------------
+DMARC
+------------------------------------------------------------
+  _dmarc                  TXT     "v=DMARC1; p=none;"
+
+------------------------------------------------------------
+DKIM — MUST BE COPIED FROM THE PROVIDER PANELS (not in this export)
+------------------------------------------------------------
+  * Mailgun DKIM      -> Mailgun dashboard (Sending domain, usually a "mg." subdomain)
+  * GoHighLevel DKIM  -> LeadConnector / GHL domain settings for this account
+  * Any GHL tracking CNAMEs the account requires
+
+  Without these, Mailgun / GoHighLevel email will fail DKIM after the move.
+============================================================
