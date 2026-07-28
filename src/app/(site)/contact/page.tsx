@@ -10,7 +10,17 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ listing?: string | string[] }>;
+}) {
+  const query = await searchParams;
+  const listingValue = Array.isArray(query.listing)
+    ? query.listing[0]
+    : query.listing;
+  const listing = listingValue?.trim().slice(0, 180) ?? "";
+
   return (
     <>
       <PageHero
@@ -44,7 +54,12 @@ export default function ContactPage() {
               Brokerage office: {SITE.brokerage}, {SITE.address}
             </p>
           </div>
-          <LeadForm source="contact-page" />
+          <LeadForm
+            source={listing ? "listing-detail" : "contact-page"}
+            defaultIntent={listing ? "buy" : "general"}
+            includeAddress={Boolean(listing)}
+            defaultPropertyAddress={listing}
+          />
         </div>
       </section>
     </>

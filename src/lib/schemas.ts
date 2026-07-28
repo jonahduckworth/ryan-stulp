@@ -21,7 +21,12 @@ export const leadSchema = z.object({
     .min(10, "Please share a little more detail (at least 10 characters).")
     .max(3000),
   propertyAddress: optionalText,
-  source: z.enum(["contact-page", "buying-page", "home-evaluation"]),
+  source: z.enum([
+    "contact-page",
+    "listing-detail",
+    "buying-page",
+    "home-evaluation",
+  ]),
   website: z.string().max(0, "Unable to submit."),
   turnstileToken: z.string().optional(),
 });

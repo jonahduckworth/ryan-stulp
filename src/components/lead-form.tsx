@@ -33,10 +33,12 @@ export function LeadForm({
   source,
   defaultIntent = "general",
   includeAddress = false,
+  defaultPropertyAddress = "",
 }: {
   source: string;
   defaultIntent?: "buy" | "sell" | "invest" | "commercial" | "general";
   includeAddress?: boolean;
+  defaultPropertyAddress?: string;
 }) {
   const [state, formAction, pending] = useActionState(
     submitLead,
@@ -63,6 +65,12 @@ export function LeadForm({
         aria-hidden="true"
         hidden
       />
+      {defaultPropertyAddress ? (
+        <div className="form-context field-full">
+          <span>You&apos;re asking about</span>
+          <strong>{defaultPropertyAddress}</strong>
+        </div>
+      ) : null}
       <div className="field">
         <label htmlFor={`${source}-name`}>Name</label>
         <input
@@ -127,7 +135,9 @@ export function LeadForm({
             id={`${source}-propertyAddress`}
             name="propertyAddress"
             type="text"
-            defaultValue={state.values?.propertyAddress}
+            defaultValue={
+              state.values?.propertyAddress ?? defaultPropertyAddress
+            }
             autoComplete="street-address"
             aria-invalid={hasError("propertyAddress")}
             aria-describedby={

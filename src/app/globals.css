@@ -744,6 +744,22 @@ p {
   font-size: 0.82rem;
 }
 
+.form-context {
+  display: grid;
+  gap: 0.2rem;
+  padding: 1rem 1.1rem;
+  border-left: 3px solid var(--signal);
+  background: var(--cream);
+}
+
+.form-context span {
+  color: var(--slate);
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .form-status[data-status="error"] {
   color: var(--danger);
 }
