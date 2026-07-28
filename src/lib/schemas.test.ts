@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { leadSchema, listingSchema } from "@/lib/schemas";
+import {
+  leadSchema,
+  listingSchema,
+  passwordSetupSchema,
+} from "@/lib/schemas";
 
 describe("leadSchema", () => {
   it("normalizes a valid lead", () => {
@@ -54,5 +58,25 @@ describe("listingSchema", () => {
     });
     expect(result.price).toBeNull();
     expect(result.features).toEqual(["South-facing yard", "Double garage"]);
+  });
+});
+
+describe("passwordSetupSchema", () => {
+  it("accepts matching passwords with at least 12 characters", () => {
+    expect(
+      passwordSetupSchema.safeParse({
+        password: "a-secure-password",
+        confirmPassword: "a-secure-password",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects short or mismatched passwords", () => {
+    expect(
+      passwordSetupSchema.safeParse({
+        password: "short",
+        confirmPassword: "different",
+      }).success,
+    ).toBe(false);
   });
 });

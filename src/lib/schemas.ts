@@ -31,6 +31,19 @@ export const loginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
+export const passwordSetupSchema = z
+  .object({
+    password: z
+      .string()
+      .min(12, "Password must be at least 12 characters.")
+      .max(128, "Password must be 128 characters or fewer."),
+    confirmPassword: z.string(),
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
 export const listingSchema = z.object({
   id: z.uuid().optional(),
   title: z.string().trim().min(3).max(140),
