@@ -20,7 +20,11 @@ export function SiteHeader({ identity }: { identity: PublicSiteIdentity }) {
               priority
             />
           </Link>
-          <nav className="desktop-nav" aria-label="Primary navigation">
+          <nav
+            className="desktop-nav"
+            aria-label="Primary navigation"
+            data-analytics-location="site_header"
+          >
             {NAV_ITEMS.map((item) => (
               <Link key={item.href} href={item.href}>
                 {item.label}

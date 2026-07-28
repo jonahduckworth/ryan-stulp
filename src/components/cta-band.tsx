@@ -10,7 +10,10 @@ export function CtaBand({
   label?: string;
 }) {
   return (
-    <section className="cta-band section-tight">
+    <section
+      className="cta-band section-tight"
+      data-analytics-location="cta_band"
+    >
       <div className="container cta-grid">
         <h2>{title}</h2>
         <Link className="button button-light" href={href}>

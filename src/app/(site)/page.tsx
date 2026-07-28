@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CtaBand } from "@/components/cta-band";
+import { GoogleReviews } from "@/components/google-reviews";
 import { JsonLd } from "@/components/json-ld";
 import { ListingCard } from "@/components/listing-card";
 import {
@@ -49,7 +50,7 @@ export default async function HomePage() {
             <span className="eyebrow">{identity.homepageEyebrow}</span>
             <h1 className="display">{identity.homepageTitle}</h1>
             <p className="lede">{identity.homepageDescription}</p>
-            <div className="button-row">
+            <div className="button-row" data-analytics-location="home_hero">
               <Link className="button button-primary" href="/contact">
                 Tell Ryan your goal
               </Link>
@@ -223,6 +224,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      <GoogleReviews />
       <CtaBand />
     </>
   );

@@ -11,7 +11,7 @@ export function SiteFooter({ identity }: { identity: PublicSiteIdentity }) {
             Straight answers and practical guidance for buyers, sellers,
             investors, builders, and developers across Calgary and area.
           </p>
-          <div className="button-row">
+          <div className="button-row" data-analytics-location="site_footer">
             <a className="button button-light" href={identity.phoneHref}>
               {identity.phoneDisplay}
             </a>

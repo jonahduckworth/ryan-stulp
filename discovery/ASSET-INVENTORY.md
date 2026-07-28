@@ -52,6 +52,6 @@ These are flattened social graphics, not raw listing-photo packages. They should
 - Brokerage logo files and mandatory disclosure/brand rules.
 - Standalone clean vector logo exports.
 - Written confirmation that the headshots and logo may be used on the site.
-- Testimonial approval/source records.
+- Final brokerage approval for the selected public Google-review excerpts.
 - Additional social profile URLs.
 - Approved privacy/disclosure copy.

@@ -15,8 +15,11 @@ Target: complete production v1 by July 31, 2026.
 - [ ] Turnstile production keys configured and a real form submission tested.
 - [ ] Vercel project connected with Node.js 22; remaining third-party production
       variables are listed below.
-- [ ] Google Analytics property access confirmed and measurement ID configured.
-- [ ] Search Console property access confirmed or a new domain property created.
+- [x] Google Analytics property access confirmed and measurement ID
+      `G-ZPHYKZLE2P` configured locally.
+- [ ] Create and verify a `ryanstulp.ca` Search Console domain property. A
+      read-only check on July 28 confirmed that Jonah's Google account does not
+      currently have this property.
 - [x] Old URL inventory collected from the live site's XML sitemap.
 - [x] Every material old URL mapped to a new route or an intentional 410.
 - [ ] Privacy copy reviewed for Ryan's actual service and retention practices.
@@ -26,7 +29,10 @@ Target: complete production v1 by July 31, 2026.
 
 - Resend API key after `ryanstulp.ca` is verified as a sending domain.
 - Cloudflare Turnstile production site key and secret.
-- GA4 measurement ID, if Ryan wants analytics at launch.
+- Add the verified GA4 measurement ID `G-ZPHYKZLE2P` to the production preview
+  only after the final environment is ready for acceptance testing.
+- Search Console domain-property verification through GoDaddy during the
+  controlled launch window; do not alter DNS early.
 - Supabase is configured for staging and local authentication; add the final
   `ryanstulp.ca` URL when the custom domain is connected.
 - Vercel custom-domain connection and the associated DNS records.
