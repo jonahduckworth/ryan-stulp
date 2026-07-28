@@ -104,6 +104,8 @@ export async function saveListing(
 
   revalidatePath("/admin/listings");
   revalidatePath("/listings");
+  revalidatePath("/listings/[slug]", "page");
+  revalidatePath("/sitemap.xml");
   revalidatePath("/");
   redirect("/admin/listings");
 }
@@ -117,6 +119,8 @@ export async function deleteListing(formData: FormData) {
   if (error) throw new Error("The listing could not be deleted.");
   revalidatePath("/admin/listings");
   revalidatePath("/listings");
+  revalidatePath("/listings/[slug]", "page");
+  revalidatePath("/sitemap.xml");
   revalidatePath("/");
   redirect("/admin/listings");
 }
