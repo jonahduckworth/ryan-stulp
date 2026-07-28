@@ -95,3 +95,18 @@ export type SiteSettings = {
   homepage_description: string | null;
   updated_at: string;
 };
+
+export type PublicSiteSettings = Pick<
+  SiteSettings,
+  | "id"
+  | "public_email"
+  | "phone_display"
+  | "facebook_url"
+  | "booking_url"
+  | "brokerage_name"
+  | "brokerage_address"
+  | "licensed_name"
+  | "homepage_eyebrow"
+  | "homepage_title"
+  | "homepage_description"
+>;

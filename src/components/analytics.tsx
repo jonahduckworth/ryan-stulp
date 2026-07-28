@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useEffect } from "react";
+import { internalAnalyticsPath } from "@/lib/analytics";
 
 export function Analytics() {
   const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
@@ -23,7 +24,7 @@ export function Analytics() {
             : null);
       if (!eventName) return;
       window.gtag?.("event", eventName, {
-        link_path: href.startsWith("/") ? href : undefined,
+        link_path: internalAnalyticsPath(href),
       });
     };
     document.addEventListener("click", trackClick);

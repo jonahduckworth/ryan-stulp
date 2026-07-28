@@ -1,7 +1,11 @@
 import "server-only";
 
 import { cache } from "react";
-import type { Listing, ListingMedia, SiteSettings } from "@/lib/types";
+import type {
+  Listing,
+  ListingMedia,
+  PublicSiteSettings,
+} from "@/lib/types";
 import { hasPublicSupabaseEnv } from "@/lib/supabase/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -69,13 +73,15 @@ export const getPublishedListingMedia = cache(
 );
 
 export const getPublicSiteSettings = cache(
-  async (): Promise<SiteSettings | null> => {
+  async (): Promise<PublicSiteSettings | null> => {
     if (!hasPublicSupabaseEnv()) return null;
 
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("site_settings")
-      .select("*")
+      .select(
+        "id, public_email, phone_display, facebook_url, booking_url, brokerage_name, brokerage_address, licensed_name, homepage_eyebrow, homepage_title, homepage_description",
+      )
       .eq("id", true)
       .maybeSingle();
 
@@ -84,6 +90,6 @@ export const getPublicSiteSettings = cache(
       return null;
     }
 
-    return data as SiteSettings | null;
+    return data as PublicSiteSettings | null;
   },
 );

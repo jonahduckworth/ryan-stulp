@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { verifyAdmin } from "@/lib/auth";
+import { listingStoragePaths } from "@/lib/listing-storage";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   leadUpdateSchema,
@@ -257,6 +258,35 @@ export async function deleteListing(formData: FormData) {
   const id = formData.get("id");
   if (typeof id !== "string") return;
   const supabase = await createSupabaseServerClient();
+  const [
+    { data: listing, error: listingError },
+    { data: media, error: mediaError },
+  ] = await Promise.all([
+    supabase
+      .from("listings")
+      .select("cover_image_url")
+      .eq("id", id)
+      .maybeSingle(),
+    supabase.from("listing_media").select("storage_path").eq("listing_id", id),
+  ]);
+  if (listingError || mediaError || !listing) {
+    throw new Error("The listing media could not be prepared for deletion.");
+  }
+
+  const storagePaths = listingStoragePaths(
+    (media ?? []).map((item) => item.storage_path),
+    listing.cover_image_url,
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+  );
+  if (storagePaths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from("listing-media")
+      .remove(storagePaths);
+    if (storageError) {
+      throw new Error("The listing images could not be deleted.");
+    }
+  }
+
   const { data, error } = await supabase
     .from("listings")
     .delete()

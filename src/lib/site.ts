@@ -1,4 +1,4 @@
-import type { SiteSettings } from "@/lib/types";
+import type { PublicSiteSettings } from "@/lib/types";
 
 export const SITE = {
   name: "Ryan Stulp Real Estate",
@@ -29,7 +29,7 @@ export type PublicSiteIdentity = {
 };
 
 export function resolveSiteIdentity(
-  settings?: SiteSettings | null,
+  settings?: PublicSiteSettings | null,
 ): PublicSiteIdentity {
   const phoneDisplay = settings?.phone_display || SITE.phoneDisplay;
   const phoneDigits = phoneDisplay.replace(/\D/g, "");

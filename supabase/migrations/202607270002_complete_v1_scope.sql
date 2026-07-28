@@ -43,10 +43,12 @@ create unique index if not exists listing_media_one_featured_idx
   on public.listing_media (listing_id)
   where is_featured;
 
+alter table public.leads
+  drop constraint if exists leads_status_check;
+
 update public.leads set status = 'won' where status = 'closed';
 
 alter table public.leads
-  drop constraint if exists leads_status_check,
   add constraint leads_status_check
     check (status in ('new', 'contacted', 'qualified', 'won', 'lost', 'archived')),
   add column if not exists listing_id uuid references public.listings(id) on delete set null,
@@ -104,10 +106,8 @@ where id = true;
 
 drop policy if exists "Public settings are readable" on public.site_settings;
 create policy "Public settings are readable"
-on public.site_settings for select to anon, authenticated
+on public.site_settings for select to anon
 using (id = true);
-
-grant select on table public.site_settings to anon;
 
 drop trigger if exists audit_listing_media on public.listing_media;
 create trigger audit_listing_media
