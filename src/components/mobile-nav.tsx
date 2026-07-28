@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NAV_ITEMS } from "@/lib/site";
 
 export function MobileNav() {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  return <MobileNavMenu key={pathname} />;
+}
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+function MobileNavMenu() {
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="mobile-menu">

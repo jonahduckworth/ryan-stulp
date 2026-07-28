@@ -8,7 +8,9 @@ export const metadata: Metadata = { title: "Edit listing" };
 
 export default async function EditListingPage({
   params,
-}: PageProps<"/admin/listings/[id]">) {
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const listing = await getAdminListing(id);
   if (!listing) notFound();

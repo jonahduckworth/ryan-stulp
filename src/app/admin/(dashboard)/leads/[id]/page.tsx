@@ -8,7 +8,9 @@ export const metadata: Metadata = { title: "Lead details" };
 
 export default async function LeadDetailPage({
   params,
-}: PageProps<"/admin/leads/[id]">) {
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const lead = await getAdminLead(id);
   if (!lead) notFound();

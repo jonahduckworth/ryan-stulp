@@ -8,7 +8,9 @@ import { formatCurrency } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
-}: PageProps<"/listings/[slug]">): Promise<Metadata> {
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const listing = await getPublishedListingBySlug(slug);
   if (!listing) return { title: "Listing not found" };
@@ -25,7 +27,9 @@ export async function generateMetadata({
 
 export default async function ListingPage({
   params,
-}: PageProps<"/listings/[slug]">) {
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const listing = await getPublishedListingBySlug(slug);
   if (!listing) notFound();
