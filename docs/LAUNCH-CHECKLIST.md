@@ -26,8 +26,8 @@ Target: complete production v1 by July 31, 2026.
 - Resend API key after `ryanstulp.ca` is verified as a sending domain.
 - Cloudflare Turnstile production site key and secret.
 - GA4 measurement ID, if Ryan wants analytics at launch.
-- Supabase production Site URL and allowed redirect URLs updated after the final
-  canonical domain is confirmed.
+- Supabase is configured for staging and local authentication; add the final
+  `ryanstulp.ca` URL when the custom domain is connected.
 - Vercel custom-domain connection and the associated DNS records.
 
 ## DNS cutover
