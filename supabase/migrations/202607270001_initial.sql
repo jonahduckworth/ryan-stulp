@@ -261,6 +261,32 @@ create policy "Admins read audit events"
 on public.audit_events for select to authenticated
 using (public.is_admin());
 
+-- The project disables automatic Data API exposure. Grant only the operations
+-- each API role needs; row-level security remains the second access layer.
+grant select on table public.listings, public.listing_media to anon;
+
+grant select, insert, update, delete
+on table
+  public.profiles,
+  public.listings,
+  public.listing_media,
+  public.leads,
+  public.site_settings
+to authenticated;
+
+grant select on table public.audit_events to authenticated;
+grant execute on function public.is_admin() to authenticated;
+
+grant select, insert on table public.leads to service_role;
+
+revoke all
+on table
+  public.profiles,
+  public.leads,
+  public.site_settings,
+  public.audit_events
+from anon;
+
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
   'listing-media',
