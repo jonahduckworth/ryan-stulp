@@ -9,6 +9,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/buying-calgary",
     "/selling-calgary",
     "/home-evaluation",
+    "/commercial-real-estate-calgary",
+    "/real-estate-investing-calgary",
+    "/rural-real-estate-calgary",
+    "/calgary-areas",
     "/about",
     "/contact",
     "/privacy",
@@ -28,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(listing.updated_at),
       changeFrequency: "weekly" as const,
       priority: 0.8,
+      images: listing.cover_image_url ? [listing.cover_image_url] : undefined,
     })),
   ];
 }

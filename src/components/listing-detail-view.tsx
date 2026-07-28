@@ -1,7 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { CtaBand } from "@/components/cta-band";
 import { ConversionEvent } from "@/components/conversion-event";
+import {
+  ListingGallery,
+  type GalleryImage,
+} from "@/components/listing-gallery";
 import type { Listing, ListingMedia } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
@@ -25,14 +28,19 @@ export function ListingDetailView({
     listing.mls_number ? ["MLS", listing.mls_number] : null,
     ["Property type", listing.property_type],
   ].filter(Boolean) as [string, string | number][];
-  const gallery = media.length
-    ? media
+  const gallery: GalleryImage[] = media.length
+    ? media.map((image) => ({
+        id: image.id,
+        url: image.public_url,
+        alt: image.alt_text,
+        caption: image.caption,
+      }))
     : listing.cover_image_url
       ? [
           {
             id: "cover",
-            public_url: listing.cover_image_url,
-            alt_text: `Property at ${listing.address}`,
+            url: listing.cover_image_url,
+            alt: `Property at ${listing.address}`,
             caption: null,
           },
         ]
@@ -66,31 +74,7 @@ export function ListingDetailView({
           <p className="listing-price">{formatCurrency(listing.price)}</p>
         </div>
       </header>
-      {gallery.length ? (
-        <section className="container section-tight listing-gallery">
-          {gallery.map((image, index) => (
-            <figure
-              className={index === 0 ? "listing-gallery-featured" : ""}
-              key={image.id}
-            >
-              <div className="listing-image">
-                <Image
-                  src={image.public_url}
-                  alt={image.alt_text}
-                  fill
-                  priority={index === 0}
-                  sizes={
-                    index === 0
-                      ? "(max-width: 900px) 100vw, 70vw"
-                      : "(max-width: 620px) 100vw, 33vw"
-                  }
-                />
-              </div>
-              {image.caption ? <figcaption>{image.caption}</figcaption> : null}
-            </figure>
-          ))}
-        </section>
-      ) : null}
+      <ListingGallery images={gallery} listingTitle={listing.title} />
       <section className="section">
         <div className="container split-grid">
           <div className="contact-cards">

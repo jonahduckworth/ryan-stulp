@@ -24,6 +24,7 @@ export default async function HomePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "RealEstateAgent",
+          "@id": `${identity.url}/#agent`,
           name: identity.licensedName,
           alternateName: "Ryan Stulp",
           url: identity.url,
@@ -141,6 +142,73 @@ export default async function HomePage() {
               </p>
               <strong>Plan your sale →</strong>
             </div>
+          </Link>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container stack">
+          <div className="section-heading-row">
+            <div className="stack">
+              <span className="eyebrow">Property expertise</span>
+              <h2 className="section-title">
+                Different properties need different questions.
+              </h2>
+            </div>
+            <p className="lede">
+              Go deeper on the property type or location you are considering,
+              without losing sight of the decision behind it.
+            </p>
+          </div>
+          <div className="expertise-grid">
+            <Link
+              className="expertise-card"
+              href="/commercial-real-estate-calgary"
+            >
+              <span>01 · Commercial</span>
+              <h3>Property that works for the business.</h3>
+              <p>
+                Clarify use, location, cost, due diligence, and the conditions
+                behind a commercial decision.
+              </p>
+              <strong>Explore commercial guidance →</strong>
+            </Link>
+            <Link
+              className="expertise-card"
+              href="/real-estate-investing-calgary"
+            >
+              <span>02 · Investment</span>
+              <h3>Evidence before assumptions.</h3>
+              <p>
+                Compare opportunities against the strategy, time horizon, work,
+                risk, and exit you are prepared to manage.
+              </p>
+              <strong>Explore investment guidance →</strong>
+            </Link>
+            <Link
+              className="expertise-card"
+              href="/rural-real-estate-calgary"
+            >
+              <span>03 · Rural</span>
+              <h3>See the whole property system.</h3>
+              <p>
+                Bring land, access, water, wastewater, structures, services, and
+                lifestyle into the same decision.
+              </p>
+              <strong>Explore rural guidance →</strong>
+            </Link>
+          </div>
+          <Link className="area-feature" href="/calgary-areas">
+            <div>
+              <span className="eyebrow">Calgary and area</span>
+              <h3>Choose the trade-offs before the neighbourhood.</h3>
+            </div>
+            <p>
+              Compare the inner city, northwest, northeast, southwest,
+              southeast, and surrounding area using the factors that affect
+              daily life and long-term fit.
+            </p>
+            <strong>Explore the area guide →</strong>
           </Link>
         </div>
       </section>

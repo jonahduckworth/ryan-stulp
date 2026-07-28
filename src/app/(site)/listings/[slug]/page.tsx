@@ -36,6 +36,12 @@ export default async function ListingPage({
   const listing = await getPublishedListingBySlug(slug);
   if (!listing) notFound();
   const media = await getPublishedListingMedia(listing.id);
+  const listingImages = Array.from(
+    new Set([
+      ...media.map((item) => item.public_url),
+      ...(listing.cover_image_url ? [listing.cover_image_url] : []),
+    ]),
+  );
 
   return (
     <>
@@ -49,12 +55,27 @@ export default async function ListingPage({
           availability:
             listing.status === "sold"
               ? "https://schema.org/SoldOut"
-              : "https://schema.org/InStock",
+              : listing.status === "pending"
+                ? "https://schema.org/LimitedAvailability"
+                : "https://schema.org/InStock",
+          seller: {
+            "@id": `${SITE.url}/#agent`,
+          },
           itemOffered: {
-            "@type": "Accommodation",
+            "@type":
+              listing.listing_type === "commercial" ? "Place" : "Residence",
             name: listing.title,
             description: listing.description,
-            address: `${listing.address}, ${listing.city}, ${listing.province}`,
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: [listing.address, listing.address_line_2]
+                .filter(Boolean)
+                .join(", "),
+              addressLocality: listing.city,
+              addressRegion: listing.province,
+              postalCode: listing.postal_code,
+              addressCountry: "CA",
+            },
             numberOfBedrooms: listing.bedrooms,
             floorSize: listing.square_feet
               ? {
@@ -63,7 +84,7 @@ export default async function ListingPage({
                   unitCode: "FTK",
                 }
               : undefined,
-            image: media.map((item) => item.public_url),
+            image: listingImages,
           },
         }}
       />

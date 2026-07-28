@@ -65,5 +65,6 @@ export const NAV_ITEMS = [
   { href: "/listings", label: "Listings" },
   { href: "/buying-calgary", label: "Buy" },
   { href: "/selling-calgary", label: "Sell" },
+  { href: "/calgary-areas", label: "Areas" },
   { href: "/about", label: "About" },
 ] as const;

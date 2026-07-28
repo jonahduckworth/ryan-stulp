@@ -29,10 +29,14 @@ export function SiteFooter({ identity }: { identity: PublicSiteIdentity }) {
           <Link href="/buying-calgary">Buying in Calgary</Link>
           <Link href="/selling-calgary">Selling in Calgary</Link>
           <Link href="/home-evaluation">Home evaluation</Link>
+          <Link href="/commercial-real-estate-calgary">Commercial real estate</Link>
+          <Link href="/real-estate-investing-calgary">Real estate investing</Link>
+          <Link href="/rural-real-estate-calgary">Rural real estate</Link>
         </nav>
         <nav className="footer-links" aria-label="Company">
           <strong>Ryan Stulp</strong>
           <Link href="/about">About</Link>
+          <Link href="/calgary-areas">Calgary areas</Link>
           <Link href="/contact">Contact</Link>
           <a href={identity.facebook} rel="noreferrer" target="_blank">
             Facebook
