@@ -141,8 +141,39 @@ set search_path = ''
 as $$
 declare
   target_id uuid;
+  before_snapshot jsonb;
+  after_snapshot jsonb;
 begin
   target_id := coalesce(new.id, old.id);
+  if tg_table_name = 'leads' then
+    before_snapshot := case when tg_op in ('UPDATE', 'DELETE')
+      then jsonb_build_object(
+        'status', old.status,
+        'intent', old.intent,
+        'source', old.source,
+        'updated_at', old.updated_at
+      )
+      else null
+    end;
+    after_snapshot := case when tg_op in ('INSERT', 'UPDATE')
+      then jsonb_build_object(
+        'status', new.status,
+        'intent', new.intent,
+        'source', new.source,
+        'updated_at', new.updated_at
+      )
+      else null
+    end;
+  else
+    before_snapshot := case when tg_op in ('UPDATE', 'DELETE')
+      then to_jsonb(old)
+      else null
+    end;
+    after_snapshot := case when tg_op in ('INSERT', 'UPDATE')
+      then to_jsonb(new)
+      else null
+    end;
+  end if;
   insert into public.audit_events (
     actor_id,
     table_name,
@@ -156,14 +187,8 @@ begin
     tg_table_name,
     target_id,
     lower(tg_op),
-    case when tg_op in ('UPDATE', 'DELETE')
-      then to_jsonb(old) - 'request_fingerprint'
-      else null
-    end,
-    case when tg_op in ('INSERT', 'UPDATE')
-      then to_jsonb(new) - 'request_fingerprint'
-      else null
-    end
+    before_snapshot,
+    after_snapshot
   );
   return coalesce(new, old);
 end;

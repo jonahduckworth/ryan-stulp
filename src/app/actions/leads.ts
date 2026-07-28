@@ -66,7 +66,18 @@ export async function submitLead(
     };
   }
 
-  const fingerprint = await getRequestFingerprint();
+  let fingerprint: string;
+  try {
+    fingerprint = await getRequestFingerprint();
+  } catch {
+    console.error("Lead fingerprint protection is not configured.");
+    return {
+      status: "error",
+      message:
+        "The contact service is being connected. Please call or email Ryan directly.",
+      values,
+    };
+  }
   const supabase = createSupabaseAdminClient();
   const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
   const { count } = await supabase
@@ -107,6 +118,7 @@ export async function submitLead(
     await notifyRyanOfLead(parsed.data);
   } catch {
     // The lead is safely stored even if email delivery is temporarily unavailable.
+    console.error("Lead notification delivery failed.");
   }
 
   return {

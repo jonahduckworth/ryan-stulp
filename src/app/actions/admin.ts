@@ -86,17 +86,26 @@ export async function saveListing(
   };
 
   const result = listing.id
-    ? await supabase.from("listings").update(payload).eq("id", listing.id)
-    : await supabase.from("listings").insert({
-        ...payload,
-        created_by: admin.id,
-      });
+    ? await supabase
+        .from("listings")
+        .update(payload)
+        .eq("id", listing.id)
+        .select("id")
+        .maybeSingle()
+    : await supabase
+        .from("listings")
+        .insert({
+          ...payload,
+          created_by: admin.id,
+        })
+        .select("id")
+        .single();
 
-  if (result.error) {
+  if (result.error || !result.data) {
     return {
       status: "error",
       message:
-        result.error.code === "23505"
+        result.error?.code === "23505"
           ? "That listing URL is already in use."
           : "The listing could not be saved.",
     };
@@ -115,8 +124,13 @@ export async function deleteListing(formData: FormData) {
   const id = formData.get("id");
   if (typeof id !== "string") return;
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("listings").delete().eq("id", id);
-  if (error) throw new Error("The listing could not be deleted.");
+  const { data, error } = await supabase
+    .from("listings")
+    .delete()
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+  if (error || !data) throw new Error("The listing could not be deleted.");
   revalidatePath("/admin/listings");
   revalidatePath("/listings");
   revalidatePath("/listings/[slug]", "page");
@@ -145,16 +159,18 @@ export async function updateLead(
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("leads")
     .update({
       status: parsed.data.status,
       notes: parsed.data.notes,
       updated_by: admin.id,
     })
-    .eq("id", parsed.data.id);
+    .eq("id", parsed.data.id)
+    .select("id")
+    .maybeSingle();
 
-  if (error) {
+  if (error || !data) {
     return { status: "error", message: "The lead could not be updated." };
   }
 

@@ -140,4 +140,3 @@ All normal body copy must meet WCAG AA contrast. Signal red is used with white o
 - Prefer concrete Calgary-area guidance over generic superlatives.
 - Never imply guarantees, fabricate urgency, or publish unverified performance claims.
 - Use "Ryan" when conversational and the approved licensed/brokerage name in compliance contexts.
-

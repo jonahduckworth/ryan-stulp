@@ -15,12 +15,18 @@ const initialLeadState: LeadFormState = {
 function FieldError({
   state,
   name,
+  id,
 }: {
   state: LeadFormState;
   name: string;
+  id: string;
 }) {
   const message = state.errors?.[name]?.[0];
-  return message ? <span className="field-error">{message}</span> : null;
+  return message ? (
+    <span className="field-error" id={id}>
+      {message}
+    </span>
+  ) : null;
 }
 
 export function LeadForm({
@@ -36,6 +42,8 @@ export function LeadForm({
     submitLead,
     initialLeadState,
   );
+  const errorId = (name: string) => `${source}-${name}-error`;
+  const hasError = (name: string) => Boolean(state.errors?.[name]?.length);
 
   return (
     <form className="form-shell form-grid" action={formAction}>
@@ -63,9 +71,11 @@ export function LeadForm({
           type="text"
           defaultValue={state.values?.name}
           autoComplete="name"
+          aria-invalid={hasError("name")}
+          aria-describedby={hasError("name") ? errorId("name") : undefined}
           required
         />
-        <FieldError state={state} name="name" />
+        <FieldError state={state} name="name" id={errorId("name")} />
       </div>
       <div className="field">
         <label htmlFor={`${source}-email`}>Email</label>
@@ -75,9 +85,11 @@ export function LeadForm({
           type="email"
           defaultValue={state.values?.email}
           autoComplete="email"
+          aria-invalid={hasError("email")}
+          aria-describedby={hasError("email") ? errorId("email") : undefined}
           required
         />
-        <FieldError state={state} name="email" />
+        <FieldError state={state} name="email" id={errorId("email")} />
       </div>
       <div className="field">
         <label htmlFor={`${source}-phone`}>Phone (optional)</label>
@@ -87,8 +99,10 @@ export function LeadForm({
           type="tel"
           defaultValue={state.values?.phone}
           autoComplete="tel"
+          aria-invalid={hasError("phone")}
+          aria-describedby={hasError("phone") ? errorId("phone") : undefined}
         />
-        <FieldError state={state} name="phone" />
+        <FieldError state={state} name="phone" id={errorId("phone")} />
       </div>
       <div className="field">
         <label htmlFor={`${source}-intent`}>I&apos;m looking to</label>
@@ -115,8 +129,18 @@ export function LeadForm({
             type="text"
             defaultValue={state.values?.propertyAddress}
             autoComplete="street-address"
+            aria-invalid={hasError("propertyAddress")}
+            aria-describedby={
+              hasError("propertyAddress")
+                ? errorId("propertyAddress")
+                : undefined
+            }
           />
-          <FieldError state={state} name="propertyAddress" />
+          <FieldError
+            state={state}
+            name="propertyAddress"
+            id={errorId("propertyAddress")}
+          />
         </div>
       ) : (
         <input type="hidden" name="propertyAddress" value="" />
@@ -130,9 +154,13 @@ export function LeadForm({
           name="message"
           defaultValue={state.values?.message}
           placeholder="Share your timing, goals, and any questions you already have."
+          aria-invalid={hasError("message")}
+          aria-describedby={
+            hasError("message") ? errorId("message") : undefined
+          }
           required
         />
-        <FieldError state={state} name="message" />
+        <FieldError state={state} name="message" id={errorId("message")} />
       </div>
       {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? (
         <div

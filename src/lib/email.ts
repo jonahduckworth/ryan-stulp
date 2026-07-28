@@ -11,7 +11,7 @@ export async function notifyRyanOfLead(lead: LeadInput) {
   if (!apiKey || !from) return;
 
   const resend = new Resend(apiKey);
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from,
     to,
     replyTo: lead.email,
@@ -27,4 +27,8 @@ export async function notifyRyanOfLead(lead: LeadInput) {
       lead.message,
     ].join("\n"),
   });
+
+  if (error) {
+    throw new Error("Lead notification provider rejected the message.");
+  }
 }
