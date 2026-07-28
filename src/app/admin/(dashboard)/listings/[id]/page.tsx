@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { deleteListing } from "@/app/actions/admin";
+import { DeleteListingForm } from "@/components/admin/delete-listing-form";
 import { ListingForm } from "@/components/admin/listing-form";
 import { getAdminListing } from "@/lib/data/admin";
 
@@ -30,12 +30,7 @@ export default async function EditListingPage({
           This permanently removes the listing record. Archiving is safer if
           the property may be needed later.
         </p>
-        <form action={deleteListing}>
-          <input type="hidden" name="id" value={listing.id} />
-          <button className="button button-danger" type="submit">
-            Permanently delete
-          </button>
-        </form>
+        <DeleteListingForm id={listing.id} address={listing.address} />
       </section>
     </div>
   );

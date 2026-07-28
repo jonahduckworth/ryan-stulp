@@ -51,6 +51,19 @@ export async function saveListing(
 
   const supabase = await createSupabaseServerClient();
   const listing = parsed.data;
+  const storagePrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/listing-media/`;
+  if (
+    listing.coverImageUrl &&
+    !listing.coverImageUrl.startsWith(storagePrefix)
+  ) {
+    return {
+      status: "error",
+      message: "The cover image must come from the secure listing media bucket.",
+      errors: {
+        coverImageUrl: ["Upload the image using the cover image control."],
+      },
+    };
+  }
   const shouldPublish = ["active", "pending", "sold"].includes(listing.status);
   const payload = {
     title: listing.title,

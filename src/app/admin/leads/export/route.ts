@@ -1,9 +1,6 @@
 import { verifyAdmin } from "@/lib/auth";
 import { getAdminLeads } from "@/lib/data/admin";
-
-function csvCell(value: string | null) {
-  return `"${(value ?? "").replaceAll('"', '""').replaceAll(/\r?\n/g, " ")}"`;
-}
+import { rowsToCsv } from "@/lib/csv";
 
 export async function GET() {
   await verifyAdmin();
@@ -34,7 +31,7 @@ export async function GET() {
       lead.created_at,
     ]),
   ];
-  const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+  const csv = rowsToCsv(rows);
 
   return new Response(csv, {
     headers: {
