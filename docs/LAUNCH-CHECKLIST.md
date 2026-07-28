@@ -8,8 +8,8 @@ Target: complete production v1 by July 31, 2026.
       compliance.
 - [ ] Brokerage office address has been confirmed.
 - [ ] Ryan approves all final page copy, testimonials, and performance claims.
-- [ ] Supabase project created; apply
-      `202607270003_secure_public_settings_grants.sql` before the next deploy.
+- [x] Supabase project created and all migrations through
+      `202607270003_secure_public_settings_grants.sql` applied.
 - [x] Initial administrator account created, promoted, and tested locally.
 - [ ] Resend sending domain verified and a real lead notification tested.
 - [ ] Turnstile production keys configured and a real form submission tested.

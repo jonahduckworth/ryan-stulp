@@ -7,12 +7,12 @@ import type {
   PublicSiteSettings,
 } from "@/lib/types";
 import { hasPublicSupabaseEnv } from "@/lib/supabase/env";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 
 export const getPublishedListings = cache(async (): Promise<Listing[]> => {
   if (!hasPublicSupabaseEnv()) return [];
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   const { data, error } = await supabase
     .from("listings")
     .select("*")
@@ -33,7 +33,7 @@ export const getPublishedListingBySlug = cache(
   async (slug: string): Promise<Listing | null> => {
     if (!hasPublicSupabaseEnv()) return null;
 
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("listings")
       .select("*")
@@ -55,7 +55,7 @@ export const getPublishedListingMedia = cache(
   async (listingId: string): Promise<ListingMedia[]> => {
     if (!hasPublicSupabaseEnv()) return [];
 
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("listing_media")
       .select("*")
@@ -76,7 +76,7 @@ export const getPublicSiteSettings = cache(
   async (): Promise<PublicSiteSettings | null> => {
     if (!hasPublicSupabaseEnv()) return null;
 
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabasePublicClient();
     const { data, error } = await supabase
       .from("site_settings")
       .select(
