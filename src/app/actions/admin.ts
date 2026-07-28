@@ -393,9 +393,7 @@ export async function updateSiteSettings(
     return { status: "error", message: "Website settings could not be saved." };
   }
 
-  revalidatePath("/");
-  revalidatePath("/contact");
-  revalidatePath("/privacy");
+  revalidatePath("/(site)", "layout");
   revalidatePath("/admin/settings");
   redirect("/admin/settings?saved=1");
 }
