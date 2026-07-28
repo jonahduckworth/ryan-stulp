@@ -463,6 +463,11 @@ p {
   color: var(--white);
 }
 
+.dark .eyebrow,
+.path-card .eyebrow {
+  color: #f46a82;
+}
+
 .dark .lede {
   color: #c9c6c0;
 }

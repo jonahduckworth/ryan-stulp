@@ -8,17 +8,27 @@ Target: complete production v1 by July 31, 2026.
       compliance.
 - [ ] Brokerage office address has been confirmed.
 - [ ] Ryan approves all final page copy, testimonials, and performance claims.
-- [ ] Supabase project created and initial migration applied.
-- [ ] Ryan's administrator account created, promoted, and tested.
+- [x] Supabase project created and all current migrations applied.
+- [x] Initial administrator account created, promoted, and tested locally.
 - [ ] Resend sending domain verified and a real lead notification tested.
 - [ ] Turnstile production keys configured and a real form submission tested.
-- [ ] Vercel project connected with Node.js 22 and all production variables.
+- [ ] Vercel project connected with Node.js 22; remaining third-party production
+      variables are listed below.
 - [ ] Google Analytics property access confirmed and measurement ID configured.
 - [ ] Search Console property access confirmed or a new domain property created.
-- [ ] Old URL inventory received from Page Pros or collected from the live site.
-- [ ] Every material old URL mapped to a new route or an intentional 410.
+- [x] Old URL inventory collected from the live site's XML sitemap.
+- [x] Every material old URL mapped to a new route or an intentional 410.
 - [ ] Privacy copy reviewed for Ryan's actual service and retention practices.
 - [ ] Full acceptance test run completed on the production preview.
+
+## External launch values still required
+
+- Resend API key after `ryanstulp.ca` is verified as a sending domain.
+- Cloudflare Turnstile production site key and secret.
+- GA4 measurement ID, if Ryan wants analytics at launch.
+- Supabase production Site URL and allowed redirect URLs updated after the final
+  canonical domain is confirmed.
+- Vercel custom-domain connection and the associated DNS records.
 
 ## DNS cutover
 

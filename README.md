@@ -11,8 +11,12 @@ Ryan Stulp at The Real Estate District.
 - Secure lead forms with server validation, a honeypot, database-backed rate
   limiting, optional Cloudflare Turnstile, and optional email notifications.
 - Private Supabase-authenticated admin dashboard.
-- Listing create, edit, publish, archive, delete, and cover-image upload.
-- Lead inbox, statuses, private notes, direct call/email actions, and CSV export.
+- Listing create, edit, duplicate, preview, publish, archive, delete, and ordered
+  multi-image galleries.
+- Lead inbox, attribution, statuses, private notes, direct call/email actions,
+  and CSV export.
+- Editable public contact, brokerage, social, booking, and selected home-page
+  settings.
 - PostgreSQL row-level security, role checks, storage policies, and audit schema.
 - Metadata, structured data, sitemap, robots, Open Graph image, manifest, and
   `llms.txt`.
@@ -44,8 +48,8 @@ zero-listing state. Forms and `/admin` require Supabase configuration.
 
 ## Service setup
 
-1. Create the Supabase project and run
-   `supabase/migrations/202607270001_initial.sql`.
+1. Create the Supabase project and run every migration in
+   `supabase/migrations` in filename order.
 2. Follow `supabase/README.md` to provision Ryan's admin account.
 3. Add the values from `.env.example` to `.env.local` and the production host.
 4. Configure a verified Resend sending domain on `ryanstulp.ca`.
@@ -66,6 +70,7 @@ npm run build
 ```
 
 Manual launch tests are in `docs/ACCEPTANCE-TESTS.md`.
+Ryan's operating instructions are in `docs/ADMIN-GUIDE.md`.
 
 ## Deployment
 
@@ -76,6 +81,11 @@ production deployment. Preserve the old DNS records that are unrelated to the
 website, especially mail records.
 
 See `docs/LAUNCH-CHECKLIST.md` for the full cutover sequence and rollback plan.
+
+The current staging deployment is
+[`ryan-stulp.vercel.app`](https://ryan-stulp.vercel.app). It is not the final
+public launch until the custom domain and the remaining third-party production
+keys are configured.
 
 ## Support
 
