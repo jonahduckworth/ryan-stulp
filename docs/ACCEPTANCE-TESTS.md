@@ -51,10 +51,14 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
 - [x] `/sitemap.xml`, `/robots.txt`, `/manifest.webmanifest`, and `/llms.txt` load.
 - [x] Anonymous `/admin` is protected and redirects to login.
 - [x] Old URL redirects return 308 and removed routes return an intentional 410.
-- [ ] Lighthouse checks show no critical accessibility or SEO failures.
-- [ ] No production build, browser console, or server errors remain.
+- [x] Lighthouse checks show no critical accessibility or SEO failures.
+- [x] No production build, browser console, or server errors remain in the
+      completed staging checks.
 
 Checked boxes were verified on the local application or the Vercel staging
 deployment on July 27, 2026. Remaining boxes are launch gates, not assumed
 passes. Re-run the entire list after the custom domain and third-party services
 are connected.
+
+Latest home-page Lighthouse scores: Performance 94, Accessibility 100, Best
+Practices 100, and SEO 100.
