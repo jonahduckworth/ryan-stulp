@@ -1,7 +1,7 @@
 import "server-only";
 
 import { cache } from "react";
-import type { Listing } from "@/lib/types";
+import type { Listing, ListingMedia, SiteSettings } from "@/lib/types";
 import { hasPublicSupabaseEnv } from "@/lib/supabase/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -14,6 +14,7 @@ export const getPublishedListings = cache(async (): Promise<Listing[]> => {
     .select("*")
     .in("status", ["active", "pending", "sold"])
     .not("published_at", "is", null)
+    .order("featured", { ascending: false })
     .order("published_at", { ascending: false });
 
   if (error) {
@@ -43,5 +44,46 @@ export const getPublishedListingBySlug = cache(
     }
 
     return data as Listing | null;
+  },
+);
+
+export const getPublishedListingMedia = cache(
+  async (listingId: string): Promise<ListingMedia[]> => {
+    if (!hasPublicSupabaseEnv()) return [];
+
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("listing_media")
+      .select("*")
+      .eq("listing_id", listingId)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Unable to load listing media:", error.code);
+      return [];
+    }
+
+    return (data ?? []) as ListingMedia[];
+  },
+);
+
+export const getPublicSiteSettings = cache(
+  async (): Promise<SiteSettings | null> => {
+    if (!hasPublicSupabaseEnv()) return null;
+
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("*")
+      .eq("id", true)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Unable to load website settings:", error.code);
+      return null;
+    }
+
+    return data as SiteSettings | null;
   },
 );

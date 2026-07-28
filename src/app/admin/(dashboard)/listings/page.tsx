@@ -27,6 +27,7 @@ export default async function AdminListingsPage() {
                   <th>Property</th>
                   <th>Price</th>
                   <th>Status</th>
+                  <th>Homepage</th>
                   <th>Updated</th>
                   <th>Public page</th>
                 </tr>
@@ -39,13 +40,25 @@ export default async function AdminListingsPage() {
                         {listing.title}
                       </Link>
                       <br />
-                      <span className="form-note">{listing.address}</span>
+                      <span className="form-note">
+                        {listing.address}
+                        {listing.mls_number ? ` · MLS ${listing.mls_number}` : ""}
+                      </span>
                     </td>
                     <td data-label="Price">{formatCurrency(listing.price)}</td>
                     <td data-label="Status">
                       <span className="status-badge" data-status={listing.status}>
                         {listing.status}
                       </span>
+                    </td>
+                    <td data-label="Homepage">
+                      {listing.featured ? (
+                        <span className="status-badge" data-status="active">
+                          Featured
+                        </span>
+                      ) : (
+                        <span className="form-note">Standard</span>
+                      )}
                     </td>
                     <td data-label="Updated">{formatDate(listing.updated_at)}</td>
                     <td data-label="Public page">

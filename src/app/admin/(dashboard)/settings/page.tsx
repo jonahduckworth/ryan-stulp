@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { SiteSettingsForm } from "@/components/admin/site-settings-form";
+import { getAdminSiteSettings } from "@/lib/data/admin";
+import { resolveSiteIdentity, SITE } from "@/lib/site";
 import { hasPublicSupabaseEnv, hasServiceSupabaseEnv } from "@/lib/supabase/env";
 
 export const metadata: Metadata = { title: "Settings" };
@@ -11,7 +14,9 @@ function State({ ready }: { ready: boolean }) {
   );
 }
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const settings = await getAdminSiteSettings();
+  const identity = resolveSiteIdentity(settings);
   const checks = [
     ["Database and authentication", hasPublicSupabaseEnv()],
     ["Secure lead capture", hasServiceSupabaseEnv()],
@@ -62,6 +67,14 @@ export default function SettingsPage() {
           </div>
         </div>
       </section>
+      <SiteSettingsForm
+        identity={identity}
+        notificationEmail={
+          settings?.notification_email ||
+          process.env.LEAD_NOTIFICATION_EMAIL ||
+          SITE.email
+        }
+      />
     </div>
   );
 }

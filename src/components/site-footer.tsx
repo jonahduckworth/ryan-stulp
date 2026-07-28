@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { SITE } from "@/lib/site";
+import type { PublicSiteIdentity } from "@/lib/site";
 
-export function SiteFooter() {
+export function SiteFooter({ identity }: { identity: PublicSiteIdentity }) {
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
@@ -12,10 +12,13 @@ export function SiteFooter() {
             investors, builders, and developers across Calgary and area.
           </p>
           <div className="button-row">
-            <a className="button button-light" href={SITE.phoneHref}>
-              {SITE.phoneDisplay}
+            <a className="button button-light" href={identity.phoneHref}>
+              {identity.phoneDisplay}
             </a>
-            <a className="button button-secondary" href={`mailto:${SITE.email}`}>
+            <a
+              className="button button-secondary"
+              href={`mailto:${identity.email}`}
+            >
               Email Ryan
             </a>
           </div>
@@ -31,18 +34,24 @@ export function SiteFooter() {
           <strong>Ryan Stulp</strong>
           <Link href="/about">About</Link>
           <Link href="/contact">Contact</Link>
-          <a href={SITE.facebook} rel="noreferrer" target="_blank">
+          <a href={identity.facebook} rel="noreferrer" target="_blank">
             Facebook
           </a>
+          {identity.bookingUrl ? (
+            <a href={identity.bookingUrl} rel="noreferrer" target="_blank">
+              Book a conversation
+            </a>
+          ) : null}
           <Link href="/privacy">Privacy</Link>
         </nav>
       </div>
       <div className="container footer-bottom">
         <span>
-          © {new Date().getFullYear()} {SITE.licensedName}. All rights reserved.
+          © {new Date().getFullYear()} {identity.licensedName}. All rights
+          reserved.
         </span>
         <span>
-          {SITE.brokerage} · {SITE.address}
+          {identity.brokerage} · {identity.address}
         </span>
       </div>
     </footer>

@@ -1,10 +1,33 @@
 import { z } from "zod";
 
-const optionalText = z
+const optionalTextMax = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .transform((value) => (value === "" ? null : value))
+    .nullable();
+
+const optionalText = optionalTextMax(500);
+
+const optionalUrlOrPath = z
   .string()
   .trim()
-  .transform((value) => (value === "" ? null : value))
-  .nullable();
+  .refine(
+    (value) =>
+      value === "" ||
+      value.startsWith("/") ||
+      z.url().safeParse(value).success,
+    "Use a full URL or a path beginning with /.",
+  )
+  .transform((value) => value || null);
+
+const optionalShortText = z
+  .string()
+  .trim()
+  .max(500)
+  .optional()
+  .transform((value) => value || null);
 
 export const leadSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name.").max(100),
@@ -21,6 +44,11 @@ export const leadSchema = z.object({
     .min(10, "Please share a little more detail (at least 10 characters).")
     .max(3000),
   propertyAddress: optionalText,
+  listingId: z
+    .uuid()
+    .or(z.literal(""))
+    .optional()
+    .transform((value) => value || null),
   source: z.enum([
     "contact-page",
     "listing-detail",
@@ -29,6 +57,13 @@ export const leadSchema = z.object({
   ]),
   website: z.string().max(0, "Unable to submit."),
   turnstileToken: z.string().optional(),
+  pageUrl: optionalShortText,
+  referrer: optionalShortText,
+  utmSource: optionalShortText,
+  utmMedium: optionalShortText,
+  utmCampaign: optionalShortText,
+  utmTerm: optionalShortText,
+  utmContent: optionalShortText,
 });
 
 export const loginSchema = z.object({
@@ -59,15 +94,25 @@ export const listingSchema = z.object({
     .max(160)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase words and hyphens only."),
   address: z.string().trim().min(3).max(180),
+  addressLine2: optionalTextMax(120),
   city: z.string().trim().min(2).max(100),
   province: z.string().trim().min(2).max(40),
-  postalCode: optionalText,
+  postalCode: optionalTextMax(20),
   price: z.coerce.number().int().nonnegative().nullable(),
   status: z.enum(["draft", "active", "pending", "sold", "archived"]),
+  listingType: z.enum(["residential", "commercial", "rural"]),
   propertyType: z.string().trim().min(2).max(80),
+  neighbourhood: optionalTextMax(100),
+  mlsNumber: optionalTextMax(60),
   bedrooms: z.coerce.number().int().nonnegative().nullable(),
   bathrooms: z.coerce.number().nonnegative().nullable(),
   squareFeet: z.coerce.number().int().positive().nullable(),
+  yearBuilt: z.coerce
+    .number()
+    .int()
+    .min(1800)
+    .max(new Date().getFullYear() + 2)
+    .nullable(),
   description: z.string().trim().min(20).max(12000),
   features: z
     .string()
@@ -79,12 +124,42 @@ export const listingSchema = z.object({
         .filter(Boolean),
     ),
   coverImageUrl: z.url("Use a valid image URL.").or(z.literal("")).transform((value) => value || null),
+  ctaLabel: optionalTextMax(80),
+  ctaDestination: optionalUrlOrPath,
+  featured: z.boolean(),
+  seoTitle: optionalTextMax(70),
+  seoDescription: optionalTextMax(180),
+  socialImageUrl: z
+    .url("Use a valid social image URL.")
+    .or(z.literal(""))
+    .transform((value) => value || null),
 });
 
 export const leadUpdateSchema = z.object({
   id: z.uuid(),
-  status: z.enum(["new", "contacted", "qualified", "closed", "archived"]),
+  status: z.enum([
+    "new",
+    "contacted",
+    "qualified",
+    "won",
+    "lost",
+    "archived",
+  ]),
   notes: z.string().trim().max(6000).transform((value) => value || null),
+});
+
+export const siteSettingsSchema = z.object({
+  notificationEmail: z.email().trim().toLowerCase(),
+  publicEmail: z.email().trim().toLowerCase(),
+  phoneDisplay: z.string().trim().min(7).max(30),
+  facebookUrl: z.url().or(z.literal("")).transform((value) => value || null),
+  bookingUrl: z.url().or(z.literal("")).transform((value) => value || null),
+  brokerageName: z.string().trim().min(2).max(180),
+  brokerageAddress: z.string().trim().min(5).max(260),
+  licensedName: z.string().trim().min(2).max(120),
+  homepageEyebrow: z.string().trim().min(3).max(80),
+  homepageTitle: z.string().trim().min(10).max(120),
+  homepageDescription: z.string().trim().min(30).max(400),
 });
 
 export type LeadInput = z.infer<typeof leadSchema>;

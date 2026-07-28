@@ -1,20 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { NAV_ITEMS, SITE } from "@/lib/site";
+import { NAV_ITEMS, type PublicSiteIdentity } from "@/lib/site";
 import { MobileNav } from "@/components/mobile-nav";
 
-export function SiteHeader() {
+export function SiteHeader({ identity }: { identity: PublicSiteIdentity }) {
   return (
     <>
       <div className="identity-strip">
-        Ryan Stulp · Licensed real estate professional with {SITE.brokerage}
+        Ryan Stulp · Licensed real estate professional with {identity.brokerage}
       </div>
       <header className="site-header">
         <div className="container nav-row">
           <Link className="brand" href="/" aria-label="Ryan Stulp home">
             <Image
               src="/brand/ryan-stulp-logo.png"
-              alt="Ryan Stulp, The Real Estate District"
+              alt={`Ryan Stulp, ${identity.brokerage}`}
               width={1400}
               height={445}
               priority

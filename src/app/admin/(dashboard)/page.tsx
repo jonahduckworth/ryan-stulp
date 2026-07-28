@@ -35,6 +35,25 @@ export default async function AdminDashboardPage() {
       </section>
       <section className="admin-panel">
         <header className="admin-panel-header">
+          <div>
+            <h2>Listing workflow</h2>
+            <p>Every property by its current publication stage.</p>
+          </div>
+          <Link href="/admin/listings">Manage listings</Link>
+        </header>
+        <div className="workflow-grid">
+          {Object.entries(stats.listingStatuses).map(([status, count]) => (
+            <div className="workflow-count" key={status}>
+              <span className="status-badge" data-status={status}>
+                {status}
+              </span>
+              <strong>{count}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header className="admin-panel-header">
           <h2>Recent leads</h2>
           <Link href="/admin/leads">View all</Link>
         </header>

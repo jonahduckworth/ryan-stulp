@@ -37,6 +37,7 @@ export default function HomeEvaluationPage() {
             source="home-evaluation"
             defaultIntent="sell"
             includeAddress
+            pageUrl="/home-evaluation"
           />
         </div>
       </section>

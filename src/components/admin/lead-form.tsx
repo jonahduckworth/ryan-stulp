@@ -27,7 +27,8 @@ export function AdminLeadForm({ lead }: { lead: Lead }) {
           <option value="new">New</option>
           <option value="contacted">Contacted</option>
           <option value="qualified">Qualified</option>
-          <option value="closed">Closed</option>
+          <option value="won">Won</option>
+          <option value="lost">Lost</option>
           <option value="archived">Archived</option>
         </select>
       </div>

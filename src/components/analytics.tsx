@@ -1,9 +1,35 @@
 "use client";
 
 import Script from "next/script";
+import { useEffect } from "react";
 
 export function Analytics() {
   const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  useEffect(() => {
+    if (!measurementId) return;
+    const trackClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest("a");
+      if (!link) return;
+      const explicitEvent = link.dataset.analyticsEvent;
+      const href = link.getAttribute("href") || "";
+      const eventName =
+        explicitEvent ||
+        (href.startsWith("tel:")
+          ? "phone_click"
+          : href.startsWith("mailto:")
+            ? "email_click"
+            : null);
+      if (!eventName) return;
+      window.gtag?.("event", eventName, {
+        link_path: href.startsWith("/") ? href : undefined,
+      });
+    };
+    document.addEventListener("click", trackClick);
+    return () => document.removeEventListener("click", trackClick);
+  }, [measurementId]);
+
   if (!measurementId) return null;
 
   return (

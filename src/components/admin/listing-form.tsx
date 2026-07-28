@@ -67,6 +67,14 @@ export function ListingForm({ listing }: { listing?: Listing | null }) {
           />
           <ErrorText state={state} field="address" />
         </div>
+        <div className="field field-full">
+          <label htmlFor="addressLine2">Unit or address line 2</label>
+          <input
+            id="addressLine2"
+            name="addressLine2"
+            defaultValue={listing?.address_line_2 ?? ""}
+          />
+        </div>
         <div className="field">
           <label htmlFor="city">City</label>
           <input
@@ -123,12 +131,40 @@ export function ListingForm({ listing }: { listing?: Listing | null }) {
           </select>
         </div>
         <div className="field">
+          <label htmlFor="listingType">Listing category</label>
+          <select
+            id="listingType"
+            name="listingType"
+            defaultValue={listing?.listing_type ?? "residential"}
+          >
+            <option value="residential">Residential</option>
+            <option value="commercial">Commercial</option>
+            <option value="rural">Rural</option>
+          </select>
+        </div>
+        <div className="field">
           <label htmlFor="propertyType">Property type</label>
           <input
             id="propertyType"
             name="propertyType"
             defaultValue={listing?.property_type ?? "Residential"}
             required
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="neighbourhood">Neighbourhood</label>
+          <input
+            id="neighbourhood"
+            name="neighbourhood"
+            defaultValue={listing?.neighbourhood ?? ""}
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="mlsNumber">MLS number</label>
+          <input
+            id="mlsNumber"
+            name="mlsNumber"
+            defaultValue={listing?.mls_number ?? ""}
           />
         </div>
         <div className="field">
@@ -162,6 +198,28 @@ export function ListingForm({ listing }: { listing?: Listing | null }) {
             defaultValue={listing?.square_feet ?? ""}
           />
         </div>
+        <div className="field">
+          <label htmlFor="yearBuilt">Year built</label>
+          <input
+            id="yearBuilt"
+            name="yearBuilt"
+            type="number"
+            min="1800"
+            max={new Date().getFullYear() + 2}
+            defaultValue={listing?.year_built ?? ""}
+          />
+        </div>
+        <label className="check-field field-full">
+          <input
+            name="featured"
+            type="checkbox"
+            defaultChecked={listing?.featured ?? false}
+          />
+          <span>
+            <strong>Feature on the homepage</strong>
+            <small>Featured properties are shown before other listings.</small>
+          </span>
+        </label>
       </section>
       <section className="admin-form-section">
         <h2>Marketing content</h2>
@@ -185,6 +243,65 @@ export function ListingForm({ listing }: { listing?: Listing | null }) {
         </div>
         <div className="field field-full">
           <MediaUpload initialUrl={listing?.cover_image_url} />
+        </div>
+      </section>
+      <section className="admin-form-section">
+        <h2>Call to action</h2>
+        <p className="form-note field-full">
+          Leave these blank to use the standard listing inquiry button.
+        </p>
+        <div className="field">
+          <label htmlFor="ctaLabel">Button label</label>
+          <input
+            id="ctaLabel"
+            name="ctaLabel"
+            defaultValue={listing?.cta_label ?? ""}
+            placeholder="Book a private viewing"
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="ctaDestination">Button destination</label>
+          <input
+            id="ctaDestination"
+            name="ctaDestination"
+            defaultValue={listing?.cta_destination ?? ""}
+            placeholder="/contact or https://…"
+          />
+          <ErrorText state={state} field="ctaDestination" />
+        </div>
+      </section>
+      <section className="admin-form-section">
+        <h2>Search and sharing</h2>
+        <div className="field field-full">
+          <label htmlFor="seoTitle">SEO title</label>
+          <input
+            id="seoTitle"
+            name="seoTitle"
+            defaultValue={listing?.seo_title ?? ""}
+            placeholder={listing?.title ?? "Defaults to the listing title"}
+            maxLength={70}
+          />
+        </div>
+        <div className="field field-full">
+          <label htmlFor="seoDescription">SEO description</label>
+          <textarea
+            id="seoDescription"
+            name="seoDescription"
+            defaultValue={listing?.seo_description ?? ""}
+            placeholder="Defaults to the first 155 characters of the description."
+            maxLength={180}
+          />
+        </div>
+        <div className="field field-full">
+          <label htmlFor="socialImageUrl">Social sharing image URL</label>
+          <input
+            id="socialImageUrl"
+            name="socialImageUrl"
+            type="url"
+            defaultValue={listing?.social_image_url ?? ""}
+            placeholder="Defaults to the featured listing image."
+          />
+          <ErrorText state={state} field="socialImageUrl" />
         </div>
       </section>
       <p

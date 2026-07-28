@@ -3,11 +3,19 @@ import Link from "next/link";
 import { CtaBand } from "@/components/cta-band";
 import { JsonLd } from "@/components/json-ld";
 import { ListingCard } from "@/components/listing-card";
-import { getPublishedListings } from "@/lib/data/public";
-import { SITE } from "@/lib/site";
+import {
+  getPublishedListings,
+  getPublicSiteSettings,
+} from "@/lib/data/public";
+import { resolveSiteIdentity } from "@/lib/site";
 
 export default async function HomePage() {
-  const listings = (await getPublishedListings()).slice(0, 3);
+  const [publishedListings, settings] = await Promise.all([
+    getPublishedListings(),
+    getPublicSiteSettings(),
+  ]);
+  const listings = publishedListings.slice(0, 3);
+  const identity = resolveSiteIdentity(settings);
 
   return (
     <>
@@ -15,11 +23,11 @@ export default async function HomePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "RealEstateAgent",
-          name: SITE.licensedName,
+          name: identity.licensedName,
           alternateName: "Ryan Stulp",
-          url: SITE.url,
-          telephone: SITE.phoneDisplay,
-          email: SITE.email,
+          url: identity.url,
+          telephone: identity.phoneDisplay,
+          email: identity.email,
           areaServed: "Calgary and surrounding area, Alberta",
           address: {
             "@type": "PostalAddress",
@@ -31,20 +39,16 @@ export default async function HomePage() {
           },
           worksFor: {
             "@type": "Organization",
-            name: SITE.brokerage,
+            name: identity.brokerage,
           },
         }}
       />
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-copy">
-            <span className="eyebrow">Calgary and area real estate</span>
-            <h1 className="display">Make your next move with clarity.</h1>
-            <p className="lede">
-              Whether you&apos;re buying your first home, selling, investing, or
-              planning a development, Ryan gives you a clear read on the market
-              and a practical path forward.
-            </p>
+            <span className="eyebrow">{identity.homepageEyebrow}</span>
+            <h1 className="display">{identity.homepageTitle}</h1>
+            <p className="lede">{identity.homepageDescription}</p>
             <div className="button-row">
               <Link className="button button-primary" href="/contact">
                 Tell Ryan your goal
@@ -67,23 +71,23 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="trust-bar" aria-label="Ryan's experience">
+      <section className="trust-bar" aria-label="Real estate services">
         <div className="container trust-grid">
           <div className="trust-item">
-            <strong>80+</strong>
-            <span>Transaction sides since becoming licensed</span>
-          </div>
-          <div className="trust-item">
-            <strong>7+ years</strong>
-            <span>Sales experience</span>
-          </div>
-          <div className="trust-item">
             <strong>Residential</strong>
-            <span>Homes, rural property, and investments</span>
+            <span>Buying and selling guidance</span>
           </div>
           <div className="trust-item">
             <strong>Commercial</strong>
-            <span>Guidance for business and development needs</span>
+            <span>Business and development needs</span>
+          </div>
+          <div className="trust-item">
+            <strong>Rural</strong>
+            <span>Property beyond the city</span>
+          </div>
+          <div className="trust-item">
+            <strong>Calgary and area</strong>
+            <span>Local market context</span>
           </div>
         </div>
       </section>
@@ -206,12 +210,17 @@ export default async function HomePage() {
       </section>
 
       <section className="section dark">
-        <div className="container">
-          <blockquote className="quote">
-            “We never felt pressured — only informed. Ryan made a complicated
-            move feel manageable from the first conversation to possession.”
-            <cite>— Calgary client</cite>
-          </blockquote>
+        <div className="container intro-grid">
+          <span className="eyebrow">The standard</span>
+          <div className="stack">
+            <h2 className="section-title">
+              Direct answers. Useful context. No manufactured pressure.
+            </h2>
+            <p className="lede">
+              Every recommendation should help you understand the trade-offs and
+              make the next decision with confidence.
+            </p>
+          </div>
         </div>
       </section>
       <CtaBand />

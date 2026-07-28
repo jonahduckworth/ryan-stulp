@@ -34,10 +34,9 @@ export default function AboutPage() {
             <span className="eyebrow">The person behind the process</span>
             <h2>Built around communication and accountability.</h2>
             <p>
-              Ryan became licensed in October 2022 after more than seven years
-              in sales. Since then, he has represented more than 80 transaction
-              sides while building a practice that reaches well beyond one
-              property type.
+              Ryan is licensed in Alberta for residential, commercial, and rural
+              real estate. He brings a direct, sales-focused approach to helping
+              clients understand the decision in front of them.
             </p>
             <p>
               He supports first-time buyers, growing families, investors,
@@ -45,12 +44,6 @@ export default function AboutPage() {
               makers. That range matters: every property is different, but good
               representation always starts with clear priorities, informed
               negotiation, and details that do not get dropped.
-            </p>
-            <p>
-              Ryan was recognized as the top agent in his brokerage in January
-              2025 and February 2026. For clients, the more important measure is
-              how the experience feels: responsive, honest, organized, and
-              focused on the outcome they actually need.
             </p>
             <h3>What you can expect</h3>
             <ul>

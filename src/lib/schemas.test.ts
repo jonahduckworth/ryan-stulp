@@ -3,6 +3,7 @@ import {
   leadSchema,
   listingSchema,
   passwordSetupSchema,
+  siteSettingsSchema,
 } from "@/lib/schemas";
 
 describe("leadSchema", () => {
@@ -43,21 +44,54 @@ describe("listingSchema", () => {
       title: "Calgary family home",
       slug: "calgary-family-home",
       address: "123 Main Street",
+      addressLine2: "",
       city: "Calgary",
       province: "AB",
       postalCode: "",
       price: null,
       status: "draft",
+      listingType: "residential",
       propertyType: "Residential",
+      neighbourhood: "",
+      mlsNumber: "",
       bedrooms: null,
       bathrooms: null,
       squareFeet: null,
+      yearBuilt: null,
       description: "A complete property description with enough detail.",
       features: "South-facing yard\nDouble garage",
       coverImageUrl: "",
+      ctaLabel: "",
+      ctaDestination: "",
+      featured: false,
+      seoTitle: "",
+      seoDescription: "",
+      socialImageUrl: "",
     });
     expect(result.price).toBeNull();
     expect(result.features).toEqual(["South-facing yard", "Double garage"]);
+  });
+});
+
+describe("siteSettingsSchema", () => {
+  it("normalizes production website settings", () => {
+    const result = siteSettingsSchema.parse({
+      notificationEmail: "RYAN@EXAMPLE.COM",
+      publicEmail: "hello@example.com",
+      phoneDisplay: "(587) 839-1432",
+      facebookUrl: "",
+      bookingUrl: "",
+      brokerageName: "The Real Estate District",
+      brokerageAddress: "#375 7220 Fisher St SE, Calgary, AB T2H 2H8",
+      licensedName: "Ryan Andrew Stulp",
+      homepageEyebrow: "Calgary and area real estate",
+      homepageTitle: "Make your next move with clarity.",
+      homepageDescription:
+        "Clear, practical guidance for buyers, sellers, and investors across Calgary and area.",
+    });
+
+    expect(result.notificationEmail).toBe("ryan@example.com");
+    expect(result.facebookUrl).toBeNull();
   });
 });
 

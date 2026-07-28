@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminLeadForm } from "@/components/admin/lead-form";
 import { getAdminLead } from "@/lib/data/admin";
@@ -51,11 +52,43 @@ export default async function LeadDetailPage({
           </div>
           <div className="detail-row">
             <span>Property</span>
-            <p>{lead.property_address ?? "Not provided"}</p>
+            {lead.listing_id ? (
+              <Link href={`/admin/listings/${lead.listing_id}`}>
+                {lead.property_address ?? "Open related listing"}
+              </Link>
+            ) : (
+              <p>{lead.property_address ?? "Not provided"}</p>
+            )}
           </div>
           <div className="detail-row">
             <span>Source</span>
             <p>{lead.source}</p>
+          </div>
+          <div className="detail-row">
+            <span>Submitted from</span>
+            <p>{lead.page_url ?? "Not captured"}</p>
+          </div>
+          <div className="detail-row">
+            <span>Referrer</span>
+            <p>{lead.referrer ?? "Direct or unavailable"}</p>
+          </div>
+          <div className="detail-row">
+            <span>Campaign</span>
+            <p>
+              {[
+                lead.utm_source,
+                lead.utm_medium,
+                lead.utm_campaign,
+                lead.utm_term,
+                lead.utm_content,
+              ]
+                .filter(Boolean)
+                .join(" · ") || "No campaign parameters"}
+            </p>
+          </div>
+          <div className="detail-row">
+            <span>Consent version</span>
+            <p>{lead.consent_version}</p>
           </div>
           <div className="detail-row">
             <span>Message</span>
