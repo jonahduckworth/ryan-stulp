@@ -1,5 +1,21 @@
+import type { AreaKey } from "@/lib/listing-options";
+
 export type ListingStatus = "draft" | "active" | "pending" | "sold" | "archived";
 export type ListingType = "residential" | "commercial" | "rural";
+
+export type ListingPropertyDetails = {
+  parking: string | null;
+  lotSize: string | null;
+  annualPropertyTax: number | null;
+  monthlyCondoFee: number | null;
+  transactionType: "sale" | "lease" | "sale-or-lease" | null;
+  zoning: string | null;
+  commercialUse: string | null;
+  acreage: number | null;
+  waterSource: string | null;
+  wastewaterSystem: string | null;
+  outbuildings: string | null;
+};
 
 export type Listing = {
   id: string;
@@ -15,6 +31,7 @@ export type Listing = {
   listing_type: ListingType;
   property_type: string;
   neighbourhood: string | null;
+  area_key: AreaKey | null;
   mls_number: string | null;
   bedrooms: number | null;
   bathrooms: number | null;
@@ -22,6 +39,7 @@ export type Listing = {
   year_built: number | null;
   description: string;
   features: string[];
+  property_details: ListingPropertyDetails;
   cover_image_url: string | null;
   cta_label: string | null;
   cta_destination: string | null;

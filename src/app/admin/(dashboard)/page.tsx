@@ -4,6 +4,42 @@ import { formatDate } from "@/lib/utils";
 
 export default async function AdminDashboardPage() {
   const stats = await getDashboardStats();
+  const attentionItems = [
+    stats.newLeads
+      ? {
+          label: `${stats.newLeads} new lead${stats.newLeads === 1 ? "" : "s"} to review`,
+          detail: "Open each inquiry, make contact, and update its status.",
+          href: "/admin/leads?status=new",
+        }
+      : null,
+    stats.listingStatuses.draft
+      ? {
+          label: `${stats.listingStatuses.draft} draft listing${stats.listingStatuses.draft === 1 ? "" : "s"}`,
+          detail: "Finish the details and photos, preview, then publish when ready.",
+          href: "/admin/listings?status=draft",
+        }
+      : null,
+    !process.env.RESEND_API_KEY || !process.env.LEAD_EMAIL_FROM
+      ? {
+          label: "Lead email notifications need setup",
+          detail: "The dashboard still captures leads, but email alerts are not ready.",
+          href: "/admin/settings",
+        }
+      : null,
+    !process.env.TURNSTILE_SECRET_KEY ||
+    !process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+      ? {
+          label: "Spam protection needs setup",
+          detail: "Add the production Turnstile keys before launch.",
+          href: "/admin/settings",
+        }
+      : null,
+  ].filter(Boolean) as Array<{
+    label: string;
+    detail: string;
+    href: string;
+  }>;
+
   return (
     <div className="admin-page">
       <header className="admin-header">
@@ -32,6 +68,32 @@ export default async function AdminDashboardPage() {
           <span>Total leads</span>
           <strong>{stats.totalLeads}</strong>
         </article>
+      </section>
+      <section className="admin-panel">
+        <header className="admin-panel-header">
+          <div>
+            <h2>Needs attention</h2>
+            <p>The shortest useful list of what to handle next.</p>
+          </div>
+        </header>
+        {attentionItems.length ? (
+          <div className="attention-list">
+            {attentionItems.map((item) => (
+              <Link className="attention-item" href={item.href} key={item.label}>
+                <span>
+                  <strong>{item.label}</strong>
+                  <small>{item.detail}</small>
+                </span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="admin-empty">
+            <h3>Everything is caught up</h3>
+            <p>No new leads, draft listings, or connection issues need action.</p>
+          </div>
+        )}
       </section>
       <section className="admin-panel">
         <header className="admin-panel-header">

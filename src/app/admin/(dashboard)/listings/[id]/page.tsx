@@ -14,10 +14,17 @@ export const metadata: Metadata = { title: "Edit listing" };
 
 export default async function EditListingPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{
+    created?: string;
+    saved?: string;
+    duplicated?: string;
+  }>;
 }) {
   const { id } = await params;
+  const query = await searchParams;
   const [listing, media] = await Promise.all([
     getAdminListing(id),
     getAdminListingMedia(id),
@@ -42,10 +49,29 @@ export default async function EditListingPage({
           <DuplicateListingForm id={listing.id} title={listing.title} />
         </div>
       </header>
+      {query.created === "1" ? (
+        <div className="admin-success" role="status">
+          <strong>Draft created.</strong>
+          <p>
+            Add and order the property photos below, choose the featured image,
+            preview the page, then publish when everything is ready.
+          </p>
+        </div>
+      ) : query.duplicated === "1" ? (
+        <div className="admin-success" role="status">
+          <strong>Draft duplicated.</strong>
+          <p>Review every field and photo before publishing the copy.</p>
+        </div>
+      ) : query.saved === "1" ? (
+        <div className="admin-success" role="status">
+          Listing changes saved.
+        </div>
+      ) : null}
       <ListingForm listing={listing} />
       <ListingMediaManager
         listingId={listing.id}
         address={listing.address}
+        listingStatus={listing.status}
         initialMedia={media}
       />
       <section className="danger-zone">

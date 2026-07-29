@@ -17,7 +17,19 @@ function ErrorText({
   field: string;
 }) {
   const message = state.errors?.[field]?.[0];
-  return message ? <span className="field-error">{message}</span> : null;
+  return message ? (
+    <span className="field-error" id={`${field}-error`}>
+      {message}
+    </span>
+  ) : null;
+}
+
+function errorProps(state: AdminFormState, field: string) {
+  const hasError = Boolean(state.errors?.[field]?.[0]);
+  return {
+    "aria-invalid": hasError || undefined,
+    "aria-describedby": hasError ? `${field}-error` : undefined,
+  };
 }
 
 export function SiteSettingsForm({
@@ -44,6 +56,7 @@ export function SiteSettingsForm({
             type="email"
             defaultValue={identity.email}
             required
+            {...errorProps(state, "publicEmail")}
           />
           <ErrorText state={state} field="publicEmail" />
         </div>
@@ -55,6 +68,7 @@ export function SiteSettingsForm({
             type="email"
             defaultValue={notificationEmail}
             required
+            {...errorProps(state, "notificationEmail")}
           />
           <ErrorText state={state} field="notificationEmail" />
         </div>
@@ -65,6 +79,7 @@ export function SiteSettingsForm({
             name="phoneDisplay"
             defaultValue={identity.phoneDisplay}
             required
+            {...errorProps(state, "phoneDisplay")}
           />
           <ErrorText state={state} field="phoneDisplay" />
         </div>
@@ -75,6 +90,7 @@ export function SiteSettingsForm({
             name="facebookUrl"
             type="url"
             defaultValue={identity.facebook}
+            {...errorProps(state, "facebookUrl")}
           />
           <ErrorText state={state} field="facebookUrl" />
         </div>
@@ -86,6 +102,7 @@ export function SiteSettingsForm({
             type="url"
             defaultValue={identity.bookingUrl ?? ""}
             placeholder="https://calendly.com/…"
+            {...errorProps(state, "bookingUrl")}
           />
           <ErrorText state={state} field="bookingUrl" />
         </div>
@@ -150,7 +167,11 @@ export function SiteSettingsForm({
           />
         </div>
       </section>
-      <p className="form-status field-full" data-status={state.status}>
+      <p
+        className="form-status field-full"
+        data-status={state.status}
+        aria-live="polite"
+      >
         {state.message}
       </p>
       <div className="admin-actions">

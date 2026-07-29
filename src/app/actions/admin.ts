@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { verifyAdmin } from "@/lib/auth";
+import { isPublicListingStatus } from "@/lib/listing-options";
 import { listingStoragePaths } from "@/lib/listing-storage";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
@@ -41,6 +42,7 @@ export async function saveListing(
     listingType: formData.get("listingType"),
     propertyType: formData.get("propertyType"),
     neighbourhood: formData.get("neighbourhood"),
+    areaKey: formData.get("areaKey"),
     mlsNumber: formData.get("mlsNumber"),
     bedrooms: nullableNumber(formData.get("bedrooms")),
     bathrooms: nullableNumber(formData.get("bathrooms")),
@@ -48,7 +50,20 @@ export async function saveListing(
     yearBuilt: nullableNumber(formData.get("yearBuilt")),
     description: formData.get("description"),
     features: formData.get("features"),
-    coverImageUrl: formData.get("coverImageUrl"),
+    propertyDetails: {
+      parking: formData.get("parking"),
+      lotSize: formData.get("lotSize"),
+      annualPropertyTax: nullableNumber(formData.get("annualPropertyTax")),
+      monthlyCondoFee: nullableNumber(formData.get("monthlyCondoFee")),
+      transactionType: formData.get("transactionType") ?? "",
+      zoning: formData.get("zoning"),
+      commercialUse: formData.get("commercialUse"),
+      acreage: nullableNumber(formData.get("acreage")),
+      waterSource: formData.get("waterSource"),
+      wastewaterSystem: formData.get("wastewaterSystem"),
+      outbuildings: formData.get("outbuildings"),
+    },
+    coverImageUrl: formData.get("coverImageUrl") ?? "",
     ctaLabel: formData.get("ctaLabel"),
     ctaDestination: formData.get("ctaDestination"),
     featured: formData.get("featured") === "on",
@@ -80,14 +95,27 @@ export async function saveListing(
       },
     };
   }
-  const shouldPublish = ["active", "pending", "sold"].includes(listing.status);
+  const shouldPublish = isPublicListingStatus(listing.status);
   const { data: existing } = listing.id
     ? await supabase
         .from("listings")
-        .select("published_at")
+        .select("published_at, cover_image_url")
         .eq("id", listing.id)
         .maybeSingle()
     : { data: null };
+  const coverImageUrl = listing.id
+    ? existing?.cover_image_url ?? null
+    : listing.coverImageUrl;
+  if (shouldPublish && !coverImageUrl) {
+    return {
+      status: "error",
+      message:
+        "Add at least one gallery photo and choose a featured image before publishing.",
+      errors: {
+        status: ["This listing needs a featured image before it can be public."],
+      },
+    };
+  }
   const payload = {
     title: listing.title,
     slug: listing.slug,
@@ -101,6 +129,7 @@ export async function saveListing(
     listing_type: listing.listingType,
     property_type: listing.propertyType,
     neighbourhood: listing.neighbourhood,
+    area_key: listing.areaKey,
     mls_number: listing.mlsNumber,
     bedrooms: listing.bedrooms,
     bathrooms: listing.bathrooms,
@@ -108,7 +137,8 @@ export async function saveListing(
     year_built: listing.yearBuilt,
     description: listing.description,
     features: listing.features,
-    cover_image_url: listing.coverImageUrl,
+    property_details: listing.propertyDetails,
+    cover_image_url: coverImageUrl,
     cta_label: listing.ctaLabel,
     cta_destination: listing.ctaDestination,
     featured: listing.featured,
@@ -147,7 +177,7 @@ export async function saveListing(
     };
   }
 
-  if (listing.coverImageUrl) {
+  if (!listing.id && listing.coverImageUrl) {
     const storagePath = decodeURIComponent(
       listing.coverImageUrl.slice(storagePrefix.length),
     );
@@ -173,7 +203,9 @@ export async function saveListing(
   revalidatePath("/listings/[slug]", "page");
   revalidatePath("/sitemap.xml");
   revalidatePath("/");
-  redirect(`/admin/listings/${result.data.id}?saved=1`);
+  redirect(
+    `/admin/listings/${result.data.id}?${listing.id ? "saved=1" : "created=1"}`,
+  );
 }
 
 export async function duplicateListing(formData: FormData) {

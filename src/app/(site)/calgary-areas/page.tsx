@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 
 const AREA_GROUPS = [
   {
+    key: "inner-city",
     name: "Inner city",
     number: "01",
     summary:
@@ -23,6 +24,7 @@ const AREA_GROUPS = [
       "Compare lot context, renovation history, parking, future development, transit, and the premium attached to location.",
   },
   {
+    key: "northwest",
     name: "Northwest Calgary",
     number: "02",
     summary:
@@ -31,6 +33,7 @@ const AREA_GROUPS = [
       "Compare commute patterns, schools and amenities, topography, housing age, and how far northwest you want the search to extend.",
   },
   {
+    key: "northeast",
     name: "Northeast Calgary",
     number: "03",
     summary:
@@ -39,6 +42,7 @@ const AREA_GROUPS = [
       "Compare flight paths where relevant, transit and road access, property age, redevelopment, and the specific block—not only the community name.",
   },
   {
+    key: "southwest",
     name: "Southwest Calgary",
     number: "04",
     summary:
@@ -47,6 +51,7 @@ const AREA_GROUPS = [
       "Compare road and transit access, slope and drainage, renovation or redevelopment context, school priorities, and commute trade-offs.",
   },
   {
+    key: "southeast",
     name: "Southeast Calgary",
     number: "05",
     summary:
@@ -55,6 +60,7 @@ const AREA_GROUPS = [
       "Compare flood information where applicable, community fees, development timelines, transportation, property age, and future construction.",
   },
   {
+    key: "surrounding-area",
     name: "Rural and surrounding area",
     number: "06",
     summary:
@@ -115,7 +121,11 @@ export default function CalgaryAreasPage() {
       <section className="section surface">
         <div className="container area-guide-grid">
           {AREA_GROUPS.map((area) => (
-            <article className="area-guide-card" key={area.name}>
+            <article
+              className="area-guide-card"
+              id={area.key}
+              key={area.name}
+            >
               <span>{area.number}</span>
               <h2>{area.name}</h2>
               <p>{area.summary}</p>

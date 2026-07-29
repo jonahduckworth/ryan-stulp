@@ -5,7 +5,12 @@ import {
   ListingGallery,
   type GalleryImage,
 } from "@/components/listing-gallery";
-import type { Listing, ListingMedia } from "@/lib/types";
+import { AREA_LABELS } from "@/lib/listing-options";
+import type {
+  Listing,
+  ListingMedia,
+  ListingPropertyDetails,
+} from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
 export function ListingDetailView({
@@ -17,6 +22,13 @@ export function ListingDetailView({
   media: ListingMedia[];
   preview?: boolean;
 }) {
+  const details =
+    listing.property_details ?? ({} as Partial<ListingPropertyDetails>);
+  const transactionLabels = {
+    sale: "For sale",
+    lease: "For lease",
+    "sale-or-lease": "For sale or lease",
+  } as const;
   const facts = [
     listing.bedrooms !== null ? ["Bedrooms", listing.bedrooms] : null,
     listing.bathrooms !== null ? ["Bathrooms", listing.bathrooms] : null,
@@ -27,6 +39,29 @@ export function ListingDetailView({
     listing.neighbourhood ? ["Neighbourhood", listing.neighbourhood] : null,
     listing.mls_number ? ["MLS", listing.mls_number] : null,
     ["Property type", listing.property_type],
+    details.parking ? ["Parking", details.parking] : null,
+    details.lotSize ? ["Lot size", details.lotSize] : null,
+    details.annualPropertyTax !== null &&
+    details.annualPropertyTax !== undefined
+      ? ["Property tax", `${formatCurrency(details.annualPropertyTax)} / year`]
+      : null,
+    details.monthlyCondoFee !== null &&
+    details.monthlyCondoFee !== undefined
+      ? ["Condo fee", `${formatCurrency(details.monthlyCondoFee)} / month`]
+      : null,
+    details.transactionType
+      ? ["Availability", transactionLabels[details.transactionType]]
+      : null,
+    details.zoning ? ["Zoning / land use", details.zoning] : null,
+    details.commercialUse ? ["Use", details.commercialUse] : null,
+    details.acreage !== null && details.acreage !== undefined
+      ? ["Land", `${details.acreage.toLocaleString("en-CA")} acres`]
+      : null,
+    details.waterSource ? ["Water", details.waterSource] : null,
+    details.wastewaterSystem
+      ? ["Wastewater", details.wastewaterSystem]
+      : null,
+    details.outbuildings ? ["Outbuildings", details.outbuildings] : null,
   ].filter(Boolean) as [string, string | number][];
   const gallery: GalleryImage[] = media.length
     ? media.map((image) => ({
@@ -84,6 +119,15 @@ export function ListingDetailView({
                 <strong>{value}</strong>
               </div>
             ))}
+            {listing.area_key ? (
+              <Link
+                className="contact-card listing-area-guide"
+                href={`/calgary-areas#${listing.area_key}`}
+              >
+                <span>Area guide</span>
+                <strong>{AREA_LABELS[listing.area_key]} →</strong>
+              </Link>
+            ) : null}
           </div>
           <div className="prose">
             <h2>About this property</h2>

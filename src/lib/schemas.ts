@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AREA_KEYS } from "@/lib/listing-options";
 
 const optionalTextMax = (max: number) =>
   z
@@ -103,6 +104,10 @@ export const listingSchema = z.object({
   listingType: z.enum(["residential", "commercial", "rural"]),
   propertyType: z.string().trim().min(2).max(80),
   neighbourhood: optionalTextMax(100),
+  areaKey: z
+    .enum(AREA_KEYS)
+    .or(z.literal(""))
+    .transform((value) => value || null),
   mlsNumber: optionalTextMax(60),
   bedrooms: z.coerce.number().int().nonnegative().nullable(),
   bathrooms: z.coerce.number().nonnegative().nullable(),
@@ -123,6 +128,22 @@ export const listingSchema = z.object({
         .map((item) => item.trim())
         .filter(Boolean),
     ),
+  propertyDetails: z.object({
+    parking: optionalTextMax(100),
+    lotSize: optionalTextMax(100),
+    annualPropertyTax: z.coerce.number().int().nonnegative().nullable(),
+    monthlyCondoFee: z.coerce.number().int().nonnegative().nullable(),
+    transactionType: z
+      .enum(["sale", "lease", "sale-or-lease"])
+      .or(z.literal(""))
+      .transform((value) => value || null),
+    zoning: optionalTextMax(100),
+    commercialUse: optionalTextMax(160),
+    acreage: z.coerce.number().nonnegative().nullable(),
+    waterSource: optionalTextMax(120),
+    wastewaterSystem: optionalTextMax(120),
+    outbuildings: optionalTextMax(160),
+  }),
   coverImageUrl: z.url("Use a valid image URL.").or(z.literal("")).transform((value) => value || null),
   ctaLabel: optionalTextMax(80),
   ctaDestination: optionalUrlOrPath,

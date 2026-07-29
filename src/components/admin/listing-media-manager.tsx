@@ -2,7 +2,8 @@
 
 import { createBrowserClient } from "@supabase/ssr";
 import { useState } from "react";
-import type { ListingMedia } from "@/lib/types";
+import { isPublicListingStatus } from "@/lib/listing-options";
+import type { ListingMedia, ListingStatus } from "@/lib/types";
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -14,10 +15,12 @@ function getSupabase() {
 export function ListingMediaManager({
   listingId,
   address,
+  listingStatus,
   initialMedia,
 }: {
   listingId: string;
   address: string;
+  listingStatus: ListingStatus;
   initialMedia: ListingMedia[];
 }) {
   const [media, setMedia] = useState(initialMedia);
@@ -185,24 +188,35 @@ export function ListingMediaManager({
   }
 
   async function remove(item: ListingMedia) {
+    const remaining = media.filter((entry) => entry.id !== item.id);
+    if (
+      item.is_featured &&
+      remaining.length === 0 &&
+      isPublicListingStatus(listingStatus)
+    ) {
+      setStatus(
+        "A public listing must keep a featured image. Add a replacement or change the listing to Draft before deleting this photo.",
+      );
+      return;
+    }
     if (!window.confirm(`Permanently delete this image from ${address}?`)) return;
     const supabase = getSupabase();
     if (!supabase) return;
     setBusy(true);
-    const { error: storageError } = await supabase.storage
-      .from("listing-media")
-      .remove([item.storage_path]);
     const { error: rowError } = await supabase
       .from("listing_media")
       .delete()
       .eq("id", item.id);
-    if (storageError || rowError) {
+    if (rowError) {
       setBusy(false);
       setStatus("The image could not be deleted.");
       return;
     }
+    const { error: storageError } = await supabase.storage
+      .from("listing-media")
+      .remove([item.storage_path]);
 
-    const remaining = media.filter((entry) => entry.id !== item.id);
+    let nextMedia = remaining;
     if (item.is_featured) {
       const replacement = remaining[0] ?? null;
       if (replacement) {
@@ -215,11 +229,18 @@ export function ListingMediaManager({
         .from("listings")
         .update({ cover_image_url: replacement?.public_url ?? null })
         .eq("id", listingId);
-      if (replacement) replacement.is_featured = true;
+      nextMedia = remaining.map((entry) => ({
+        ...entry,
+        is_featured: entry.id === replacement?.id,
+      }));
     }
-    setMedia(remaining);
+    setMedia(nextMedia);
     setBusy(false);
-    setStatus("Image deleted.");
+    setStatus(
+      storageError
+        ? "Image removed from the gallery. The unused storage file could not be cleaned up."
+        : "Image deleted.",
+    );
   }
 
   return (

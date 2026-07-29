@@ -41,7 +41,11 @@ export function AdminLeadForm({ lead }: { lead: Lead }) {
           placeholder="Add follow-up notes, timing, and next steps."
         />
       </div>
-      <p className="form-status field-full" data-status={state.status}>
+      <p
+        className="form-status field-full"
+        data-status={state.status}
+        aria-live="polite"
+      >
         {state.message}
       </p>
       <div className="admin-actions">

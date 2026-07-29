@@ -53,6 +53,7 @@ describe("listingSchema", () => {
       listingType: "residential",
       propertyType: "Residential",
       neighbourhood: "",
+      areaKey: "southwest",
       mlsNumber: "",
       bedrooms: null,
       bathrooms: null,
@@ -60,6 +61,19 @@ describe("listingSchema", () => {
       yearBuilt: null,
       description: "A complete property description with enough detail.",
       features: "South-facing yard\nDouble garage",
+      propertyDetails: {
+        parking: "Double garage",
+        lotSize: "50 x 120 ft.",
+        annualPropertyTax: null,
+        monthlyCondoFee: null,
+        transactionType: "",
+        zoning: "",
+        commercialUse: "",
+        acreage: null,
+        waterSource: "",
+        wastewaterSystem: "",
+        outbuildings: "",
+      },
       coverImageUrl: "",
       ctaLabel: "",
       ctaDestination: "",
@@ -70,6 +84,56 @@ describe("listingSchema", () => {
     });
     expect(result.price).toBeNull();
     expect(result.features).toEqual(["South-facing yard", "Double garage"]);
+    expect(result.areaKey).toBe("southwest");
+    expect(result.propertyDetails.parking).toBe("Double garage");
+  });
+
+  it("normalizes category-specific details", () => {
+    const result = listingSchema.parse({
+      title: "Foothills acreage",
+      slug: "foothills-acreage",
+      address: "100 Range Road",
+      addressLine2: "",
+      city: "Foothills County",
+      province: "AB",
+      postalCode: "",
+      price: "1250000",
+      status: "draft",
+      listingType: "rural",
+      propertyType: "Acreage",
+      neighbourhood: "Foothills County",
+      areaKey: "surrounding-area",
+      mlsNumber: "",
+      bedrooms: "4",
+      bathrooms: "3",
+      squareFeet: "2400",
+      yearBuilt: "2010",
+      description: "A complete rural property description with enough detail.",
+      features: "",
+      propertyDetails: {
+        parking: null,
+        lotSize: null,
+        annualPropertyTax: null,
+        monthlyCondoFee: null,
+        transactionType: "",
+        zoning: "Country residential",
+        commercialUse: null,
+        acreage: "8.25",
+        waterSource: "Drilled well",
+        wastewaterSystem: "Septic field",
+        outbuildings: "Heated shop",
+      },
+      coverImageUrl: "",
+      ctaLabel: "",
+      ctaDestination: "",
+      featured: false,
+      seoTitle: "",
+      seoDescription: "",
+      socialImageUrl: "",
+    });
+
+    expect(result.propertyDetails.acreage).toBe(8.25);
+    expect(result.propertyDetails.waterSource).toBe("Drilled well");
   });
 });
 
