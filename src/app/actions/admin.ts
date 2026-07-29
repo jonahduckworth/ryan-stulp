@@ -11,6 +11,7 @@ import {
   listingSchema,
   siteSettingsSchema,
 } from "@/lib/schemas";
+import type { ListingMedia } from "@/lib/types";
 
 export type AdminFormState = {
   status: "idle" | "error";
@@ -18,9 +19,164 @@ export type AdminFormState = {
   errors?: Record<string, string[]>;
 };
 
+export type AdminMediaActionResult =
+  | {
+      status: "success";
+      message: string;
+      media?: ListingMedia;
+      replacementMediaId?: string | null;
+    }
+  | {
+      status: "error";
+      message: string;
+    };
+
 function nullableNumber(value: FormDataEntryValue | null) {
   if (value === null || String(value).trim() === "") return null;
   return String(value);
+}
+
+function revalidateListingMediaPaths() {
+  revalidatePath("/admin/listings");
+  revalidatePath("/admin/listings/[id]", "page");
+  revalidatePath("/listings");
+  revalidatePath("/listings/[slug]", "page");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/");
+}
+
+export async function registerListingMedia({
+  listingId,
+  storagePath,
+  address,
+}: {
+  listingId: string;
+  storagePath: string;
+  address: string;
+}): Promise<AdminMediaActionResult> {
+  await verifyAdmin();
+  if (
+    !listingId ||
+    !storagePath.startsWith(`${listingId}/`) ||
+    storagePath.includes("..")
+  ) {
+    return { status: "error", message: "The uploaded image path is invalid." };
+  }
+
+  const normalizedAddress = address.trim();
+  if (!normalizedAddress) {
+    return { status: "error", message: "The listing address is required." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { data: publicFile } = supabase.storage
+    .from("listing-media")
+    .getPublicUrl(storagePath);
+  const { data, error } = await supabase
+    .rpc("register_listing_media", {
+      target_listing_id: listingId,
+      target_storage_path: storagePath,
+      target_public_url: publicFile.publicUrl,
+      target_alt_text: `${normalizedAddress} property photo`,
+    })
+    .single();
+
+  if (error || !data) {
+    await supabase.storage.from("listing-media").remove([storagePath]);
+    return {
+      status: "error",
+      message: "The uploaded image could not be added to the gallery.",
+    };
+  }
+
+  revalidateListingMediaPaths();
+  return {
+    status: "success",
+    message: "Image uploaded.",
+    media: data as ListingMedia,
+  };
+}
+
+export async function setFeaturedListingMedia({
+  listingId,
+  mediaId,
+}: {
+  listingId: string;
+  mediaId: string;
+}): Promise<AdminMediaActionResult> {
+  await verifyAdmin();
+  if (!listingId || !mediaId) {
+    return { status: "error", message: "The featured image is invalid." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .rpc("set_listing_featured_media", {
+      target_listing_id: listingId,
+      target_media_id: mediaId,
+    })
+    .single();
+
+  if (error || !data) {
+    return {
+      status: "error",
+      message: "The featured image could not be changed.",
+    };
+  }
+
+  revalidateListingMediaPaths();
+  return {
+    status: "success",
+    message: "Featured image updated.",
+    media: data as ListingMedia,
+  };
+}
+
+export async function removeListingMedia({
+  listingId,
+  mediaId,
+}: {
+  listingId: string;
+  mediaId: string;
+}): Promise<AdminMediaActionResult> {
+  await verifyAdmin();
+  if (!listingId || !mediaId) {
+    return { status: "error", message: "The image could not be identified." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .rpc("delete_listing_media", {
+      target_listing_id: listingId,
+      target_media_id: mediaId,
+    })
+    .single();
+
+  if (error || !data) {
+    return {
+      status: "error",
+      message: error?.message.includes("public_listing_requires_featured_media")
+        ? "A public listing must keep a featured image. Add a replacement or change the listing to Draft before deleting this photo."
+        : "The image could not be deleted.",
+    };
+  }
+
+  const deleted = data as {
+    deleted_storage_path: string;
+    replacement_media_id: string | null;
+  };
+  const { error: storageError } = await supabase.storage
+    .from("listing-media")
+    .remove([deleted.deleted_storage_path]);
+
+  revalidateListingMediaPaths();
+  return {
+    status: "success",
+    message: storageError
+      ? "Image removed from the gallery. The unused storage file could not be cleaned up."
+      : "Image deleted.",
+    replacementMediaId: deleted.replacement_media_id,
+  };
 }
 
 export async function saveListing(
@@ -198,11 +354,7 @@ export async function saveListing(
     );
   }
 
-  revalidatePath("/admin/listings");
-  revalidatePath("/listings");
-  revalidatePath("/listings/[slug]", "page");
-  revalidatePath("/sitemap.xml");
-  revalidatePath("/");
+  revalidateListingMediaPaths();
   redirect(
     `/admin/listings/${result.data.id}?${listing.id ? "saved=1" : "created=1"}`,
   );
@@ -326,11 +478,7 @@ export async function deleteListing(formData: FormData) {
     .select("id")
     .maybeSingle();
   if (error || !data) throw new Error("The listing could not be deleted.");
-  revalidatePath("/admin/listings");
-  revalidatePath("/listings");
-  revalidatePath("/listings/[slug]", "page");
-  revalidatePath("/sitemap.xml");
-  revalidatePath("/");
+  revalidateListingMediaPaths();
   redirect("/admin/listings");
 }
 

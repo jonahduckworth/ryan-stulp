@@ -2,6 +2,11 @@
 
 import { createBrowserClient } from "@supabase/ssr";
 import { useState } from "react";
+import {
+  registerListingMedia,
+  removeListingMedia,
+  setFeaturedListingMedia,
+} from "@/app/actions/admin";
 import { isPublicListingStatus } from "@/lib/listing-options";
 import type { ListingMedia, ListingStatus } from "@/lib/types";
 
@@ -48,8 +53,6 @@ export function ListingMediaManager({
     setBusy(true);
     setStatus(`Uploading ${accepted.length} image${accepted.length === 1 ? "" : "s"}…`);
     const additions: ListingMedia[] = [];
-    let nextOrder =
-      media.reduce((highest, item) => Math.max(highest, item.sort_order), -1) + 1;
 
     for (const file of accepted) {
       const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
@@ -62,35 +65,21 @@ export function ListingMediaManager({
         });
       if (uploadError) continue;
 
-      const { data: publicFile } = supabase.storage
-        .from("listing-media")
-        .getPublicUrl(storagePath);
-      const isFeatured = media.length === 0 && additions.length === 0;
-      const { data: row, error: rowError } = await supabase
-        .from("listing_media")
-        .insert({
-          listing_id: listingId,
-          storage_path: storagePath,
-          public_url: publicFile.publicUrl,
-          alt_text: `${address} property photo`,
-          sort_order: nextOrder,
-          is_featured: isFeatured,
-        })
-        .select("*")
-        .single();
-
-      if (rowError || !row) {
+      let registration;
+      try {
+        registration = await registerListingMedia({
+          listingId,
+          storagePath,
+          address,
+        });
+      } catch {
         await supabase.storage.from("listing-media").remove([storagePath]);
         continue;
       }
-      additions.push(row as ListingMedia);
-      nextOrder += 1;
-      if (isFeatured) {
-        await supabase
-          .from("listings")
-          .update({ cover_image_url: publicFile.publicUrl })
-          .eq("id", listingId);
+      if (registration.status === "error" || !registration.media) {
+        continue;
       }
+      additions.push(registration.media);
     }
 
     setMedia((current) => [...current, ...additions]);
@@ -156,26 +145,22 @@ export function ListingMediaManager({
   }
 
   async function makeFeatured(item: ListingMedia) {
-    const supabase = getSupabase();
-    if (!supabase || item.is_featured) return;
+    if (item.is_featured) return;
     setBusy(true);
-    await supabase
-      .from("listing_media")
-      .update({ is_featured: false })
-      .eq("listing_id", listingId);
-    const [{ error: mediaError }, { error: listingError }] = await Promise.all([
-      supabase
-        .from("listing_media")
-        .update({ is_featured: true })
-        .eq("id", item.id),
-      supabase
-        .from("listings")
-        .update({ cover_image_url: item.public_url })
-        .eq("id", listingId),
-    ]);
-    setBusy(false);
-    if (mediaError || listingError) {
+    let result;
+    try {
+      result = await setFeaturedListingMedia({
+        listingId,
+        mediaId: item.id,
+      });
+    } catch {
+      setBusy(false);
       setStatus("The featured image could not be changed.");
+      return;
+    }
+    setBusy(false);
+    if (result.status === "error") {
+      setStatus(result.message);
       return;
     }
     setMedia((current) =>
@@ -184,7 +169,7 @@ export function ListingMediaManager({
         is_featured: entry.id === item.id,
       })),
     );
-    setStatus("Featured image updated.");
+    setStatus(result.message);
   }
 
   async function remove(item: ListingMedia) {
@@ -200,47 +185,33 @@ export function ListingMediaManager({
       return;
     }
     if (!window.confirm(`Permanently delete this image from ${address}?`)) return;
-    const supabase = getSupabase();
-    if (!supabase) return;
     setBusy(true);
-    const { error: rowError } = await supabase
-      .from("listing_media")
-      .delete()
-      .eq("id", item.id);
-    if (rowError) {
+    let result;
+    try {
+      result = await removeListingMedia({
+        listingId,
+        mediaId: item.id,
+      });
+    } catch {
       setBusy(false);
       setStatus("The image could not be deleted.");
       return;
     }
-    const { error: storageError } = await supabase.storage
-      .from("listing-media")
-      .remove([item.storage_path]);
-
-    let nextMedia = remaining;
-    if (item.is_featured) {
-      const replacement = remaining[0] ?? null;
-      if (replacement) {
-        await supabase
-          .from("listing_media")
-          .update({ is_featured: true })
-          .eq("id", replacement.id);
-      }
-      await supabase
-        .from("listings")
-        .update({ cover_image_url: replacement?.public_url ?? null })
-        .eq("id", listingId);
-      nextMedia = remaining.map((entry) => ({
-        ...entry,
-        is_featured: entry.id === replacement?.id,
-      }));
+    if (result.status === "error") {
+      setBusy(false);
+      setStatus(result.message);
+      return;
     }
-    setMedia(nextMedia);
-    setBusy(false);
-    setStatus(
-      storageError
-        ? "Image removed from the gallery. The unused storage file could not be cleaned up."
-        : "Image deleted.",
+    setMedia(
+      remaining.map((entry) => ({
+        ...entry,
+        is_featured: item.is_featured
+          ? entry.id === result.replacementMediaId
+          : entry.is_featured,
+      })),
     );
+    setBusy(false);
+    setStatus(result.message);
   }
 
   return (
