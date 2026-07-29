@@ -33,9 +33,13 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
 - [x] Anonymous `/admin` access redirects to login.
 - [ ] A non-admin authenticated user cannot read or mutate admin data.
 - [ ] Ryan can sign in and sign out.
-- [x] An administrator can create a draft listing with an uploaded cover image.
-- [x] Changing the listing to active publishes it immediately.
+- [ ] An administrator can create a draft, continue to the gallery, upload
+      multiple images, set the featured image, and order the photos.
+- [ ] A listing without a featured image cannot be published.
+- [ ] Publishing a ready listing requires confirmation and then makes it public.
 - [x] Editing a public listing updates public routes.
+- [ ] Residential, commercial, and rural detail fields render correctly.
+- [ ] Listing and lead search/status filters return the expected records.
 - [ ] Archiving removes it from public routes.
 - [ ] Permanent delete removes the listing record.
 - [x] Lead inbox shows source, intent, status, and received date.

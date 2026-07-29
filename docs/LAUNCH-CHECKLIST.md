@@ -10,6 +10,8 @@ Target: complete production v1 by July 31, 2026.
 - [ ] Ryan approves all final page copy, testimonials, and performance claims.
 - [x] Supabase project created and all migrations through
       `202607270003_secure_public_settings_grants.sql` applied.
+- [ ] Admin listing workflow migration
+      `202607290001_admin_listing_workflow.sql` applied.
 - [x] Initial administrator account created, promoted, and tested locally.
 - [ ] Resend sending domain verified and a real lead notification tested.
 - [ ] Turnstile production keys configured and a real form submission tested.

@@ -16,21 +16,12 @@ import {
   isPublicListingStatus,
 } from "@/lib/listing-options";
 import type { Listing, ListingType } from "@/lib/types";
+import { slugify } from "@/lib/utils";
 
 const initialAdminState: AdminFormState = {
   status: "idle",
   message: "",
 };
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 160);
-}
 
 function RequiredLabel({
   htmlFor,
@@ -115,10 +106,36 @@ export function ListingForm({ listing }: { listing?: Listing | null }) {
     function warnAboutUnsavedChanges(event: BeforeUnloadEvent) {
       if (!dirty || pending) return;
       event.preventDefault();
+      event.returnValue = "";
+    }
+    function confirmInternalNavigation(event: MouseEvent) {
+      if (!dirty || pending) return;
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest<HTMLAnchorElement>("a[href]");
+      if (
+        !link ||
+        link.target === "_blank" ||
+        link.href === window.location.href ||
+        link.getAttribute("href")?.startsWith("#")
+      ) {
+        return;
+      }
+      if (
+        !window.confirm(
+          "You have unsaved listing changes. Leave this page and discard them?",
+        )
+      ) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
     }
     window.addEventListener("beforeunload", warnAboutUnsavedChanges);
-    return () =>
+    document.addEventListener("click", confirmInternalNavigation, true);
+    return () => {
       window.removeEventListener("beforeunload", warnAboutUnsavedChanges);
+      document.removeEventListener("click", confirmInternalNavigation, true);
+    };
   }, [dirty, pending]);
 
   function updateGeneratedSlug(nextAddress: string, nextCity = city) {

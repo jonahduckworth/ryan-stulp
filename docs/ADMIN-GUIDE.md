@@ -14,13 +14,17 @@ Open **Listings** to create, edit, duplicate, preview, publish, archive, or
 permanently delete a property.
 
 1. Choose **Add listing**.
-2. Enter the public property details. The title, address, price, status, and
-   description are the core fields.
-3. Upload the property photos. Add useful alt text for accessibility, choose the
-   featured image, and drag or use the ordering controls to set gallery order.
-4. Save as **Draft** while the listing is being prepared.
-5. Use **Preview** to inspect a draft without making it public.
-6. Change the status to **Active** when it is ready for the website.
+2. Enter the property details. The page URL is generated from the address, but
+   it can be edited before the listing is published.
+3. Choose Residential, Commercial, or Rural to expose the details relevant to
+   that property type. Assign the matching website area when it is known.
+4. Choose **Create draft and add photos**. New listings always begin privately.
+5. Upload the approved property photos. Add useful alt text and captions,
+   choose the featured image, and use the ordering controls to set gallery
+   order.
+6. Use **Preview** to inspect the complete draft without making it public.
+7. Change the status to **Active** when it is ready for the website. Publishing
+   requires a featured image and displays a confirmation first.
 
 Use **Duplicate** when a new property has a similar structure. The copy remains
 a draft until it is reviewed and published. **Archive** removes a listing from
@@ -29,6 +33,9 @@ the public site without deleting its history.
 The **Featured** switch controls which active properties appear first on the
 home page. The SEO title, SEO description, and social image fields are optional;
 the site generates sensible defaults when they are blank.
+
+Use the Listings filters to search by title, address, community, or MLS number,
+or to narrow the table by publication status and property category.
 
 ## Leads
 
@@ -39,6 +46,9 @@ Every successful contact, home-evaluation, and listing inquiry appears under
 - see the inquiry source, related listing, and campaign attribution;
 - add private follow-up notes; and
 - move it through New, Contacted, Qualified, Won, Lost, or Archived.
+
+Use the Leads filters to search by contact or property and narrow the inbox by
+status or intent.
 
 The CSV export is intended for Ryan's private business records. Treat exports as
 confidential because they contain personal information.
