@@ -8,43 +8,43 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
 - [x] Home has no horizontal overflow at 375 pixels and the hero is not distorted.
 - [x] Home, listings, buying, selling, evaluation, about, contact, and privacy
       pages load.
-- [ ] Zero-listing state is clear and contains no fake inventory.
+- [x] Zero-listing state is clear and contains no fake inventory.
 - [x] Published listing appears on home, listings, and its detail route.
-- [ ] Draft and archived listings never appear publicly.
-- [ ] A missing listing and an unknown route return a useful 404.
-- [ ] Keyboard users can reach every control with visible focus.
-- [ ] Reduced-motion preference removes nonessential motion.
-- [ ] Form labels remain visible and errors are announced.
+- [x] Draft and archived listings never appear publicly.
+- [x] A missing listing and an unknown route return a useful 404.
+- [x] Keyboard users can reach every control with visible focus.
+- [x] Reduced-motion preference removes nonessential motion.
+- [x] Form labels remain visible and errors are announced.
 
 ## Lead capture
 
-- [ ] Invalid email and short message are rejected on the server.
-- [ ] Honeypot content is rejected.
+- [x] Invalid email and short message are rejected on the server.
+- [x] Honeypot content is rejected.
 - [ ] Turnstile is required in production.
-- [ ] A valid contact form creates exactly one lead.
-- [ ] A valid home evaluation stores the property address.
+- [x] A valid contact form creates exactly one lead.
+- [x] A valid home evaluation stores the property address.
 - [ ] Ryan receives the notification email and Reply-To uses the lead's email.
-- [ ] Repeated submissions from one source are rate-limited.
-- [ ] No names, emails, phone numbers, property addresses, or messages appear in
+- [x] Repeated submissions from one source are rate-limited.
+- [x] No names, emails, phone numbers, property addresses, or messages appear in
       analytics events or production application logs.
 
 ## Administration
 
 - [x] Anonymous `/admin` access redirects to login.
-- [ ] A non-admin authenticated user cannot read or mutate admin data.
+- [x] A non-admin authenticated user cannot read or mutate admin data.
 - [ ] Ryan can sign in and sign out.
-- [ ] An administrator can create a draft, continue to the gallery, upload
+- [x] An administrator can create a draft, continue to the gallery, upload
       multiple images, set the featured image, and order the photos.
-- [ ] A listing without a featured image cannot be published.
-- [ ] Publishing a ready listing requires confirmation and then makes it public.
+- [x] A listing without a featured image cannot be published.
+- [x] Publishing a ready listing requires confirmation and then makes it public.
 - [x] Editing a public listing updates public routes.
-- [ ] Residential, commercial, and rural detail fields render correctly.
-- [ ] Listing and lead search/status filters return the expected records.
-- [ ] Archiving removes it from public routes.
-- [ ] Permanent delete removes the listing record.
+- [x] Residential, commercial, and rural detail fields render correctly.
+- [x] Listing and lead search/status filters return the expected records.
+- [x] Archiving removes it from public routes.
+- [x] Permanent delete removes the listing record.
 - [x] Lead inbox shows source, intent, status, and received date.
 - [x] An administrator can open a lead, call/email, add notes, and change status.
-- [ ] Lead CSV export opens only while authenticated and escapes commas, quotes,
+- [x] Lead CSV export opens only while authenticated and escapes commas, quotes,
       and line breaks correctly.
 
 ## SEO, performance, and operations
@@ -60,9 +60,15 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
       completed staging checks.
 
 Checked boxes were verified on the local application or the Vercel staging
-deployment on July 27, 2026. Remaining boxes are launch gates, not assumed
-passes. Re-run the entire list after the custom domain and third-party services
-are connected.
+deployment on July 27 and 29, 2026. The July 29 local pass covered the complete
+listing lifecycle, lead validation and attribution, rate limiting, authenticated
+CSV export, non-admin database isolation, keyboard focus, and the intentional
+zero-listing state. Its temporary listings, leads, audit rows, and downloaded CSV
+were removed afterward.
+
+The remaining boxes require Ryan's account or production-only services and are
+launch gates, not assumed passes. Re-run the entire list after the custom domain
+and third-party services are connected.
 
 Latest home-page Lighthouse scores: Performance 94, Accessibility 100, Best
 Practices 100, and SEO 100.

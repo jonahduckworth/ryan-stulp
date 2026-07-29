@@ -4,6 +4,9 @@ Target: complete production v1 by July 31, 2026.
 
 ## Required before production
 
+Use `docs/RYAN-APPROVALS.md` for the exact confirmation Ryan can approve in one
+reply. Listings may be added by Ryan after launch and are not a launch gate.
+
 - [ ] Ryan's licensed name and brokerage display have been confirmed for RECA
       compliance.
 - [ ] Brokerage office address has been confirmed.

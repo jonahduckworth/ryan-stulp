@@ -11,7 +11,10 @@ export default function ErrorPage({
   unstable_retry: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    console.error("Application error", {
+      digest: error.digest ?? null,
+      name: error.name,
+    });
   }, [error]);
 
   return (
