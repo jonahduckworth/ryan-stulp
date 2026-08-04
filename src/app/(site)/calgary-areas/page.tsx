@@ -39,7 +39,7 @@ const AREA_GROUPS = [
     summary:
       "Diverse residential options, major transportation connections, employment access, and communities at many price points.",
     considerations:
-      "Compare flight paths where relevant, transit and road access, property age, redevelopment, and the specific block—not only the community name.",
+      "Compare flight paths where relevant, transit and road access, property age, redevelopment, and the specific block, not only the community name.",
   },
   {
     key: "southwest",

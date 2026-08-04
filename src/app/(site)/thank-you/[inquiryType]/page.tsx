@@ -79,7 +79,7 @@ export default async function ThankYouPage({
             <h2>What happens next</h2>
             <ol>
               <li>Ryan reviews the information you shared.</li>
-              <li>He contacts you directly—no call centre or bulk mailing list.</li>
+              <li>He contacts you directly, with no call centre or bulk mailing list.</li>
               <li>You decide together whether a call, meeting, or property visit is useful.</li>
             </ol>
           </div>

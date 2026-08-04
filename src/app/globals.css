@@ -139,8 +139,9 @@ p {
 }
 
 .eyebrow::before {
-  width: 1.5rem;
-  height: 2px;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
   content: "";
   background: currentColor;
 }
@@ -345,6 +346,51 @@ p {
   max-width: 56ch;
 }
 
+.hero-positioning {
+  max-width: 48ch;
+  padding-left: 1rem;
+  border-left: 3px solid var(--signal);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.hero-review {
+  display: inline-grid;
+  width: max-content;
+  max-width: 100%;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  background: rgb(255 255 255 / 0.72);
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.hero-review:hover {
+  border-color: var(--ink);
+  background: var(--white);
+}
+
+.hero-review strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.hero-review span {
+  color: var(--slate);
+  font-size: 0.86rem;
+}
+
+.hero-review .hero-review-link {
+  color: var(--signal-dark);
+  font-weight: 800;
+}
+
 .hero-portrait {
   position: relative;
   align-self: stretch;
@@ -407,6 +453,77 @@ p {
   grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
   align-items: start;
   gap: clamp(3rem, 9vw, 8rem);
+}
+
+.personal-intro {
+  background: var(--white);
+}
+
+.personal-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: clamp(3rem, 9vw, 8rem);
+}
+
+.personal-portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--soft);
+}
+
+.personal-portrait::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 5px;
+  height: 42%;
+  content: "";
+  background: var(--signal);
+}
+
+.personal-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 17%;
+}
+
+.personal-copy .button {
+  justify-self: start;
+}
+
+.difference-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(3rem, 7vw, 6rem);
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.difference-card {
+  display: grid;
+  gap: 0.85rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.difference-card > span {
+  color: var(--signal-dark);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.difference-card h3 {
+  font-size: clamp(1.55rem, 2.5vw, 2.15rem);
+}
+
+.difference-card p {
+  color: var(--slate);
 }
 
 .stack {
@@ -888,6 +1005,42 @@ p {
   text-align: right;
 }
 
+.inline-testimonial {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(2rem, 7vw, 6rem);
+  padding: clamp(2rem, 6vw, 4.5rem);
+  background:
+    linear-gradient(125deg, transparent 58%, rgb(201 24 54 / 0.22)),
+    var(--ink);
+  color: var(--white);
+}
+
+.inline-testimonial blockquote {
+  max-width: 31ch;
+  margin: 0;
+}
+
+.inline-testimonial blockquote p {
+  font-family: var(--font-display), Arial, sans-serif;
+  font-size: clamp(1.6rem, 3.3vw, 3rem);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.25;
+}
+
+.inline-testimonial > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.inline-testimonial a {
+  color: #ff9dad;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
 .cta-band {
   overflow: hidden;
   background: var(--signal);
@@ -1221,9 +1374,18 @@ p {
   }
 
   .intro-grid,
-  .split-grid {
+  .split-grid,
+  .personal-grid {
     grid-template-columns: 1fr;
     gap: 3rem;
+  }
+
+  .personal-portrait {
+    max-height: 680px;
+  }
+
+  .difference-grid {
+    grid-template-columns: 1fr;
   }
 
   .listing-grid {
@@ -1348,6 +1510,20 @@ p {
 
   .review-summary {
     text-align: left;
+  }
+
+  .hero-review {
+    width: 100%;
+    grid-template-columns: auto 1fr;
+  }
+
+  .hero-review-link {
+    grid-column: 1 / -1;
+  }
+
+  .inline-testimonial {
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 
   .field-full {

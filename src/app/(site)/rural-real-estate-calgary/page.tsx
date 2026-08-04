@@ -25,7 +25,7 @@ export default function RuralRealEstatePage() {
         {
           title: "Clarify the intended use",
           description:
-            "Define how you expect to live on, operate, improve, or eventually sell the property—not just the acreage or bedroom count.",
+            "Define how you expect to live on, operate, improve, or eventually sell the property, not just the acreage or bedroom count.",
         },
         {
           title: "Map the property systems",

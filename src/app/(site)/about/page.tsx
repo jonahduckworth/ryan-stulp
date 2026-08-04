@@ -59,7 +59,7 @@ export default function AboutPage() {
         </div>
       </section>
       <CtaBand
-        title="Bring Ryan the real question — even if you are early."
+        title="Bring Ryan the real question, even if you are early."
         label="Contact Ryan"
       />
     </>

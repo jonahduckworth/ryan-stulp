@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaBand } from "@/components/cta-band";
 import { FaqSection } from "@/components/faq-section";
+import { InlineTestimonial } from "@/components/inline-testimonial";
 import { PageHero } from "@/components/page-hero";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default function SellingPage() {
       <PageHero
         eyebrow="Selling in Calgary"
         title="Price with evidence. Launch with purpose."
-        description="Ryan builds the sale around your property, timing, and next move — from the first pricing conversation through conditions and possession."
+        description="Ryan builds the sale around your property, timing, and next move, from the first pricing conversation through conditions and possession."
       />
       <section className="section">
         <div className="container intro-grid">
@@ -50,6 +51,14 @@ export default function SellingPage() {
               Request a home evaluation
             </Link>
           </div>
+        </div>
+      </section>
+      <section className="section-tight">
+        <div className="container">
+          <InlineTestimonial
+            author="Alison Whellams"
+            quote="Ryan has sold two of my properties and helped me buy my current house. He is great! Always professional, knowledgeable, and made himself available for showings."
+          />
         </div>
       </section>
       <FaqSection

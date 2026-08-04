@@ -9,6 +9,10 @@ import {
   getPublicSiteSettings,
 } from "@/lib/data/public";
 import { resolveSiteIdentity } from "@/lib/site";
+import {
+  GOOGLE_REVIEW_PROFILE_URL,
+  GOOGLE_REVIEW_SUMMARY,
+} from "@/lib/testimonials";
 
 export default async function HomePage() {
   const [publishedListings, settings] = await Promise.all([
@@ -51,6 +55,10 @@ export default async function HomePage() {
             <span className="eyebrow">{identity.homepageEyebrow}</span>
             <h1 className="display">{identity.homepageTitle}</h1>
             <p className="lede">{identity.homepageDescription}</p>
+            <p className="hero-positioning">
+              Market-focused advice. Straight answers. Education before
+              pressure.
+            </p>
             <div className="button-row" data-analytics-location="home_hero">
               <Link className="button button-primary" href="/contact">
                 Tell Ryan your goal
@@ -59,13 +67,25 @@ export default async function HomePage() {
                 Explore listings
               </Link>
             </div>
+            <a
+              className="hero-review"
+              href={GOOGLE_REVIEW_PROFILE_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${GOOGLE_REVIEW_SUMMARY.rating} out of 5 from ${GOOGLE_REVIEW_SUMMARY.count} Google reviews`}
+              data-analytics-event="google_reviews_click"
+            >
+              <strong>{GOOGLE_REVIEW_SUMMARY.rating} / 5</strong>
+              <span>{GOOGLE_REVIEW_SUMMARY.count} Google reviews</span>
+              <span className="hero-review-link">Read reviews</span>
+            </a>
           </div>
           <div className="hero-portrait">
             <Image
-              src="/images/ryan-stulp.jpg"
+              src="/images/ryan-stulp-leaning.jpg"
               alt="Ryan Stulp, Calgary real estate professional"
-              width={1066}
-              height={1600}
+              width={1166}
+              height={1749}
               priority
               sizes="(max-width: 900px) 100vw, 46vw"
             />
@@ -94,28 +114,62 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="container intro-grid">
-          <div className="stack">
-            <span className="eyebrow">A grounded approach</span>
-            <h2 className="section-title">Advice that helps you decide.</h2>
+      <section className="section personal-intro">
+        <div className="container personal-grid">
+          <div className="personal-portrait">
+            <Image
+              src="/images/ryan-stulp-standing.jpg"
+              alt="Professional portrait of Ryan Stulp standing in a dark suit"
+              width={1166}
+              height={1749}
+              sizes="(max-width: 900px) 100vw, 40vw"
+            />
           </div>
-          <div className="stack">
+          <div className="stack personal-copy">
+            <span className="eyebrow">The person behind the advice</span>
+            <h2 className="section-title">
+              Market knowledge, without the sales pressure.
+            </h2>
             <p className="lede">
-              Real estate gets complicated when the advice is vague. Ryan
-              explains the trade-offs, keeps the process organized, and makes
-              sure you understand what happens next.
+              Ryan&apos;s job is not to talk you into a move. It is to help you
+              understand the market, compare the trade-offs, and decide what
+              makes sense for you.
             </p>
             <p>
-              His work spans first-time buyers, experienced investors, builders,
-              developers, rural properties, and commercial opportunities. The
-              approach stays the same: listen first, be direct, and protect the
-              client&apos;s priorities from beginning to end.
+              Whether the right answer is to move quickly, adjust the plan, wait,
+              or walk away, you will get the honest read and the context behind
+              it.
             </p>
             <Link className="button button-secondary" href="/about">
               Meet Ryan
             </Link>
           </div>
+        </div>
+        <div className="container difference-grid" aria-label="Why work with Ryan">
+          <article className="difference-card">
+            <span>01</span>
+            <h3>Read the market</h3>
+            <p>
+              Use current activity, competition, and local context instead of
+              relying on assumptions.
+            </p>
+          </article>
+          <article className="difference-card">
+            <span>02</span>
+            <h3>Get the straight answer</h3>
+            <p>
+              Hear the opportunity, the trade-offs, and the risks in plain
+              language.
+            </p>
+          </article>
+          <article className="difference-card">
+            <span>03</span>
+            <h3>Understand the decision</h3>
+            <p>
+              Know why a recommendation makes sense before you choose the next
+              step.
+            </p>
+          </article>
         </div>
       </section>
 
@@ -124,7 +178,7 @@ export default async function HomePage() {
           <Link className="path-card" href="/buying-calgary">
             <div className="path-content">
               <span className="eyebrow">For buyers</span>
-              <h3>Find the right fit — and know why.</h3>
+              <h3>Find the right fit, and know why.</h3>
               <p>
                 Build a smart search, compare opportunities clearly, and make
                 offers with context.
@@ -145,6 +199,8 @@ export default async function HomePage() {
           </Link>
         </div>
       </section>
+
+      <GoogleReviews />
 
       <section className="section">
         <div className="container stack">
@@ -278,21 +334,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section dark">
-        <div className="container intro-grid">
-          <span className="eyebrow">The standard</span>
-          <div className="stack">
-            <h2 className="section-title">
-              Direct answers. Useful context. No manufactured pressure.
-            </h2>
-            <p className="lede">
-              Every recommendation should help you understand the trade-offs and
-              make the next decision with confidence.
-            </p>
-          </div>
-        </div>
-      </section>
-      <GoogleReviews />
       <CtaBand />
     </>
   );

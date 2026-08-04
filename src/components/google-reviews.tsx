@@ -16,8 +16,12 @@ export function GoogleReviews() {
           <div className="stack">
             <span className="eyebrow">Client experiences</span>
             <h2 id="google-reviews-title" className="section-title">
-              Trusted when the decision matters.
+              Trusted by Calgary-area clients.
             </h2>
+            <p className="lede">
+              Real experiences from people Ryan has helped buy, sell, and make
+              sense of the market.
+            </p>
           </div>
           <a
             className="button button-secondary"

@@ -41,7 +41,7 @@ export default async function ListingsPage() {
       <PageHero
         eyebrow="Listings"
         title="Current properties and opportunities."
-        description="Explore Ryan's active, pending, and recently sold properties. If nothing here matches, share your criteria — the right opportunity may not be public yet."
+        description="Explore Ryan's active, pending, and recently sold properties. If nothing here matches, share your criteria. The right opportunity may not be public yet."
       />
       <section className="section surface">
         <div className="container">

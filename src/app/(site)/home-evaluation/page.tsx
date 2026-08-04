@@ -24,7 +24,7 @@ export default function HomeEvaluationPage() {
             <p>
               Ryan will review the property details, recent comparable sales,
               active competition, and the context around your timing. The goal
-              is not an inflated promise — it is a realistic pricing range and a
+              is not an inflated promise. It is a realistic pricing range and a
               conversation about what could affect it.
             </p>
             <ul>

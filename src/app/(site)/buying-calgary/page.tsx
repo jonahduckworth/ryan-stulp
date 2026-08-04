@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CtaBand } from "@/components/cta-band";
 import { FaqSection } from "@/components/faq-section";
+import { InlineTestimonial } from "@/components/inline-testimonial";
 import { LeadForm } from "@/components/lead-form";
 import { PageHero } from "@/components/page-hero";
 
@@ -55,6 +56,14 @@ export default function BuyingPage() {
               </div>
             </article>
           </div>
+        </div>
+      </section>
+      <section className="section-tight">
+        <div className="container">
+          <InlineTestimonial
+            author="Ravdeep Singh"
+            quote="Ryan was knowledgeable, responsive, and always had our best interests in mind. His professionalism and market expertise made everything smooth and stress-free."
+          />
         </div>
       </section>
       <FaqSection
