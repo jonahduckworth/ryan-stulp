@@ -13,10 +13,10 @@ export function SiteHeader({ identity }: { identity: PublicSiteIdentity }) {
         <div className="container nav-row">
           <Link className="brand" href="/" aria-label="Ryan Stulp home">
             <Image
-              src="/brand/ryan-stulp-logo.png"
+              src="/brand/ryan-stulp-horizontal-color.png"
               alt={`Ryan Stulp, ${identity.brokerage}`}
-              width={1400}
-              height={445}
+              width={2800}
+              height={503}
               priority
             />
           </Link>

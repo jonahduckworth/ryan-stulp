@@ -45,12 +45,38 @@ Confirm that Ryan owns or is licensed to use and modify the supplied logo files.
 
 These are flattened social graphics, not raw listing-photo packages. They should guide the visual system but should not be used as the public listing database or treated as current inventory without Ryan's confirmation.
 
+## August 4 branding follow-up
+
+Ryan's August 4 email repeated the three portraits, both composite Ryan Stulp
+logo sheets, and both DesignCrowd ZIP files already inventoried above. The new
+material was:
+
+| File | Type | Use |
+| --- | --- | --- |
+| `brokerage-logo-sml-horizontal.png` | Transparent PNG | Small supplied brokerage treatment; retained as an original but not preferred for responsive production rendering. |
+| `brokerage-logo-lrg-horizontal.png` | Transparent PNG | Primary Real Estate District brokerage mark for wide layouts. |
+| `brokerage-logo-lrg-ex-horizontal.png` | Transparent PNG | Extended horizontal brokerage treatment. |
+| `brokerage-logo-lrg-vertical.png` | Transparent PNG | Vertical brokerage treatment for narrow layouts or print. |
+| `composite-brand-image.png` | Flattened PNG mockup | Business-card reference only; not a reusable website logo. |
+| `designcrowd-brand-preview.jpg` | Flattened JPG mockup | Business-card reference only; not a reusable website logo. |
+
+The composite Ryan Stulp sheets have been separated into transparent horizontal,
+stacked, icon, and wordmark PNGs in `public/brand/`. The pure-white sheet
+background is removed rather than recoloured so the assets sit cleanly on the
+site's warm `#F8F6F2` paper surface and remain reusable on other backgrounds.
+The original red and black brand colours are preserved.
+
+`scripts/process-brand-assets.mjs` documents the crops and regenerates the
+production assets from the supplied source sheets.
+
 ## Missing production assets
 
 - Raw/current listing photo packages with explicit reuse permission.
 - Authoritative active/pending/sold listing export.
-- Brokerage logo files and mandatory disclosure/brand rules.
-- Standalone clean vector logo exports.
+- Mandatory brokerage disclosure and logo-placement rules.
+- Standalone clean vector logo exports; the supplied AI/PDF source is a
+  business-card layout, so the current transparent files are clean raster
+  derivations rather than true SVG exports.
 - Written confirmation that the headshots and logo may be used on the site.
 - Final brokerage approval for the selected public Google-review excerpts.
 - Additional social profile URLs.
