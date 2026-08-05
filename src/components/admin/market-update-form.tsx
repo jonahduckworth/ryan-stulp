@@ -221,7 +221,8 @@ export function MarketUpdateForm({
           />
           <span className="field-help">
             Use blank lines between paragraphs. Start a subheading with ## and
-            create a bullet list with - at the beginning of each line.
+            create a bullet list with - at the beginning of each line. Add a
+            link with [link text](https://example.com).
           </span>
           <span className="character-count">
             {body.length.toLocaleString("en-CA")}/50,000

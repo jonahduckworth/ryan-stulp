@@ -49,7 +49,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(update.updated_at),
       changeFrequency: "monthly" as const,
       priority: 0.7,
-      images: update.cover_image_url ? [update.cover_image_url] : undefined,
+      images: update.cover_image_url
+        ? [new URL(update.cover_image_url, SITE.url).toString()]
+        : undefined,
     })),
   ];
 }

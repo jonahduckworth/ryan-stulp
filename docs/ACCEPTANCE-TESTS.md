@@ -46,6 +46,8 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
 - [x] Permanent delete removes the listing record.
 - [x] An administrator can create, preview, publish, archive, and delete a market update.
 - [x] Market-update cover upload requires alt text, and deleting the update removes its stored image.
+- [x] Draft cover media cannot be listed or opened anonymously; publishing exposes only the attached cover through the protected media route.
+- [x] Internal article links and vetted HTTP(S) citations render as links while unsafe protocols remain plain text.
 - [x] Lead inbox shows source, intent, status, and received date.
 - [x] An administrator can open a lead, call/email, add notes, and change status.
 - [x] Lead CSV export opens only while authenticated and escapes commas, quotes,

@@ -35,7 +35,9 @@ export default async function MarketUpdatesPage() {
               position: index + 1,
               name: update.title,
               url: `${SITE.url}/market-updates/${update.slug}`,
-              image: update.cover_image_url || undefined,
+              image: update.cover_image_url
+                ? new URL(update.cover_image_url, SITE.url).toString()
+                : undefined,
             })),
           },
         }}

@@ -13,14 +13,14 @@ work so the site does not accumulate thin or repetitive pages.
 | Location-specific content | `/calgary-areas` provides useful content for Calgary's five broad city areas plus rural and surrounding locations. Individual community pages should be added only when Ryan and the SEO team can supply original, current local content. |
 | Logical heading structure | Public pages use one page-level heading and descriptive section headings. |
 | Helpful content and FAQs | Buying, selling, commercial, investing, rural, and area pages include process guidance and visitor-focused FAQs. |
-| Image optimization | Public imagery uses Next.js Image optimization, responsive sizes, lazy loading where appropriate, and editable alt text for listing galleries and market-update covers. |
+| Image optimization | Public imagery uses Next.js Image optimization, responsive sizes, lazy loading where appropriate, and editable alt text for listing galleries and market-update covers. Draft market-update covers remain in private storage until publication. |
 | Speed and caching | The site is server rendered, uses optimized fonts and images, keeps client-side code limited to interactive controls, and sets long-lived cache headers for uploaded listing media. |
 | Mobile usability | Navigation, property filters, cards, galleries, dialogs, forms, and admin workflows use responsive layouts and touch-sized controls. |
 | Internal links | Homepage expertise cards, related-service cards, listings, area content, header, and footer link the main topics together. |
 | Structured data | The site includes RealEstateAgent, Service, FAQPage, Offer, property, CollectionPage, BlogPosting, ItemList, and breadcrumb structured data where appropriate. |
 | Clean URLs | Public routes use short descriptive slugs, and listing slugs are editable in the dashboard. |
 | Strong calls to action | Every core journey leads to a relevant conversation, evaluation, listing inquiry, phone, or email action. |
-| Blog or resources | Implemented as **Market updates**. Ryan can create private drafts, preview, publish, archive, add cover images and alt text, and edit article-specific metadata from the admin dashboard. Public articles are server rendered and internally linked. |
+| Blog or resources | Implemented as **Market updates**. Ryan can create private drafts, preview, publish, archive, add protected cover images and alt text, cite external sources, add internal links, and edit article-specific metadata from the admin dashboard. Public articles are server rendered and internally linked. |
 | Technical SEO | Sitemap, listing and article images in the sitemap, robots rules, HTTPS launch checks, canonical tags, metadata, security headers, and permanent legacy redirects are implemented. |
 
 ## Launch follow-through

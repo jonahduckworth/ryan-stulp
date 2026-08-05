@@ -605,13 +605,6 @@ export async function saveMarketUpdateCover({
   ) {
     return { status: "error", message: "The uploaded image path is invalid." };
   }
-  if (normalizedAlt.length < 3 || normalizedAlt.length > 180) {
-    return {
-      status: "error",
-      message: "Add concise image alt text between 3 and 180 characters.",
-    };
-  }
-
   const supabase = await createSupabaseServerClient();
   const { data: existing, error: existingError } = await supabase
     .from("market_updates")
@@ -623,13 +616,21 @@ export async function saveMarketUpdateCover({
     return { status: "error", message: "The market update was not found." };
   }
 
-  const { data: publicFile } = supabase.storage
-    .from("market-update-media")
-    .getPublicUrl(storagePath);
+  if (normalizedAlt.length < 3 || normalizedAlt.length > 180) {
+    if (existing.cover_image_path !== storagePath) {
+      await supabase.storage.from("market-update-media").remove([storagePath]);
+    }
+    return {
+      status: "error",
+      message: "Add concise image alt text between 3 and 180 characters.",
+    };
+  }
+
+  const coverImageUrl = `/market-update-media/${marketUpdateId}`;
   const { error } = await supabase
     .from("market_updates")
     .update({
-      cover_image_url: publicFile.publicUrl,
+      cover_image_url: coverImageUrl,
       cover_image_path: storagePath,
       cover_image_alt: normalizedAlt,
       updated_by: admin.id,
@@ -659,7 +660,7 @@ export async function saveMarketUpdateCover({
       existing.cover_image_path === storagePath
         ? "Cover image description saved."
         : "Cover image uploaded.",
-    coverImageUrl: publicFile.publicUrl,
+    coverImageUrl,
     coverImagePath: storagePath,
     coverImageAlt: normalizedAlt,
   };
@@ -694,15 +695,19 @@ export async function removeMarketUpdateCover({
     return { status: "error", message: "The cover image could not be removed." };
   }
 
+  let storageCleanupFailed = false;
   if (existing.cover_image_path) {
-    await supabase.storage
+    const { error: storageError } = await supabase.storage
       .from("market-update-media")
       .remove([existing.cover_image_path]);
+    storageCleanupFailed = Boolean(storageError);
   }
   revalidateMarketUpdatePaths();
   return {
     status: "success",
-    message: "Cover image removed.",
+    message: storageCleanupFailed
+      ? "Cover removed from the article. The stored file needs cleanup by the website administrator."
+      : "Cover image removed.",
     coverImageUrl: null,
     coverImagePath: null,
     coverImageAlt: null,
@@ -723,15 +728,6 @@ export async function deleteMarketUpdate(formData: FormData) {
     throw new Error("The market update could not be prepared for deletion.");
   }
 
-  if (update.cover_image_path) {
-    const { error: storageError } = await supabase.storage
-      .from("market-update-media")
-      .remove([update.cover_image_path]);
-    if (storageError) {
-      throw new Error("The market update image could not be deleted.");
-    }
-  }
-
   const { data, error } = await supabase
     .from("market_updates")
     .delete()
@@ -740,6 +736,14 @@ export async function deleteMarketUpdate(formData: FormData) {
     .maybeSingle();
   if (error || !data) {
     throw new Error("The market update could not be deleted.");
+  }
+  if (update.cover_image_path) {
+    const { error: storageError } = await supabase.storage
+      .from("market-update-media")
+      .remove([update.cover_image_path]);
+    if (storageError) {
+      console.error("Unable to clean up deleted market update media.");
+    }
   }
   revalidateMarketUpdatePaths();
   redirect("/admin/market-updates");

@@ -29,8 +29,8 @@ export function MarketUpdateCoverManager({
 
   async function upload(file: File | undefined) {
     if (!file) return;
-    if (!altText.trim()) {
-      setStatus("Add image alt text before uploading the cover image.");
+    if (altText.trim().length < 3) {
+      setStatus("Add at least three characters of image alt text before uploading.");
       return;
     }
     if (
@@ -80,17 +80,26 @@ export function MarketUpdateCoverManager({
         cover_image_alt: result.coverImageAlt,
       });
       setAltText(result.coverImageAlt ?? "");
+    } else {
+      await supabase.storage.from("market-update-media").remove([storagePath]);
     }
   }
 
   async function saveAltText() {
     if (!cover.cover_image_path) return;
     setBusy(true);
-    const result = await saveMarketUpdateCover({
-      marketUpdateId,
-      storagePath: cover.cover_image_path,
-      altText,
-    });
+    let result;
+    try {
+      result = await saveMarketUpdateCover({
+        marketUpdateId,
+        storagePath: cover.cover_image_path,
+        altText,
+      });
+    } catch {
+      setBusy(false);
+      setStatus("The image description could not be saved.");
+      return;
+    }
     setBusy(false);
     setStatus(result.message);
     if (result.status === "success") {
@@ -106,7 +115,14 @@ export function MarketUpdateCoverManager({
       return;
     }
     setBusy(true);
-    const result = await removeMarketUpdateCover({ marketUpdateId });
+    let result;
+    try {
+      result = await removeMarketUpdateCover({ marketUpdateId });
+    } catch {
+      setBusy(false);
+      setStatus("The cover image could not be removed.");
+      return;
+    }
     setBusy(false);
     setStatus(result.message);
     if (result.status === "success") {

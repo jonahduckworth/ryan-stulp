@@ -3,6 +3,10 @@ export type MarketUpdateContentBlock =
   | { type: "paragraph"; text: string }
   | { type: "list"; items: string[] };
 
+export type MarketUpdateInlinePart =
+  | { type: "text"; text: string }
+  | { type: "link"; text: string; href: string; external: boolean };
+
 export function calculateReadingTime(body: string) {
   const words = body.trim().split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(words / 220));
@@ -35,4 +39,46 @@ export function parseMarketUpdateBody(body: string): MarketUpdateContentBlock[] 
         text: lines.join(" "),
       };
     });
+}
+
+function isSafeMarketUpdateLink(href: string) {
+  if (href.startsWith("/") && !href.startsWith("//")) return true;
+  try {
+    const url = new URL(href);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+export function parseMarketUpdateInline(
+  text: string,
+): MarketUpdateInlinePart[] {
+  const parts: MarketUpdateInlinePart[] = [];
+  const linkPattern = /\[([^\]]+)]\(([^)\s]+)\)/g;
+  let cursor = 0;
+
+  for (const match of text.matchAll(linkPattern)) {
+    const index = match.index;
+    if (index > cursor) {
+      parts.push({ type: "text", text: text.slice(cursor, index) });
+    }
+    const [source, label, href] = match;
+    if (isSafeMarketUpdateLink(href)) {
+      parts.push({
+        type: "link",
+        text: label,
+        href,
+        external: !href.startsWith("/"),
+      });
+    } else {
+      parts.push({ type: "text", text: source });
+    }
+    cursor = index + source.length;
+  }
+
+  if (cursor < text.length) {
+    parts.push({ type: "text", text: text.slice(cursor) });
+  }
+  return parts.length ? parts : [{ type: "text", text }];
 }

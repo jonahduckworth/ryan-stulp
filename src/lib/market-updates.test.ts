@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   calculateReadingTime,
   parseMarketUpdateBody,
+  parseMarketUpdateInline,
 } from "@/lib/market-updates";
 
 describe("calculateReadingTime", () => {
@@ -39,6 +40,38 @@ describe("parseMarketUpdateBody", () => {
     expect(parseMarketUpdateBody("First.\r\n\r\nSecond.")).toEqual([
       { type: "paragraph", text: "First." },
       { type: "paragraph", text: "Second." },
+    ]);
+  });
+});
+
+describe("parseMarketUpdateInline", () => {
+  it("recognizes safe internal and external links", () => {
+    expect(
+      parseMarketUpdateInline(
+        "Read the [area guide](/calgary-areas) and [CREB report](https://www.creb.com/report).",
+      ),
+    ).toEqual([
+      { type: "text", text: "Read the " },
+      {
+        type: "link",
+        text: "area guide",
+        href: "/calgary-areas",
+        external: false,
+      },
+      { type: "text", text: " and " },
+      {
+        type: "link",
+        text: "CREB report",
+        href: "https://www.creb.com/report",
+        external: true,
+      },
+      { type: "text", text: "." },
+    ]);
+  });
+
+  it("leaves unsafe links as plain text", () => {
+    expect(parseMarketUpdateInline("[Unsafe](javascript:evil)")).toEqual([
+      { type: "text", text: "[Unsafe](javascript:evil)" },
     ]);
   });
 });

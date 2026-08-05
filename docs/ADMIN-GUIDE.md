@@ -44,7 +44,8 @@ resources, or business updates.
 
 1. Choose **Write update** and add the title, short summary, and article body.
 2. Use blank lines between paragraphs. Begin a subheading with `##` or `###`,
-   and begin each line of a bullet list with `-`.
+   begin each line of a bullet list with `-`, and add a source or internal link
+   with `[link text](https://example.com)`.
 3. Choose **Create draft**. New updates always begin privately.
 4. Add an optional cover photo with descriptive alt text. A 16:9 landscape
    image works best for the archive and sharing previews.
