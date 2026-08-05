@@ -41,6 +41,7 @@ export function MarketUpdateDetailView({
               alt={update.cover_image_alt || ""}
               fill
               priority
+              unoptimized={preview}
               sizes="(max-width: 1240px) 100vw, 1240px"
             />
           </div>

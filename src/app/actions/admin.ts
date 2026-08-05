@@ -644,20 +644,23 @@ export async function saveMarketUpdateCover({
     return { status: "error", message: "The cover image could not be saved." };
   }
 
+  let replacementCleanupFailed = false;
   if (
     existing.cover_image_path &&
     existing.cover_image_path !== storagePath
   ) {
-    await supabase.storage
+    const { error: storageError } = await supabase.storage
       .from("market-update-media")
       .remove([existing.cover_image_path]);
+    replacementCleanupFailed = Boolean(storageError);
   }
 
   revalidateMarketUpdatePaths();
   return {
     status: "success",
-    message:
-      existing.cover_image_path === storagePath
+    message: replacementCleanupFailed
+      ? "New cover uploaded. The previous stored file needs cleanup by the website administrator."
+      : existing.cover_image_path === storagePath
         ? "Cover image description saved."
         : "Cover image uploaded.",
     coverImageUrl,
