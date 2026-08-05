@@ -63,6 +63,7 @@ export function resolveSiteIdentity(
 
 export const NAV_ITEMS = [
   { href: "/listings", label: "Listings" },
+  { href: "/market-updates", label: "Updates" },
   { href: "/buying-calgary", label: "Buy" },
   { href: "/selling-calgary", label: "Sell" },
   { href: "/calgary-areas", label: "Areas" },

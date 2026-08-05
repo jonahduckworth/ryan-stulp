@@ -26,6 +26,7 @@ export function SiteFooter({ identity }: { identity: PublicSiteIdentity }) {
         <nav className="footer-links" aria-label="Services">
           <strong>Explore</strong>
           <Link href="/listings">Listings</Link>
+          <Link href="/market-updates">Market updates</Link>
           <Link href="/buying-calgary">Buying in Calgary</Link>
           <Link href="/selling-calgary">Selling in Calgary</Link>
           <Link href="/home-evaluation">Home evaluation</Link>

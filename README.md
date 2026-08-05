@@ -5,14 +5,16 @@ Ryan Stulp at The Real Estate District.
 
 ## What is included
 
-- Responsive public pages for home, listings, buying, selling, home evaluation,
-  about, contact, and privacy.
+- Responsive public pages for home, listings, market updates, buying, selling,
+  home evaluation, about, contact, and privacy.
 - Honest empty states so the site can launch before listings are entered.
 - Secure lead forms with server validation, a honeypot, database-backed rate
   limiting, optional Cloudflare Turnstile, and optional email notifications.
 - Private Supabase-authenticated admin dashboard.
 - Listing create, edit, duplicate, preview, publish, archive, delete, and ordered
   multi-image galleries.
+- Market-update create, edit, preview, publish, archive, delete, cover-image,
+  article metadata, and structured-data workflows.
 - Lead inbox, attribution, statuses, private notes, direct call/email actions,
   and CSV export.
 - Editable public contact, brokerage, social, booking, and selected home-page

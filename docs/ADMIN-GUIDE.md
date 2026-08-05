@@ -37,6 +37,29 @@ the site generates sensible defaults when they are blank.
 Use the Listings filters to search by title, address, community, or MLS number,
 or to narrow the table by publication status and property category.
 
+## Market updates
+
+Open **Market updates** when Ryan wants to publish local market commentary,
+resources, or business updates.
+
+1. Choose **Write update** and add the title, short summary, and article body.
+2. Use blank lines between paragraphs. Begin a subheading with `##` or `###`,
+   and begin each line of a bullet list with `-`.
+3. Choose **Create draft**. New updates always begin privately.
+4. Add an optional cover photo with descriptive alt text. A 16:9 landscape
+   image works best for the archive and sharing previews.
+5. Use **Preview** to inspect the complete article without making it public.
+6. Change the status to **Published** when the copy is approved. Publishing
+   displays a confirmation before the article goes live.
+
+**Draft** and **Archived** updates are visible only to administrators.
+**Published** updates appear in the public market-update archive, relevant
+homepage section, sitemap, and their own search-friendly article page.
+
+Use one clear takeaway per article. Explain what changed, why it matters, and
+which property types, locations, or decisions it affects. Avoid publishing a
+thin rewrite of a statistic without Ryan's practical context.
+
 ## Leads
 
 Every successful contact, home-evaluation, and listing inquiry appears under
@@ -79,7 +102,8 @@ confirming the exact wording required by Ryan's brokerage and RECA.
 
 1. Review new leads daily.
 2. Keep listing statuses current.
-3. Confirm every newly published property on both desktop and mobile.
-4. Archive sold or withdrawn properties when they should no longer be promoted.
-5. Report reproducible defects during the included 30-day post-launch bug-fix
+3. Review draft market updates and keep published advice current.
+4. Confirm every newly published property or update on desktop and mobile.
+5. Archive sold, withdrawn, or outdated content when it should no longer be promoted.
+6. Report reproducible defects during the included 30-day post-launch bug-fix
    period.

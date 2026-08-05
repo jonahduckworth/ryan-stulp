@@ -128,3 +128,25 @@ export type PublicSiteSettings = Pick<
   | "homepage_title"
   | "homepage_description"
 >;
+
+export type MarketUpdateStatus = "draft" | "published" | "archived";
+
+export type MarketUpdate = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  body: string;
+  status: MarketUpdateStatus;
+  author_name: string;
+  cover_image_url: string | null;
+  cover_image_path: string | null;
+  cover_image_alt: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  published_at: string | null;
+  created_by: string | null;
+  updated_by: string | null;
+  created_at: string;
+  updated_at: string;
+};

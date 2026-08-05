@@ -19,6 +19,13 @@ export default async function AdminDashboardPage() {
           href: "/admin/listings?status=draft",
         }
       : null,
+    stats.draftUpdates
+      ? {
+          label: `${stats.draftUpdates} draft market update${stats.draftUpdates === 1 ? "" : "s"}`,
+          detail: "Review the copy, preview the article, and publish when ready.",
+          href: "/admin/market-updates?status=draft",
+        }
+      : null,
     !process.env.RESEND_API_KEY || !process.env.LEAD_EMAIL_FROM
       ? {
           label: "Lead email notifications need setup",
@@ -47,9 +54,17 @@ export default async function AdminDashboardPage() {
           <h1>Dashboard</h1>
           <p>Listings, inquiries, and the work that needs attention.</p>
         </div>
-        <Link className="button button-primary" href="/admin/listings/new">
-          Add listing
-        </Link>
+        <div className="admin-header-actions">
+          <Link
+            className="button button-secondary"
+            href="/admin/market-updates/new"
+          >
+            Write update
+          </Link>
+          <Link className="button button-primary" href="/admin/listings/new">
+            Add listing
+          </Link>
+        </div>
       </header>
       <section className="stat-grid" aria-label="Website summary">
         <article className="stat-card">
@@ -57,8 +72,12 @@ export default async function AdminDashboardPage() {
           <strong>{stats.listings}</strong>
         </article>
         <article className="stat-card">
-          <span>Published</span>
+          <span>Published listings</span>
           <strong>{stats.published}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Published updates</span>
+          <strong>{stats.publishedUpdates}</strong>
         </article>
         <article className="stat-card">
           <span>New leads</span>
@@ -91,7 +110,10 @@ export default async function AdminDashboardPage() {
         ) : (
           <div className="admin-empty">
             <h3>Everything is caught up</h3>
-            <p>No new leads, draft listings, or connection issues need action.</p>
+            <p>
+              No new leads, draft listings, draft updates, or connection issues
+              need action.
+            </p>
           </div>
         )}
       </section>

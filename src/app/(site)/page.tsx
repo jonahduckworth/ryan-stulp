@@ -4,8 +4,10 @@ import { CtaBand } from "@/components/cta-band";
 import { GoogleReviews } from "@/components/google-reviews";
 import { JsonLd } from "@/components/json-ld";
 import { ListingCard } from "@/components/listing-card";
+import { MarketUpdateCard } from "@/components/market-update-card";
 import {
   getPublishedListings,
+  getPublishedMarketUpdates,
   getPublicSiteSettings,
 } from "@/lib/data/public";
 import { resolveSiteIdentity } from "@/lib/site";
@@ -15,11 +17,13 @@ import {
 } from "@/lib/testimonials";
 
 export default async function HomePage() {
-  const [publishedListings, settings] = await Promise.all([
+  const [publishedListings, publishedMarketUpdates, settings] = await Promise.all([
     getPublishedListings(),
+    getPublishedMarketUpdates(),
     getPublicSiteSettings(),
   ]);
   const listings = publishedListings.slice(0, 3);
+  const marketUpdates = publishedMarketUpdates.slice(0, 3);
   const identity = resolveSiteIdentity(settings);
 
   return (
@@ -333,6 +337,33 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {marketUpdates.length ? (
+        <section className="section surface">
+          <div className="container stack">
+            <div className="section-heading-row">
+              <div className="stack">
+                <span className="eyebrow">Market perspective</span>
+                <h2 className="section-title">
+                  Local context for the decisions ahead.
+                </h2>
+              </div>
+              <div className="stack">
+                <p className="lede">
+                  Clear explanations of what is changing in Calgary real estate
+                  and what the numbers may mean for your plans.
+                </p>
+                <Link href="/market-updates">View all market updates →</Link>
+              </div>
+            </div>
+            <div className="market-update-grid">
+              {marketUpdates.map((update) => (
+                <MarketUpdateCard update={update} key={update.id} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <CtaBand />
     </>

@@ -7,7 +7,7 @@ export default function NotFound() {
         <span className="eyebrow">404</span>
         <h1 className="display">That page is not here.</h1>
         <p className="lede">
-          The property may no longer be public, or the address may have changed.
+          It may no longer be public, or the address may have changed.
         </p>
         <div className="button-row">
           <Link className="button button-primary" href="/listings">

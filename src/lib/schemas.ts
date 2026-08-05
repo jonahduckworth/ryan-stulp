@@ -183,4 +183,35 @@ export const siteSettingsSchema = z.object({
   homepageDescription: z.string().trim().min(30).max(400),
 });
 
+export const marketUpdateSchema = z
+  .object({
+    id: z.uuid().optional(),
+    title: z.string().trim().min(5).max(140),
+    slug: z
+      .string()
+      .trim()
+      .min(3)
+      .max(160)
+      .regex(
+        /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+        "Use lowercase words and hyphens only.",
+      ),
+    excerpt: z.string().trim().min(30).max(320),
+    body: z.string().trim().min(20).max(50000),
+    status: z.enum(["draft", "published", "archived"]),
+    authorName: z.string().trim().min(2).max(120),
+    seoTitle: optionalTextMax(70),
+    seoDescription: optionalTextMax(180),
+  })
+  .superRefine((value, context) => {
+    if (value.status === "published" && value.body.length < 300) {
+      context.addIssue({
+        code: "custom",
+        path: ["body"],
+        message:
+          "Published updates need at least 300 characters of useful market context.",
+      });
+    }
+  });
+
 export type LeadInput = z.infer<typeof leadSchema>;

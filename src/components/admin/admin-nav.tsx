@@ -9,6 +9,7 @@ export function AdminNav({ email }: { email: string }) {
   const links = [
     { href: "/admin", label: "Dashboard" },
     { href: "/admin/listings", label: "Listings" },
+    { href: "/admin/market-updates", label: "Market updates" },
     { href: "/admin/leads", label: "Leads" },
     { href: "/admin/settings", label: "Settings" },
   ];

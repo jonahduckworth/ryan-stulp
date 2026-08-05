@@ -11,6 +11,8 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
 - [x] Zero-listing state is clear and contains no fake inventory.
 - [x] Published listing appears on home, listings, and its detail route.
 - [x] Draft and archived listings never appear publicly.
+- [x] Published market updates appear in the archive and article route.
+- [x] Draft and archived market updates return 404 publicly but render in admin preview.
 - [x] A missing listing and an unknown route return a useful 404.
 - [x] Keyboard users can reach every control with visible focus.
 - [x] Reduced-motion preference removes nonessential motion.
@@ -42,6 +44,8 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
 - [x] Listing and lead search/status filters return the expected records.
 - [x] Archiving removes it from public routes.
 - [x] Permanent delete removes the listing record.
+- [x] An administrator can create, preview, publish, archive, and delete a market update.
+- [x] Market-update cover upload requires alt text, and deleting the update removes its stored image.
 - [x] Lead inbox shows source, intent, status, and received date.
 - [x] An administrator can open a lead, call/email, add notes, and change status.
 - [x] Lead CSV export opens only while authenticated and escapes commas, quotes,
@@ -60,11 +64,12 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
       completed staging checks.
 
 Checked boxes were verified on the local application or the Vercel staging
-deployment on July 27 and 29, 2026. The July 29 local pass covered the complete
+deployment on July 27, July 29, and August 5, 2026. The July 29 local pass covered the complete
 listing lifecycle, lead validation and attribution, rate limiting, authenticated
 CSV export, non-admin database isolation, keyboard focus, and the intentional
-zero-listing state. Its temporary listings, leads, audit rows, and downloaded CSV
-were removed afterward.
+zero-listing state. The August 5 pass covered the private draft, preview,
+publication, public archive/article, formatting, cover upload, and deletion
+flows for market updates. All temporary records and stored files were removed.
 
 The remaining boxes require Ryan's account or production-only services and are
 launch gates, not assumed passes. Re-run the entire list after the custom domain

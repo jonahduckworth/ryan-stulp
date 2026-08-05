@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   leadSchema,
   listingSchema,
+  marketUpdateSchema,
   passwordSetupSchema,
   siteSettingsSchema,
 } from "@/lib/schemas";
@@ -156,6 +157,43 @@ describe("siteSettingsSchema", () => {
 
     expect(result.notificationEmail).toBe("ryan@example.com");
     expect(result.facebookUrl).toBeNull();
+  });
+});
+
+describe("marketUpdateSchema", () => {
+  const baseUpdate = {
+    title: "Calgary market update for August 2026",
+    slug: "calgary-market-update-august-2026",
+    excerpt:
+      "A practical look at Calgary housing activity and what it may mean for your next move.",
+    body: "A useful private draft with an early market observation.",
+    status: "draft" as const,
+    authorName: "Ryan Stulp",
+    seoTitle: "",
+    seoDescription: "",
+  };
+
+  it("accepts a concise private draft and normalizes optional SEO fields", () => {
+    const result = marketUpdateSchema.parse(baseUpdate);
+    expect(result.status).toBe("draft");
+    expect(result.seoTitle).toBeNull();
+  });
+
+  it("requires useful depth before an update can be published", () => {
+    const result = marketUpdateSchema.safeParse({
+      ...baseUpdate,
+      status: "published",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts a substantive published update", () => {
+    const result = marketUpdateSchema.safeParse({
+      ...baseUpdate,
+      status: "published",
+      body: "Calgary market context ".repeat(20),
+    });
+    expect(result.success).toBe(true);
   });
 });
 

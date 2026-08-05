@@ -9,6 +9,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   leadUpdateSchema,
   listingSchema,
+  marketUpdateSchema,
   siteSettingsSchema,
 } from "@/lib/schemas";
 import type { ListingMedia } from "@/lib/types";
@@ -31,6 +32,19 @@ export type AdminMediaActionResult =
       message: string;
     };
 
+export type AdminMarketUpdateMediaResult =
+  | {
+      status: "success";
+      message: string;
+      coverImageUrl: string | null;
+      coverImagePath: string | null;
+      coverImageAlt: string | null;
+    }
+  | {
+      status: "error";
+      message: string;
+    };
+
 function nullableNumber(value: FormDataEntryValue | null) {
   if (value === null || String(value).trim() === "") return null;
   return String(value);
@@ -41,6 +55,17 @@ function revalidateListingMediaPaths() {
   revalidatePath("/admin/listings/[id]", "page");
   revalidatePath("/listings");
   revalidatePath("/listings/[slug]", "page");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/");
+}
+
+function revalidateMarketUpdatePaths() {
+  revalidatePath("/admin");
+  revalidatePath("/admin/market-updates");
+  revalidatePath("/admin/market-updates/[id]", "page");
+  revalidatePath("/admin/preview/market-updates/[id]", "page");
+  revalidatePath("/market-updates");
+  revalidatePath("/market-updates/[slug]", "page");
   revalidatePath("/sitemap.xml");
   revalidatePath("/");
 }
@@ -480,6 +505,244 @@ export async function deleteListing(formData: FormData) {
   if (error || !data) throw new Error("The listing could not be deleted.");
   revalidateListingMediaPaths();
   redirect("/admin/listings");
+}
+
+export async function saveMarketUpdate(
+  _state: AdminFormState,
+  formData: FormData,
+): Promise<AdminFormState> {
+  const admin = await verifyAdmin();
+  const parsed = marketUpdateSchema.safeParse({
+    id: formData.get("id") || undefined,
+    title: formData.get("title"),
+    slug: formData.get("slug"),
+    excerpt: formData.get("excerpt"),
+    body: formData.get("body"),
+    status: formData.get("status"),
+    authorName: formData.get("authorName"),
+    seoTitle: formData.get("seoTitle"),
+    seoDescription: formData.get("seoDescription"),
+  });
+
+  if (!parsed.success) {
+    return {
+      status: "error",
+      message: "Review the highlighted market update fields.",
+      errors: parsed.error.flatten().fieldErrors,
+    };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const update = parsed.data;
+  const { data: existing } = update.id
+    ? await supabase
+        .from("market_updates")
+        .select("published_at")
+        .eq("id", update.id)
+        .maybeSingle()
+    : { data: null };
+  const publishedAt =
+    update.status === "published"
+      ? existing?.published_at || new Date().toISOString()
+      : null;
+  const payload = {
+    title: update.title,
+    slug: update.slug,
+    excerpt: update.excerpt,
+    body: update.body,
+    status: update.status,
+    author_name: update.authorName,
+    seo_title: update.seoTitle,
+    seo_description: update.seoDescription,
+    published_at: publishedAt,
+    updated_by: admin.id,
+  };
+
+  const result = update.id
+    ? await supabase
+        .from("market_updates")
+        .update(payload)
+        .eq("id", update.id)
+        .select("id")
+        .maybeSingle()
+    : await supabase
+        .from("market_updates")
+        .insert({ ...payload, created_by: admin.id })
+        .select("id")
+        .single();
+
+  if (result.error || !result.data) {
+    return {
+      status: "error",
+      message:
+        result.error?.code === "23505"
+          ? "That market update URL is already in use."
+          : "The market update could not be saved.",
+    };
+  }
+
+  revalidateMarketUpdatePaths();
+  redirect(
+    `/admin/market-updates/${result.data.id}?${update.id ? "saved=1" : "created=1"}`,
+  );
+}
+
+export async function saveMarketUpdateCover({
+  marketUpdateId,
+  storagePath,
+  altText,
+}: {
+  marketUpdateId: string;
+  storagePath: string;
+  altText: string;
+}): Promise<AdminMarketUpdateMediaResult> {
+  const admin = await verifyAdmin();
+  const normalizedAlt = altText.trim();
+  if (
+    !marketUpdateId ||
+    !storagePath.startsWith(`${marketUpdateId}/`) ||
+    storagePath.includes("..")
+  ) {
+    return { status: "error", message: "The uploaded image path is invalid." };
+  }
+  if (normalizedAlt.length < 3 || normalizedAlt.length > 180) {
+    return {
+      status: "error",
+      message: "Add concise image alt text between 3 and 180 characters.",
+    };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { data: existing, error: existingError } = await supabase
+    .from("market_updates")
+    .select("cover_image_path")
+    .eq("id", marketUpdateId)
+    .maybeSingle();
+  if (existingError || !existing) {
+    await supabase.storage.from("market-update-media").remove([storagePath]);
+    return { status: "error", message: "The market update was not found." };
+  }
+
+  const { data: publicFile } = supabase.storage
+    .from("market-update-media")
+    .getPublicUrl(storagePath);
+  const { error } = await supabase
+    .from("market_updates")
+    .update({
+      cover_image_url: publicFile.publicUrl,
+      cover_image_path: storagePath,
+      cover_image_alt: normalizedAlt,
+      updated_by: admin.id,
+    })
+    .eq("id", marketUpdateId);
+
+  if (error) {
+    if (existing.cover_image_path !== storagePath) {
+      await supabase.storage.from("market-update-media").remove([storagePath]);
+    }
+    return { status: "error", message: "The cover image could not be saved." };
+  }
+
+  if (
+    existing.cover_image_path &&
+    existing.cover_image_path !== storagePath
+  ) {
+    await supabase.storage
+      .from("market-update-media")
+      .remove([existing.cover_image_path]);
+  }
+
+  revalidateMarketUpdatePaths();
+  return {
+    status: "success",
+    message:
+      existing.cover_image_path === storagePath
+        ? "Cover image description saved."
+        : "Cover image uploaded.",
+    coverImageUrl: publicFile.publicUrl,
+    coverImagePath: storagePath,
+    coverImageAlt: normalizedAlt,
+  };
+}
+
+export async function removeMarketUpdateCover({
+  marketUpdateId,
+}: {
+  marketUpdateId: string;
+}): Promise<AdminMarketUpdateMediaResult> {
+  const admin = await verifyAdmin();
+  const supabase = await createSupabaseServerClient();
+  const { data: existing, error: existingError } = await supabase
+    .from("market_updates")
+    .select("cover_image_path")
+    .eq("id", marketUpdateId)
+    .maybeSingle();
+  if (existingError || !existing) {
+    return { status: "error", message: "The market update was not found." };
+  }
+
+  const { error } = await supabase
+    .from("market_updates")
+    .update({
+      cover_image_url: null,
+      cover_image_path: null,
+      cover_image_alt: null,
+      updated_by: admin.id,
+    })
+    .eq("id", marketUpdateId);
+  if (error) {
+    return { status: "error", message: "The cover image could not be removed." };
+  }
+
+  if (existing.cover_image_path) {
+    await supabase.storage
+      .from("market-update-media")
+      .remove([existing.cover_image_path]);
+  }
+  revalidateMarketUpdatePaths();
+  return {
+    status: "success",
+    message: "Cover image removed.",
+    coverImageUrl: null,
+    coverImagePath: null,
+    coverImageAlt: null,
+  };
+}
+
+export async function deleteMarketUpdate(formData: FormData) {
+  await verifyAdmin();
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+  const supabase = await createSupabaseServerClient();
+  const { data: update, error: updateError } = await supabase
+    .from("market_updates")
+    .select("cover_image_path")
+    .eq("id", id)
+    .maybeSingle();
+  if (updateError || !update) {
+    throw new Error("The market update could not be prepared for deletion.");
+  }
+
+  if (update.cover_image_path) {
+    const { error: storageError } = await supabase.storage
+      .from("market-update-media")
+      .remove([update.cover_image_path]);
+    if (storageError) {
+      throw new Error("The market update image could not be deleted.");
+    }
+  }
+
+  const { data, error } = await supabase
+    .from("market_updates")
+    .delete()
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+  if (error || !data) {
+    throw new Error("The market update could not be deleted.");
+  }
+  revalidateMarketUpdatePaths();
+  redirect("/admin/market-updates");
 }
 
 export async function updateLead(

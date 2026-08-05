@@ -7,6 +7,7 @@ import type {
   Lead,
   Listing,
   ListingMedia,
+  MarketUpdate,
   SiteSettings,
 } from "@/lib/types";
 
@@ -87,10 +88,38 @@ export const getAdminSiteSettings = cache(
   },
 );
 
+export const getAdminMarketUpdates = cache(
+  async (): Promise<MarketUpdate[]> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("market_updates")
+      .select("*")
+      .order("updated_at", { ascending: false });
+    if (error) throw new Error("Unable to load market updates.");
+    return (data ?? []) as MarketUpdate[];
+  },
+);
+
+export const getAdminMarketUpdate = cache(
+  async (id: string): Promise<MarketUpdate | null> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("market_updates")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw new Error("Unable to load the market update.");
+    return data as MarketUpdate | null;
+  },
+);
+
 export async function getDashboardStats() {
-  const [listings, leads] = await Promise.all([
+  const [listings, leads, marketUpdates] = await Promise.all([
     getAdminListings(),
     getAdminLeads(),
+    getAdminMarketUpdates(),
   ]);
   return {
     listings: listings.length,
@@ -101,6 +130,12 @@ export async function getDashboardStats() {
     ).length,
     newLeads: leads.filter((lead) => lead.status === "new").length,
     totalLeads: leads.length,
+    marketUpdates: marketUpdates.length,
+    publishedUpdates: marketUpdates.filter(
+      (update) => update.status === "published" && update.published_at,
+    ).length,
+    draftUpdates: marketUpdates.filter((update) => update.status === "draft")
+      .length,
     recentLeads: leads.slice(0, 5),
     listingStatuses: {
       active: listings.filter((listing) => listing.status === "active").length,
