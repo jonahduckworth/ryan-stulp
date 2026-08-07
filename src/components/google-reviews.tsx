@@ -219,11 +219,6 @@ export function GoogleReviews() {
             </button>
           </div>
         </div>
-
-        <p className="review-summary">
-          Rating and review count verified on Google{" "}
-          {GOOGLE_REVIEW_SUMMARY.verifiedOn}.
-        </p>
       </div>
     </section>
   );

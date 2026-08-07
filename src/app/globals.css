@@ -1041,8 +1041,7 @@ p {
   border-left: 3px solid var(--signal);
 }
 
-.testimonial-slide figcaption span,
-.review-summary {
+.testimonial-slide figcaption span {
   color: var(--slate);
   font-size: 0.82rem;
 }
@@ -1139,10 +1138,6 @@ p {
 .testimonial-carousel-pause svg {
   width: 1rem;
   height: 1rem;
-}
-
-.review-summary {
-  text-align: right;
 }
 
 @keyframes testimonial-forward {
@@ -1839,10 +1834,6 @@ p {
 
   .testimonial-carousel-pagination {
     gap: 0;
-  }
-
-  .review-summary {
-    text-align: left;
   }
 
   .hero-review {
