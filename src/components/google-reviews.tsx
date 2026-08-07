@@ -26,7 +26,7 @@ export function GoogleReviews() {
               </span>
               <span className="google-review-source-copy">
                 <strong>{GOOGLE_REVIEW_SUMMARY.rating} on Google</strong>
-                <span>{GOOGLE_REVIEW_SUMMARY.count} verified reviews</span>
+                <span>{GOOGLE_REVIEW_SUMMARY.count} Google reviews</span>
               </span>
             </div>
             <span className="eyebrow">Client experiences</span>
