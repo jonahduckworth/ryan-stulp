@@ -150,9 +150,13 @@ export function GoogleReviews() {
                 <p>&ldquo;{testimonial.quote}&rdquo;</p>
               </blockquote>
               <figcaption>
-                <span className="testimonial-slide-count" aria-hidden="true">
-                  {String(currentIndex + 1).padStart(2, "0")} /{" "}
-                  {String(FEATURED_TESTIMONIALS.length).padStart(2, "0")}
+                <span
+                  className="testimonial-slide-stars"
+                  aria-label={`${testimonial.rating} out of 5 stars`}
+                >
+                  {Array.from({ length: testimonial.rating }, (_, index) => (
+                    <Star key={index} aria-hidden="true" />
+                  ))}
                 </span>
                 <strong>{testimonial.author}</strong>
                 <span>Google review</span>
@@ -171,25 +175,19 @@ export function GoogleReviews() {
             </button>
 
             <div className="testimonial-carousel-pagination">
-              {FEATURED_TESTIMONIALS.map((review, index) => (
-                <button
-                  className={`testimonial-carousel-dot${
-                    currentIndex === index ? " is-active" : ""
-                  }`}
-                  type="button"
-                  key={review.author}
-                  onClick={() =>
-                    selectReview(
-                      index,
-                      index < currentIndex ? "backward" : "forward",
-                    )
-                  }
-                  aria-label={`Show review ${index + 1} of ${FEATURED_TESTIMONIALS.length}`}
-                  aria-current={currentIndex === index ? "true" : undefined}
-                >
-                  <span aria-hidden="true" />
-                </button>
-              ))}
+              <div
+                className="testimonial-carousel-progress"
+                role="group"
+                aria-label={`Review ${currentIndex + 1} of ${FEATURED_TESTIMONIALS.length}`}
+              >
+                {FEATURED_TESTIMONIALS.map((review, index) => (
+                  <span
+                    className={currentIndex === index ? "is-active" : undefined}
+                    key={review.author}
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
 
               {!prefersReducedMotion && (
                 <button
