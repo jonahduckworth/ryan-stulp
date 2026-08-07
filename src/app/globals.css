@@ -961,6 +961,41 @@ p {
   gap: 2rem;
 }
 
+.google-review-source {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  background: var(--white);
+}
+
+.google-review-stars {
+  display: inline-flex;
+  gap: 0.14rem;
+  color: #e6a500;
+}
+
+.google-review-stars svg {
+  fill: currentcolor;
+}
+
+.google-review-source-copy {
+  display: grid;
+  line-height: 1.25;
+}
+
+.google-review-source-copy strong {
+  font-size: 0.92rem;
+}
+
+.google-review-source-copy span {
+  color: var(--slate);
+  font-size: 0.78rem;
+}
+
 .testimonial-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1095,6 +1130,20 @@ p {
   display: grid;
   gap: 0.6rem;
   padding-left: 1.2rem;
+}
+
+.about-philosophy {
+  display: grid;
+  gap: 0.85rem;
+  margin-block: 0.75rem;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  border-left: 4px solid var(--signal);
+  background: var(--white);
+}
+
+.prose .about-philosophy h3 {
+  margin-top: 0;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
 }
 
 .portrait-frame {

@@ -7,7 +7,7 @@ import { PageHero } from "@/components/page-hero";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Meet Ryan Stulp, a Calgary-area real estate professional serving residential, commercial, rural, investment, and development clients.",
+    "Meet Ryan Stulp, a Calgary-area real estate professional helping buyers, sellers, investors, builders, and commercial clients make informed decisions.",
   alternates: { canonical: "/about" },
 };
 
@@ -17,7 +17,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="About Ryan"
         title="Direct advice. Serious follow-through."
-        description="Ryan works across residential, commercial, rural, investment, and development real estate, helping clients understand the opportunity and the risk before they make a move."
+        description="Ryan helps buyers, sellers, investors, builders, and commercial clients understand the opportunity, the risk, and the market before they make a move."
       />
       <section className="section">
         <div className="container split-grid">
@@ -35,20 +35,33 @@ export default function AboutPage() {
             <h2>Built around communication and accountability.</h2>
             <p>
               Ryan is licensed in Alberta for residential, commercial, and rural
-              real estate. He brings a direct, sales-focused approach to helping
-              clients understand the decision in front of them.
+              real estate. His approach is market-focused and education-first:
+              explain what the data says, be candid about the risk, and give
+              people room to make the right decision without pressure.
             </p>
             <p>
-              He supports first-time buyers, growing families, investors,
-              builders, developers, rural clients, and commercial decision
-              makers. That range matters: every property is different, but good
-              representation always starts with clear priorities, informed
-              negotiation, and details that do not get dropped.
+              He supports first-time and repeat buyers, homeowners preparing to
+              sell, growing families, investors, builders, developers, rural
+              clients, and commercial decision makers. That range matters: every
+              property is different, but good representation always starts with
+              clear priorities, informed negotiation, and details that do not get
+              dropped.
             </p>
+            <aside className="about-philosophy">
+              <span className="eyebrow">Why the work matters</span>
+              <h3>Confidence comes from clarity, not pressure.</h3>
+              <p>
+                A real estate decision can shape a family&apos;s next chapter, a
+                business plan, or years of financial choices. Ryan&apos;s role is
+                to make the trade-offs understandable and help clients choose
+                what fits, even when the best move is to wait or walk away.
+              </p>
+            </aside>
             <h3>What you can expect</h3>
             <ul>
               <li>Plain-language market and property guidance</li>
               <li>A strategy shaped around your timing and risk tolerance</li>
+              <li>Honest pricing and positioning guidance for sellers</li>
               <li>Direct communication before, during, and after the deal</li>
               <li>Strong follow-through across documents, conditions, and possession</li>
             </ul>

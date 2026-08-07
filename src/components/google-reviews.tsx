@@ -1,3 +1,4 @@
+import { Star } from "lucide-react";
 import {
   FEATURED_TESTIMONIALS,
   GOOGLE_REVIEW_PROFILE_URL,
@@ -14,6 +15,20 @@ export function GoogleReviews() {
       <div className="container stack">
         <div className="testimonial-heading">
           <div className="stack">
+            <div
+              className="google-review-source"
+              aria-label={`${GOOGLE_REVIEW_SUMMARY.rating} out of 5 from ${GOOGLE_REVIEW_SUMMARY.count} Google reviews`}
+            >
+              <span className="google-review-stars" aria-hidden="true">
+                {Array.from({ length: 5 }, (_, index) => (
+                  <Star key={index} size={17} strokeWidth={2.2} />
+                ))}
+              </span>
+              <span className="google-review-source-copy">
+                <strong>{GOOGLE_REVIEW_SUMMARY.rating} on Google</strong>
+                <span>{GOOGLE_REVIEW_SUMMARY.count} verified reviews</span>
+              </span>
+            </div>
             <span className="eyebrow">Client experiences</span>
             <h2 id="google-reviews-title" className="section-title">
               Trusted by Calgary-area clients.
@@ -47,8 +62,7 @@ export function GoogleReviews() {
           ))}
         </div>
         <p className="review-summary">
-          {GOOGLE_REVIEW_SUMMARY.rating} out of 5 from{" "}
-          {GOOGLE_REVIEW_SUMMARY.count} Google reviews, verified{" "}
+          Rating and review count verified on Google{" "}
           {GOOGLE_REVIEW_SUMMARY.verifiedOn}.
         </p>
       </div>
