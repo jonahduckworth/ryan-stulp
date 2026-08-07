@@ -27,10 +27,10 @@ export const FEATURED_TESTIMONIALS = [
       "Ryan was great to work with throughout the entire home buying process. He was knowledgeable, responsive, and always had our best interests in mind. His professionalism and market expertise made everything smooth and stress-free.",
   },
   {
-    author: "It Me",
+    author: "Maha Abdelaziz",
     rating: 5,
     quote:
-      "Ryan went above and beyond to help us get our dream home. He is attentive, professional, and reliable. We couldn’t have done it without him and we will definitely be calling him when our family or friends are in search of a new home.",
+      "Ryan is a wonderful person and it was a pleasure dealing with him. He is patient and pays attention to the smallest details. I would recommend Ryan to anyone looking for a home.",
   },
   {
     author: "Martin Boland",
