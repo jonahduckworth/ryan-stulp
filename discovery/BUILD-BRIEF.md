@@ -71,15 +71,15 @@ See [ASSET-INVENTORY.md](./ASSET-INVENTORY.md).
 | GoDaddy / `ryanstulp.ca` | Confirmed working | Jonah has active "Domains Only" delegate access. The domain is visible and expires April 7, 2029. Do not change DNS until the replacement is production-ready and the full zone is rebuilt. |
 | Current DNS | Export obtained | Mateo's export is saved at `discovery/handoff/ryanstulp.ca-DNS-export.txt`. Live DNS matches the nameservers, hosting IP, MX records, and duplicate SPF warning in the export. |
 | WordPress / A2/hosting.com reseller | Public site available; admin access not supplied | Mateo paid for the old hosting, so no Ryan renewal date applies. A WordPress migration is not required, but a final backup should still be captured before cutover. |
-| Google Business Profile | Invite received; access not confirmed | Invite was sent to `jonah@jdbuilds.ca` on July 20. The current browser is signed into `duckwxrth@gmail.com` and shows zero businesses. Sign in/accept with the intended Google identity. |
-| Google Analytics | Reported sent; not independently verified | Mateo said access was sent July 23. No separate invitation was found in Outlook search. Confirm the property appears under the correct Google account and record the GA4 measurement ID. |
+| Google Business Profile | Confirmed manager access | `jonah@jdbuilds.ca` became a manager on July 20. Live management access was verified July 28. The profile has a 4.9 rating from 27 reviews, uses `(587) 839-1432`, links to `https://ryanstulp.ca/`, and currently lists Calgary as the service area with no public business location. |
+| Google Analytics | Confirmed property access | Mateo granted account and property access July 23. Live access was verified July 28 for property `ryanstulp.ca`; web stream `12280830039` is receiving traffic and uses measurement ID `G-ZPHYKZLE2P`. |
 | Google Tag Manager | Not confirmed | Mateo's reply mentioned Analytics but did not confirm GTM. Determine whether a container exists and whether it should be retained or replaced. |
-| Google Search Console | Not confirmed | Obtain owner/full-user access and preserve verification during launch. |
+| Google Search Console | Access unavailable | A live check on July 28 showed only JD Builds properties under Jonah's Google account, and no Ryan Search Console invitation was found in email. Create and verify a `ryanstulp.ca` domain property during the controlled launch window. |
 | Page Pros / local SEO | Relationship confirmed; recommendations pending | Ryan introduced Jonah to Patrick and asked for site structure, schema, internal linking, GBP, and keyword recommendations. No reply from Page Pros is present yet. |
 | GoHighLevel / LeadConnector | Account exists but handoff is incomplete | Mateo does not have access. The earlier project was paused and LeadConnector/Mailgun were not fully configured. Confirm whether GHL is used in v1 or leave it out. |
 | Mailgun | DNS traces exist; active use unconfirmed | Do not assume the old Mailgun configuration is usable. Prefer a fresh transactional-email setup unless Ryan explicitly wants to restore it. |
 | Existing leads | No export received | Mateo said Ryan already has leads off-site and would double-check WordPress submissions. His final handoff attached only DNS. Obtain an explicit "no additional form data" confirmation or an export. |
-| Brokerage approval | Not obtained | Required for licensed name, brokerage display, claims, testimonials, address, listing content, and any brokerage/MLS marks or disclosures. |
+| Brokerage approval | Not obtained | Ryan's current RECA licence categories and public brokerage are consistent with the site. Formal advertising approval is still required for performance claims, awards, brokerage/MLS marks, and final launch copy. |
 
 ## DNS and email cutover guardrails
 
@@ -136,6 +136,15 @@ Current listing mismatch:
 Do not migrate old listing price/status as authoritative. Ryan or the brokerage must supply the launch dataset and identify the ongoing source of truth.
 
 Current listings are not required to begin development or complete the platform. The listings page and dashboard must support a clean zero-listing state, and Ryan can add listings later through the admin dashboard. Do not publish stale or placeholder listings merely to populate the page. If no active listings are entered by launch, show an honest empty state with consultation/contact calls to action.
+
+### Verified Google review source
+
+On July 28, 2026, the live Google Business Profile showed a 4.9 rating from 27
+reviews. All review text is accessible through the manager account. Ryan has
+publicly replied to the three reviews selected for the website from Alison
+Whellams, Vincent D, and Ravdeep Singh. The site identifies them as Google
+reviews and links back to the Google profile. Recheck the public rating and
+review count during final launch QA because both can change.
 
 ### Valuable content to review and rewrite
 
@@ -366,7 +375,8 @@ Never send names, email addresses, phone numbers, street addresses, free-text me
 
 ### Access and coordination
 
-11. Accept/verify Google Business Profile and Analytics access using the intended `jonah@jdbuilds.ca` Google identity.
+11. Google Business Profile and Analytics access are verified. Preserve both
+    during cutover and keep the new address change coordinated with Page Pros.
 12. Grant Search Console access and confirm whether a Tag Manager container exists.
 13. Provide or invite Jonah to the current GoHighLevel/Mailgun accounts only if they remain in scope.
 14. Ask Page Pros for the promised 10 target keywords, location priorities, GBP/site recommendations, and their measurement/reporting plan.

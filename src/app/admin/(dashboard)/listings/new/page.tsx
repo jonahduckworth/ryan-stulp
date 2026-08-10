@@ -9,7 +9,10 @@ export default function NewListingPage() {
       <header className="admin-header">
         <div>
           <h1>Add listing</h1>
-          <p>Save as a draft, or publish by choosing a public status.</p>
+          <p>
+            Enter the property details, create a private draft, then add photos
+            and preview before publishing.
+          </p>
         </div>
       </header>
       <ListingForm />

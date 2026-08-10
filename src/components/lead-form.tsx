@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import Script from "next/script";
 import {
   submitLead,
@@ -33,10 +33,24 @@ export function LeadForm({
   source,
   defaultIntent = "general",
   includeAddress = false,
+  defaultPropertyAddress = "",
+  listingId = "",
+  pageUrl,
+  campaign = {},
 }: {
   source: string;
   defaultIntent?: "buy" | "sell" | "invest" | "commercial" | "general";
   includeAddress?: boolean;
+  defaultPropertyAddress?: string;
+  listingId?: string;
+  pageUrl?: string;
+  campaign?: {
+    source?: string;
+    medium?: string;
+    campaign?: string;
+    term?: string;
+    content?: string;
+  };
 }) {
   const [state, formAction, pending] = useActionState(
     submitLead,
@@ -44,6 +58,12 @@ export function LeadForm({
   );
   const errorId = (name: string) => `${source}-${name}-error`;
   const hasError = (name: string) => Boolean(state.errors?.[name]?.length);
+  const referrerInput = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (referrerInput.current) {
+      referrerInput.current.value = document.referrer;
+    }
+  }, []);
 
   return (
     <form className="form-shell form-grid" action={formAction}>
@@ -54,6 +74,18 @@ export function LeadForm({
         />
       ) : null}
       <input type="hidden" name="source" value={source} />
+      <input type="hidden" name="listingId" value={listingId} />
+      <input
+        type="hidden"
+        name="pageUrl"
+        value={pageUrl || `/${source}`}
+      />
+      <input ref={referrerInput} type="hidden" name="referrer" defaultValue="" />
+      <input type="hidden" name="utmSource" value={campaign.source || ""} />
+      <input type="hidden" name="utmMedium" value={campaign.medium || ""} />
+      <input type="hidden" name="utmCampaign" value={campaign.campaign || ""} />
+      <input type="hidden" name="utmTerm" value={campaign.term || ""} />
+      <input type="hidden" name="utmContent" value={campaign.content || ""} />
       <input
         className="honeypot"
         name="website"
@@ -63,6 +95,12 @@ export function LeadForm({
         aria-hidden="true"
         hidden
       />
+      {defaultPropertyAddress ? (
+        <div className="form-context field-full">
+          <span>You&apos;re asking about</span>
+          <strong>{defaultPropertyAddress}</strong>
+        </div>
+      ) : null}
       <div className="field">
         <label htmlFor={`${source}-name`}>Name</label>
         <input
@@ -127,7 +165,9 @@ export function LeadForm({
             id={`${source}-propertyAddress`}
             name="propertyAddress"
             type="text"
-            defaultValue={state.values?.propertyAddress}
+            defaultValue={
+              state.values?.propertyAddress ?? defaultPropertyAddress
+            }
             autoComplete="street-address"
             aria-invalid={hasError("propertyAddress")}
             aria-describedby={

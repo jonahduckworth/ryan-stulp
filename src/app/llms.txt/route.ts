@@ -10,6 +10,7 @@ export function GET() {
       "## Primary pages",
       `- ${SITE.url}/about`,
       `- ${SITE.url}/listings`,
+      `- ${SITE.url}/market-updates`,
       `- ${SITE.url}/buying-calgary`,
       `- ${SITE.url}/selling-calgary`,
       `- ${SITE.url}/home-evaluation`,

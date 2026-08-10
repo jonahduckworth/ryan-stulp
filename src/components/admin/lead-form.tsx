@@ -27,7 +27,8 @@ export function AdminLeadForm({ lead }: { lead: Lead }) {
           <option value="new">New</option>
           <option value="contacted">Contacted</option>
           <option value="qualified">Qualified</option>
-          <option value="closed">Closed</option>
+          <option value="won">Won</option>
+          <option value="lost">Lost</option>
           <option value="archived">Archived</option>
         </select>
       </div>
@@ -40,7 +41,11 @@ export function AdminLeadForm({ lead }: { lead: Lead }) {
           placeholder="Add follow-up notes, timing, and next steps."
         />
       </div>
-      <p className="form-status field-full" data-status={state.status}>
+      <p
+        className="form-status field-full"
+        data-status={state.status}
+        aria-live="polite"
+      >
         {state.message}
       </p>
       <div className="admin-actions">

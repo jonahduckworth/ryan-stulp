@@ -1,10 +1,34 @@
 import { z } from "zod";
+import { AREA_KEYS } from "@/lib/listing-options";
 
-const optionalText = z
+const optionalTextMax = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .transform((value) => (value === "" ? null : value))
+    .nullable();
+
+const optionalText = optionalTextMax(500);
+
+const optionalUrlOrPath = z
   .string()
   .trim()
-  .transform((value) => (value === "" ? null : value))
-  .nullable();
+  .refine(
+    (value) =>
+      value === "" ||
+      value.startsWith("/") ||
+      z.url().safeParse(value).success,
+    "Use a full URL or a path beginning with /.",
+  )
+  .transform((value) => value || null);
+
+const optionalShortText = z
+  .string()
+  .trim()
+  .max(500)
+  .optional()
+  .transform((value) => value || null);
 
 export const leadSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name.").max(100),
@@ -21,15 +45,45 @@ export const leadSchema = z.object({
     .min(10, "Please share a little more detail (at least 10 characters).")
     .max(3000),
   propertyAddress: optionalText,
-  source: z.enum(["contact-page", "buying-page", "home-evaluation"]),
+  listingId: z
+    .uuid()
+    .or(z.literal(""))
+    .optional()
+    .transform((value) => value || null),
+  source: z.enum([
+    "contact-page",
+    "listing-detail",
+    "buying-page",
+    "home-evaluation",
+  ]),
   website: z.string().max(0, "Unable to submit."),
   turnstileToken: z.string().optional(),
+  pageUrl: optionalShortText,
+  referrer: optionalShortText,
+  utmSource: optionalShortText,
+  utmMedium: optionalShortText,
+  utmCampaign: optionalShortText,
+  utmTerm: optionalShortText,
+  utmContent: optionalShortText,
 });
 
 export const loginSchema = z.object({
   email: z.email("Enter a valid email address.").trim().toLowerCase(),
   password: z.string().min(8, "Password must be at least 8 characters."),
 });
+
+export const passwordSetupSchema = z
+  .object({
+    password: z
+      .string()
+      .min(12, "Password must be at least 12 characters.")
+      .max(128, "Password must be 128 characters or fewer."),
+    confirmPassword: z.string(),
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
 
 export const listingSchema = z.object({
   id: z.uuid().optional(),
@@ -41,15 +95,29 @@ export const listingSchema = z.object({
     .max(160)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase words and hyphens only."),
   address: z.string().trim().min(3).max(180),
+  addressLine2: optionalTextMax(120),
   city: z.string().trim().min(2).max(100),
   province: z.string().trim().min(2).max(40),
-  postalCode: optionalText,
+  postalCode: optionalTextMax(20),
   price: z.coerce.number().int().nonnegative().nullable(),
   status: z.enum(["draft", "active", "pending", "sold", "archived"]),
+  listingType: z.enum(["residential", "commercial", "rural"]),
   propertyType: z.string().trim().min(2).max(80),
+  neighbourhood: optionalTextMax(100),
+  areaKey: z
+    .enum(AREA_KEYS)
+    .or(z.literal(""))
+    .transform((value) => value || null),
+  mlsNumber: optionalTextMax(60),
   bedrooms: z.coerce.number().int().nonnegative().nullable(),
   bathrooms: z.coerce.number().nonnegative().nullable(),
   squareFeet: z.coerce.number().int().positive().nullable(),
+  yearBuilt: z.coerce
+    .number()
+    .int()
+    .min(1800)
+    .max(new Date().getFullYear() + 2)
+    .nullable(),
   description: z.string().trim().min(20).max(12000),
   features: z
     .string()
@@ -60,13 +128,90 @@ export const listingSchema = z.object({
         .map((item) => item.trim())
         .filter(Boolean),
     ),
+  propertyDetails: z.object({
+    parking: optionalTextMax(100),
+    lotSize: optionalTextMax(100),
+    annualPropertyTax: z.coerce.number().int().nonnegative().nullable(),
+    monthlyCondoFee: z.coerce.number().int().nonnegative().nullable(),
+    transactionType: z
+      .enum(["sale", "lease", "sale-or-lease"])
+      .or(z.literal(""))
+      .transform((value) => value || null),
+    zoning: optionalTextMax(100),
+    commercialUse: optionalTextMax(160),
+    acreage: z.coerce.number().nonnegative().nullable(),
+    waterSource: optionalTextMax(120),
+    wastewaterSystem: optionalTextMax(120),
+    outbuildings: optionalTextMax(160),
+  }),
   coverImageUrl: z.url("Use a valid image URL.").or(z.literal("")).transform((value) => value || null),
+  ctaLabel: optionalTextMax(80),
+  ctaDestination: optionalUrlOrPath,
+  featured: z.boolean(),
+  seoTitle: optionalTextMax(70),
+  seoDescription: optionalTextMax(180),
+  socialImageUrl: z
+    .url("Use a valid social image URL.")
+    .or(z.literal(""))
+    .transform((value) => value || null),
 });
 
 export const leadUpdateSchema = z.object({
   id: z.uuid(),
-  status: z.enum(["new", "contacted", "qualified", "closed", "archived"]),
+  status: z.enum([
+    "new",
+    "contacted",
+    "qualified",
+    "won",
+    "lost",
+    "archived",
+  ]),
   notes: z.string().trim().max(6000).transform((value) => value || null),
 });
+
+export const siteSettingsSchema = z.object({
+  notificationEmail: z.email().trim().toLowerCase(),
+  publicEmail: z.email().trim().toLowerCase(),
+  phoneDisplay: z.string().trim().min(7).max(30),
+  facebookUrl: z.url().or(z.literal("")).transform((value) => value || null),
+  bookingUrl: z.url().or(z.literal("")).transform((value) => value || null),
+  brokerageName: z.string().trim().min(2).max(180),
+  brokerageAddress: z.string().trim().min(5).max(260),
+  licensedName: z.string().trim().min(2).max(120),
+  homepageEyebrow: z.string().trim().min(3).max(80),
+  homepageTitle: z.string().trim().min(10).max(120),
+  homepageDescription: z.string().trim().min(30).max(400),
+});
+
+export const marketUpdateSchema = z
+  .object({
+    id: z.uuid().optional(),
+    title: z.string().trim().min(5).max(140),
+    slug: z
+      .string()
+      .trim()
+      .min(3)
+      .max(160)
+      .regex(
+        /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+        "Use lowercase words and hyphens only.",
+      ),
+    excerpt: z.string().trim().min(30).max(320),
+    body: z.string().trim().min(20).max(50000),
+    status: z.enum(["draft", "published", "archived"]),
+    authorName: z.string().trim().min(2).max(120),
+    seoTitle: optionalTextMax(70),
+    seoDescription: optionalTextMax(180),
+  })
+  .superRefine((value, context) => {
+    if (value.status === "published" && value.body.length < 300) {
+      context.addIssue({
+        code: "custom",
+        path: ["body"],
+        message:
+          "Published updates need at least 300 characters of useful market context.",
+      });
+    }
+  });
 
 export type LeadInput = z.infer<typeof leadSchema>;

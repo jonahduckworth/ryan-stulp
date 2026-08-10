@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaBand } from "@/components/cta-band";
+import { FaqSection } from "@/components/faq-section";
+import { InlineTestimonial } from "@/components/inline-testimonial";
 import { PageHero } from "@/components/page-hero";
 
 export const metadata: Metadata = {
@@ -16,7 +18,7 @@ export default function SellingPage() {
       <PageHero
         eyebrow="Selling in Calgary"
         title="Price with evidence. Launch with purpose."
-        description="Ryan builds the sale around your property, timing, and next move — from the first pricing conversation through conditions and possession."
+        description="Ryan builds the sale around your property, timing, and next move, from the first pricing conversation through conditions and possession."
       />
       <section className="section">
         <div className="container intro-grid">
@@ -51,6 +53,34 @@ export default function SellingPage() {
           </div>
         </div>
       </section>
+      <section className="section-tight">
+        <div className="container">
+          <InlineTestimonial
+            author="Alison Whellams"
+            quote="Ryan has sold two of my properties and helped me buy my current house. He is great! Always professional, knowledgeable, and made himself available for showings."
+          />
+        </div>
+      </section>
+      <FaqSection
+        title="Questions sellers often ask"
+        items={[
+          {
+            question: "Do I need to renovate before selling?",
+            answer:
+              "Not automatically. Ryan can help separate work that may support the sale from work that could cost time or money without a useful return.",
+          },
+          {
+            question: "How is an asking price chosen?",
+            answer:
+              "The starting point is recent comparable activity, current competition, property condition, timing, and the strategy for attracting and evaluating offers.",
+          },
+          {
+            question: "Can I ask for an evaluation before I am ready to list?",
+            answer:
+              "Yes. An early conversation can help you understand value, preparation priorities, and timing without committing to a launch date.",
+          },
+        ]}
+      />
       <section className="section dark">
         <div className="container">
           <blockquote className="quote">

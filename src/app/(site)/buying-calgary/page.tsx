@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { CtaBand } from "@/components/cta-band";
+import { FaqSection } from "@/components/faq-section";
+import { InlineTestimonial } from "@/components/inline-testimonial";
 import { LeadForm } from "@/components/lead-form";
 import { PageHero } from "@/components/page-hero";
 
@@ -56,6 +58,34 @@ export default function BuyingPage() {
           </div>
         </div>
       </section>
+      <section className="section-tight">
+        <div className="container">
+          <InlineTestimonial
+            author="Ravdeep Singh"
+            quote="Ryan was knowledgeable, responsive, and always had our best interests in mind. His professionalism and market expertise made everything smooth and stress-free."
+          />
+        </div>
+      </section>
+      <FaqSection
+        title="Questions buyers often ask"
+        items={[
+          {
+            question: "When should I contact Ryan if I am not pre-approved yet?",
+            answer:
+              "You can reach out early. Ryan can help clarify the search, timing, and questions to bring to a mortgage professional before you begin viewing seriously.",
+          },
+          {
+            question: "Does Ryan work with first-time buyers and investors?",
+            answer:
+              "Yes. Ryan works with first-time buyers, experienced buyers, and investors across residential, rural, commercial, and development opportunities.",
+          },
+          {
+            question: "Can Ryan help outside Calgary?",
+            answer:
+              "Ryan serves Calgary and surrounding communities. Share the location you are considering so he can confirm whether it fits his service area.",
+          },
+        ]}
+      />
       <section className="section surface">
         <div className="container split-grid">
           <div className="stack">
@@ -66,7 +96,11 @@ export default function BuyingPage() {
               now and Ryan can help organize the next steps.
             </p>
           </div>
-          <LeadForm source="buying-page" defaultIntent="buy" />
+          <LeadForm
+            source="buying-page"
+            defaultIntent="buy"
+            pageUrl="/buying-calgary"
+          />
         </div>
       </section>
       <CtaBand

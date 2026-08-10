@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
-import { SITE } from "@/lib/site";
+import { getPublicSiteSettings } from "@/lib/data/public";
+import { resolveSiteIdentity } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const identity = resolveSiteIdentity(await getPublicSiteSettings());
   return (
     <>
       <PageHero
@@ -42,7 +44,7 @@ export default function PrivacyPage() {
           <h2>Your choices</h2>
           <p>
             To ask about, correct, or request deletion of your information,
-            email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Some
+            email <a href={`mailto:${identity.email}`}>{identity.email}</a>. Some
             records may need to be retained where required by law or brokerage
             obligations.
           </p>

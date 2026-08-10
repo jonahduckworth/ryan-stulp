@@ -14,5 +14,6 @@ describe("formatCurrency", () => {
 describe("slugify", () => {
   it("creates URL-safe listing slugs", () => {
     expect(slugify(" 123 Main St. SE ")).toBe("123-main-st-se");
+    expect(slugify("Café in Montréal")).toBe("cafe-in-montreal");
   });
 });

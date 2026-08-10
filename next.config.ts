@@ -69,6 +69,36 @@ const nextConfig: NextConfig = {
         destination: "/contact",
         permanent: true,
       },
+      {
+        source: "/about-me",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/contact-me",
+        destination: "/contact",
+        permanent: true,
+      },
+      {
+        source: "/buying-resources",
+        destination: "/buying-calgary",
+        permanent: true,
+      },
+      {
+        source: "/selling-resources",
+        destination: "/selling-calgary",
+        permanent: true,
+      },
+      {
+        source: "/product/268-madeira-place-ne",
+        destination: "/listings",
+        permanent: true,
+      },
+      {
+        source: "/product-category/real-estate",
+        destination: "/listings",
+        permanent: true,
+      },
     ];
   },
 };

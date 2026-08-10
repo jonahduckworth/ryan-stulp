@@ -1,13 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CtaBand } from "@/components/cta-band";
+import { GoogleReviews } from "@/components/google-reviews";
 import { JsonLd } from "@/components/json-ld";
 import { ListingCard } from "@/components/listing-card";
-import { getPublishedListings } from "@/lib/data/public";
-import { SITE } from "@/lib/site";
+import { MarketUpdateCard } from "@/components/market-update-card";
+import {
+  getPublishedListings,
+  getPublishedMarketUpdates,
+  getPublicSiteSettings,
+} from "@/lib/data/public";
+import { resolveSiteIdentity } from "@/lib/site";
+import {
+  GOOGLE_REVIEW_PROFILE_URL,
+  GOOGLE_REVIEW_SUMMARY,
+} from "@/lib/testimonials";
 
 export default async function HomePage() {
-  const listings = (await getPublishedListings()).slice(0, 3);
+  const [publishedListings, publishedMarketUpdates, settings] = await Promise.all([
+    getPublishedListings(),
+    getPublishedMarketUpdates(),
+    getPublicSiteSettings(),
+  ]);
+  const listings = publishedListings.slice(0, 3);
+  const marketUpdates = publishedMarketUpdates.slice(0, 3);
+  const identity = resolveSiteIdentity(settings);
 
   return (
     <>
@@ -15,11 +32,12 @@ export default async function HomePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "RealEstateAgent",
-          name: SITE.licensedName,
+          "@id": `${identity.url}/#agent`,
+          name: identity.licensedName,
           alternateName: "Ryan Stulp",
-          url: SITE.url,
-          telephone: SITE.phoneDisplay,
-          email: SITE.email,
+          url: identity.url,
+          telephone: identity.phoneDisplay,
+          email: identity.email,
           areaServed: "Calgary and surrounding area, Alberta",
           address: {
             "@type": "PostalAddress",
@@ -31,21 +49,21 @@ export default async function HomePage() {
           },
           worksFor: {
             "@type": "Organization",
-            name: SITE.brokerage,
+            name: identity.brokerage,
           },
         }}
       />
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-copy">
-            <span className="eyebrow">Calgary and area real estate</span>
-            <h1 className="display">Make your next move with clarity.</h1>
-            <p className="lede">
-              Whether you&apos;re buying your first home, selling, investing, or
-              planning a development, Ryan gives you a clear read on the market
-              and a practical path forward.
+            <span className="eyebrow">{identity.homepageEyebrow}</span>
+            <h1 className="display">{identity.homepageTitle}</h1>
+            <p className="lede">{identity.homepageDescription}</p>
+            <p className="hero-positioning">
+              Market-focused advice. Straight answers. Education before
+              pressure.
             </p>
-            <div className="button-row">
+            <div className="button-row" data-analytics-location="home_hero">
               <Link className="button button-primary" href="/contact">
                 Tell Ryan your goal
               </Link>
@@ -53,13 +71,25 @@ export default async function HomePage() {
                 Explore listings
               </Link>
             </div>
+            <a
+              className="hero-review"
+              href={GOOGLE_REVIEW_PROFILE_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${GOOGLE_REVIEW_SUMMARY.rating} out of 5 from ${GOOGLE_REVIEW_SUMMARY.count} Google reviews`}
+              data-analytics-event="google_reviews_click"
+            >
+              <strong>{GOOGLE_REVIEW_SUMMARY.rating} / 5</strong>
+              <span>{GOOGLE_REVIEW_SUMMARY.count} Google reviews</span>
+              <span className="hero-review-link">Read reviews</span>
+            </a>
           </div>
           <div className="hero-portrait">
             <Image
-              src="/images/ryan-stulp.jpg"
+              src="/images/ryan-stulp-leaning.jpg"
               alt="Ryan Stulp, Calgary real estate professional"
-              width={1066}
-              height={1600}
+              width={1166}
+              height={1749}
               priority
               sizes="(max-width: 900px) 100vw, 46vw"
             />
@@ -67,49 +97,83 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="trust-bar" aria-label="Ryan's experience">
+      <section className="trust-bar" aria-label="Real estate services">
         <div className="container trust-grid">
           <div className="trust-item">
-            <strong>80+</strong>
-            <span>Transaction sides since becoming licensed</span>
-          </div>
-          <div className="trust-item">
-            <strong>7+ years</strong>
-            <span>Sales experience</span>
-          </div>
-          <div className="trust-item">
             <strong>Residential</strong>
-            <span>Homes, rural property, and investments</span>
+            <span>Buying and selling guidance</span>
           </div>
           <div className="trust-item">
             <strong>Commercial</strong>
-            <span>Guidance for business and development needs</span>
+            <span>Business and development needs</span>
+          </div>
+          <div className="trust-item">
+            <strong>Rural</strong>
+            <span>Property beyond the city</span>
+          </div>
+          <div className="trust-item">
+            <strong>Calgary and area</strong>
+            <span>Local market context</span>
           </div>
         </div>
       </section>
 
-      <section className="section">
-        <div className="container intro-grid">
-          <div className="stack">
-            <span className="eyebrow">A grounded approach</span>
-            <h2 className="section-title">Advice that helps you decide.</h2>
+      <section className="section personal-intro">
+        <div className="container personal-grid">
+          <div className="personal-portrait">
+            <Image
+              src="/images/ryan-stulp-standing.jpg"
+              alt="Professional portrait of Ryan Stulp standing in a dark suit"
+              width={1166}
+              height={1749}
+              sizes="(max-width: 900px) 100vw, 40vw"
+            />
           </div>
-          <div className="stack">
+          <div className="stack personal-copy">
+            <span className="eyebrow">The person behind the advice</span>
+            <h2 className="section-title">
+              Market knowledge, without the sales pressure.
+            </h2>
             <p className="lede">
-              Real estate gets complicated when the advice is vague. Ryan
-              explains the trade-offs, keeps the process organized, and makes
-              sure you understand what happens next.
+              Ryan&apos;s job is not to talk you into a move. It is to help you
+              understand the market, compare the trade-offs, and decide what
+              makes sense for you.
             </p>
             <p>
-              His work spans first-time buyers, experienced investors, builders,
-              developers, rural properties, and commercial opportunities. The
-              approach stays the same: listen first, be direct, and protect the
-              client&apos;s priorities from beginning to end.
+              Whether the right answer is to move quickly, adjust the plan, wait,
+              or walk away, you will get the honest read and the context behind
+              it.
             </p>
             <Link className="button button-secondary" href="/about">
               Meet Ryan
             </Link>
           </div>
+        </div>
+        <div className="container difference-grid" aria-label="Why work with Ryan">
+          <article className="difference-card">
+            <span>01</span>
+            <h3>Read the market</h3>
+            <p>
+              Use current activity, competition, and local context instead of
+              relying on assumptions.
+            </p>
+          </article>
+          <article className="difference-card">
+            <span>02</span>
+            <h3>Get the straight answer</h3>
+            <p>
+              Hear the opportunity, the trade-offs, and the risks in plain
+              language.
+            </p>
+          </article>
+          <article className="difference-card">
+            <span>03</span>
+            <h3>Understand the decision</h3>
+            <p>
+              Know why a recommendation makes sense before you choose the next
+              step.
+            </p>
+          </article>
         </div>
       </section>
 
@@ -118,7 +182,7 @@ export default async function HomePage() {
           <Link className="path-card" href="/buying-calgary">
             <div className="path-content">
               <span className="eyebrow">For buyers</span>
-              <h3>Find the right fit — and know why.</h3>
+              <h3>Find the right fit, and know why.</h3>
               <p>
                 Build a smart search, compare opportunities clearly, and make
                 offers with context.
@@ -136,6 +200,75 @@ export default async function HomePage() {
               </p>
               <strong>Plan your sale →</strong>
             </div>
+          </Link>
+        </div>
+      </section>
+
+      <GoogleReviews />
+
+      <section className="section">
+        <div className="container stack">
+          <div className="section-heading-row">
+            <div className="stack">
+              <span className="eyebrow">Property expertise</span>
+              <h2 className="section-title">
+                Different properties need different questions.
+              </h2>
+            </div>
+            <p className="lede">
+              Go deeper on the property type or location you are considering,
+              without losing sight of the decision behind it.
+            </p>
+          </div>
+          <div className="expertise-grid">
+            <Link
+              className="expertise-card"
+              href="/commercial-real-estate-calgary"
+            >
+              <span>01 · Commercial</span>
+              <h3>Property that works for the business.</h3>
+              <p>
+                Clarify use, location, cost, due diligence, and the conditions
+                behind a commercial decision.
+              </p>
+              <strong>Explore commercial guidance →</strong>
+            </Link>
+            <Link
+              className="expertise-card"
+              href="/real-estate-investing-calgary"
+            >
+              <span>02 · Investment</span>
+              <h3>Evidence before assumptions.</h3>
+              <p>
+                Compare opportunities against the strategy, time horizon, work,
+                risk, and exit you are prepared to manage.
+              </p>
+              <strong>Explore investment guidance →</strong>
+            </Link>
+            <Link
+              className="expertise-card"
+              href="/rural-real-estate-calgary"
+            >
+              <span>03 · Rural</span>
+              <h3>See the whole property system.</h3>
+              <p>
+                Bring land, access, water, wastewater, structures, services, and
+                lifestyle into the same decision.
+              </p>
+              <strong>Explore rural guidance →</strong>
+            </Link>
+          </div>
+          <Link className="area-feature" href="/calgary-areas">
+            <div>
+              <span className="eyebrow">Calgary and area</span>
+              <h3>Choose the trade-offs before the neighbourhood.</h3>
+            </div>
+            <p>
+              Compare the inner city, northwest, northeast, southwest,
+              southeast, and surrounding area using the factors that affect
+              daily life and long-term fit.
+            </p>
+            <strong>Explore the area guide →</strong>
           </Link>
         </div>
       </section>
@@ -205,15 +338,33 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section dark">
-        <div className="container">
-          <blockquote className="quote">
-            “We never felt pressured — only informed. Ryan made a complicated
-            move feel manageable from the first conversation to possession.”
-            <cite>— Calgary client</cite>
-          </blockquote>
-        </div>
-      </section>
+      {marketUpdates.length ? (
+        <section className="section surface">
+          <div className="container stack">
+            <div className="section-heading-row">
+              <div className="stack">
+                <span className="eyebrow">Market perspective</span>
+                <h2 className="section-title">
+                  Local context for the decisions ahead.
+                </h2>
+              </div>
+              <div className="stack">
+                <p className="lede">
+                  Clear explanations of what is changing in Calgary real estate
+                  and what the numbers may mean for your plans.
+                </p>
+                <Link href="/market-updates">View all market updates →</Link>
+              </div>
+            </div>
+            <div className="market-update-grid">
+              {marketUpdates.map((update) => (
+                <MarketUpdateCard update={update} key={update.id} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <CtaBand />
     </>
   );

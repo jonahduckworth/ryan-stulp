@@ -3,7 +3,13 @@ import "server-only";
 import { cache } from "react";
 import { verifyAdmin } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import type { Lead, Listing } from "@/lib/types";
+import type {
+  Lead,
+  Listing,
+  ListingMedia,
+  MarketUpdate,
+  SiteSettings,
+} from "@/lib/types";
 
 export const getAdminListings = cache(async (): Promise<Listing[]> => {
   await verifyAdmin();
@@ -30,14 +36,27 @@ export const getAdminListing = cache(
   },
 );
 
+export const getAdminListingMedia = cache(
+  async (listingId: string): Promise<ListingMedia[]> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("listing_media")
+      .select("*")
+      .eq("listing_id", listingId)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
+    if (error) throw new Error("Unable to load listing media.");
+    return (data ?? []) as ListingMedia[];
+  },
+);
+
 export const getAdminLeads = cache(async (): Promise<Lead[]> => {
   await verifyAdmin();
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("leads")
-    .select(
-      "id,name,email,phone,intent,message,property_address,status,source,notes,created_at,updated_at",
-    )
+    .select("*")
     .order("created_at", { ascending: false });
   if (error) throw new Error("Unable to load leads.");
   return (data ?? []) as Lead[];
@@ -48,19 +67,59 @@ export const getAdminLead = cache(async (id: string): Promise<Lead | null> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("leads")
-    .select(
-      "id,name,email,phone,intent,message,property_address,status,source,notes,created_at,updated_at",
-    )
+    .select("*")
     .eq("id", id)
     .maybeSingle();
   if (error) throw new Error("Unable to load lead.");
   return data as Lead | null;
 });
 
+export const getAdminSiteSettings = cache(
+  async (): Promise<SiteSettings | null> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("*")
+      .eq("id", true)
+      .maybeSingle();
+    if (error) throw new Error("Unable to load website settings.");
+    return data as SiteSettings | null;
+  },
+);
+
+export const getAdminMarketUpdates = cache(
+  async (): Promise<MarketUpdate[]> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("market_updates")
+      .select("*")
+      .order("updated_at", { ascending: false });
+    if (error) throw new Error("Unable to load market updates.");
+    return (data ?? []) as MarketUpdate[];
+  },
+);
+
+export const getAdminMarketUpdate = cache(
+  async (id: string): Promise<MarketUpdate | null> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("market_updates")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw new Error("Unable to load the market update.");
+    return data as MarketUpdate | null;
+  },
+);
+
 export async function getDashboardStats() {
-  const [listings, leads] = await Promise.all([
+  const [listings, leads, marketUpdates] = await Promise.all([
     getAdminListings(),
     getAdminLeads(),
+    getAdminMarketUpdates(),
   ]);
   return {
     listings: listings.length,
@@ -71,6 +130,20 @@ export async function getDashboardStats() {
     ).length,
     newLeads: leads.filter((lead) => lead.status === "new").length,
     totalLeads: leads.length,
+    marketUpdates: marketUpdates.length,
+    publishedUpdates: marketUpdates.filter(
+      (update) => update.status === "published" && update.published_at,
+    ).length,
+    draftUpdates: marketUpdates.filter((update) => update.status === "draft")
+      .length,
     recentLeads: leads.slice(0, 5),
+    listingStatuses: {
+      active: listings.filter((listing) => listing.status === "active").length,
+      draft: listings.filter((listing) => listing.status === "draft").length,
+      pending: listings.filter((listing) => listing.status === "pending").length,
+      sold: listings.filter((listing) => listing.status === "sold").length,
+      archived: listings.filter((listing) => listing.status === "archived")
+        .length,
+    },
   };
 }

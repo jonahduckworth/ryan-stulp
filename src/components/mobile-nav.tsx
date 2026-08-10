@@ -34,6 +34,9 @@ function MobileNavMenu() {
               {item.label}
             </Link>
           ))}
+          <Link href="/commercial-real-estate-calgary">Commercial</Link>
+          <Link href="/real-estate-investing-calgary">Investing</Link>
+          <Link href="/rural-real-estate-calgary">Rural</Link>
           <Link href="/home-evaluation">Home evaluation</Link>
           <Link href="/contact">Contact Ryan</Link>
         </nav>

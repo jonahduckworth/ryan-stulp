@@ -4,21 +4,43 @@ Target: complete production v1 by July 31, 2026.
 
 ## Required before production
 
+Use `docs/RYAN-APPROVALS.md` for the exact confirmation Ryan can approve in one
+reply. Listings may be added by Ryan after launch and are not a launch gate.
+
 - [ ] Ryan's licensed name and brokerage display have been confirmed for RECA
       compliance.
 - [ ] Brokerage office address has been confirmed.
 - [ ] Ryan approves all final page copy, testimonials, and performance claims.
-- [ ] Supabase project created and initial migration applied.
-- [ ] Ryan's administrator account created, promoted, and tested.
+- [x] Supabase project created and all migrations through
+      `202607270003_secure_public_settings_grants.sql` applied.
+- [x] Admin listing workflow migrations through
+      `202607290002_atomic_listing_media.sql` applied.
+- [x] Initial administrator account created, promoted, and tested locally.
 - [ ] Resend sending domain verified and a real lead notification tested.
 - [ ] Turnstile production keys configured and a real form submission tested.
-- [ ] Vercel project connected with Node.js 22 and all production variables.
-- [ ] Google Analytics property access confirmed and measurement ID configured.
-- [ ] Search Console property access confirmed or a new domain property created.
-- [ ] Old URL inventory received from Page Pros or collected from the live site.
-- [ ] Every material old URL mapped to a new route or an intentional 410.
+- [ ] Vercel project connected with Node.js 22; remaining third-party production
+      variables are listed below.
+- [x] Google Analytics property access confirmed and measurement ID
+      `G-ZPHYKZLE2P` configured locally.
+- [ ] Create and verify a `ryanstulp.ca` Search Console domain property. A
+      read-only check on July 28 confirmed that Jonah's Google account does not
+      currently have this property.
+- [x] Old URL inventory collected from the live site's XML sitemap.
+- [x] Every material old URL mapped to a new route or an intentional 410.
 - [ ] Privacy copy reviewed for Ryan's actual service and retention practices.
 - [ ] Full acceptance test run completed on the production preview.
+
+## External launch values still required
+
+- Resend API key after `ryanstulp.ca` is verified as a sending domain.
+- Cloudflare Turnstile production site key and secret.
+- Add the verified GA4 measurement ID `G-ZPHYKZLE2P` to the production preview
+  only after the final environment is ready for acceptance testing.
+- Search Console domain-property verification through GoDaddy during the
+  controlled launch window; do not alter DNS early.
+- Supabase is configured for staging and local authentication; add the final
+  `ryanstulp.ca` URL when the custom domain is connected.
+- Vercel custom-domain connection and the associated DNS records.
 
 ## DNS cutover
 

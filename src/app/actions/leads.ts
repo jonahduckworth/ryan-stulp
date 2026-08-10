@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { hasServiceSupabaseEnv } from "@/lib/supabase/env";
 import { leadSchema } from "@/lib/schemas";
@@ -34,9 +35,17 @@ export async function submitLead(
   };
   const parsed = leadSchema.safeParse({
     ...values,
+    listingId: formData.get("listingId") ?? "",
     source: formData.get("source"),
     website: formData.get("website"),
     turnstileToken: formData.get("cf-turnstile-response") || undefined,
+    pageUrl: formData.get("pageUrl") ?? "",
+    referrer: formData.get("referrer") ?? "",
+    utmSource: formData.get("utmSource") ?? "",
+    utmMedium: formData.get("utmMedium") ?? "",
+    utmCampaign: formData.get("utmCampaign") ?? "",
+    utmTerm: formData.get("utmTerm") ?? "",
+    utmContent: formData.get("utmContent") ?? "",
   });
 
   if (!parsed.success) {
@@ -101,7 +110,16 @@ export async function submitLead(
     intent: parsed.data.intent,
     message: parsed.data.message,
     property_address: parsed.data.propertyAddress,
+    listing_id: parsed.data.listingId,
     source: parsed.data.source,
+    page_url: parsed.data.pageUrl,
+    referrer: parsed.data.referrer,
+    utm_source: parsed.data.utmSource,
+    utm_medium: parsed.data.utmMedium,
+    utm_campaign: parsed.data.utmCampaign,
+    utm_term: parsed.data.utmTerm,
+    utm_content: parsed.data.utmContent,
+    consent_version: "2026-07-27",
     request_fingerprint: fingerprint,
   });
 
@@ -121,8 +139,11 @@ export async function submitLead(
     console.error("Lead notification delivery failed.");
   }
 
-  return {
-    status: "success",
-    message: "Thanks — Ryan will follow up personally.",
-  };
+  const inquiryType =
+    parsed.data.source === "home-evaluation"
+      ? "home-evaluation"
+      : parsed.data.source === "listing-detail"
+        ? "listing"
+        : parsed.data.intent;
+  redirect(`/thank-you/${inquiryType}`);
 }
