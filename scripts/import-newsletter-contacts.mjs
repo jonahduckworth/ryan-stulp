@@ -1,8 +1,9 @@
 import { readFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 
-function parseCsv(text) {
+export function parseCsv(text) {
   const rows = [];
   let row = [];
   let cell = "";
@@ -41,7 +42,7 @@ function findColumn(headers, candidates) {
   return headers.findIndex((header) => candidates.includes(normalizedHeader(header)));
 }
 
-function readContacts(rows) {
+export function readContacts(rows) {
   if (rows.length < 2) throw new Error("The CSV needs a header and at least one contact.");
   const [headers, ...records] = rows;
   const firstNameIndex = findColumn(headers, ["firstname", "first"]);
@@ -79,32 +80,45 @@ function requiredEnvironment() {
   return Object.fromEntries(keys.map((key) => [key, process.env[key]]));
 }
 
-let nextResendRequestAt = 0;
-
 function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-async function resendRequest(operation) {
-  let response;
-  for (let attempt = 0; attempt < 5; attempt += 1) {
-    const wait = Math.max(0, nextResendRequestAt - Date.now());
-    if (wait) await delay(wait);
-    nextResendRequestAt = Date.now() + 225;
-    response = await operation();
-    if (response.error?.statusCode !== 429) return response;
-    await delay(1_000 * 2 ** attempt);
-  }
-  return response;
+export function createResendRequester({
+  minimumIntervalMs = 225,
+  sleep = delay,
+  now = Date.now,
+} = {}) {
+  let nextRequestAt = 0;
+  return async function resendRequest(operation) {
+    let response;
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const wait = Math.max(0, nextRequestAt - now());
+      if (wait) await sleep(wait);
+      nextRequestAt = now() + minimumIntervalMs;
+      response = await operation();
+      if (response.error?.statusCode !== 429) return response;
+      await sleep(1_000 * 2 ** attempt);
+    }
+    return response;
+  };
 }
 
-async function syncContact(resend, segmentId, topicId, contact) {
-  const existing = await resendRequest(() =>
+const resendRequest = createResendRequester();
+
+export async function syncContact(
+  resend,
+  segmentId,
+  topicId,
+  contact,
+  request = resendRequest,
+) {
+  const existing = await request(() =>
     resend.contacts.get({ email: contact.email }),
   );
   if (existing.error && existing.error.name !== "not_found") throw new Error(existing.error.message);
   if (!existing.data) {
-    const created = await resendRequest(() =>
+    const created = await request(() =>
       resend.contacts.create({
         email: contact.email,
         firstName: contact.firstName,
@@ -118,7 +132,7 @@ async function syncContact(resend, segmentId, topicId, contact) {
     return { id: created.data.id, subscriptionStatus: "subscribed" };
   }
 
-  const currentTopics = await resendRequest(() =>
+  const currentTopics = await request(() =>
     resend.contacts.topics.list({ email: contact.email }),
   );
   if (currentTopics.error) throw new Error(currentTopics.error.message);
@@ -132,7 +146,7 @@ async function syncContact(resend, segmentId, topicId, contact) {
     return { id: existing.data.id, subscriptionStatus: "unsubscribed" };
   }
 
-  const updated = await resendRequest(() =>
+  const updated = await request(() =>
     resend.contacts.update({
       email: contact.email,
       firstName: contact.firstName,
@@ -141,17 +155,17 @@ async function syncContact(resend, segmentId, topicId, contact) {
     }),
   );
   if (updated.error) throw new Error(updated.error.message);
-  const segments = await resendRequest(() =>
+  const segments = await request(() =>
     resend.contacts.segments.list({ email: contact.email }),
   );
   if (segments.error) throw new Error(segments.error.message);
   if (!segments.data.data.some((segment) => segment.id === segmentId)) {
-    const added = await resendRequest(() =>
+    const added = await request(() =>
       resend.contacts.segments.add({ email: contact.email, segmentId }),
     );
     if (added.error) throw new Error(added.error.message);
   }
-  const topics = await resendRequest(() =>
+  const topics = await request(() =>
     resend.contacts.topics.update({
       email: contact.email,
       topics: [{ id: topicId, subscription: "opt_in" }],
@@ -245,7 +259,9 @@ async function main() {
   if (failed) process.exitCode = 1;
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  });
+}
