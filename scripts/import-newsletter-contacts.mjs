@@ -79,40 +79,86 @@ function requiredEnvironment() {
   return Object.fromEntries(keys.map((key) => [key, process.env[key]]));
 }
 
+let nextResendRequestAt = 0;
+
+function delay(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function resendRequest(operation) {
+  let response;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const wait = Math.max(0, nextResendRequestAt - Date.now());
+    if (wait) await delay(wait);
+    nextResendRequestAt = Date.now() + 225;
+    response = await operation();
+    if (response.error?.statusCode !== 429) return response;
+    await delay(1_000 * 2 ** attempt);
+  }
+  return response;
+}
+
 async function syncContact(resend, segmentId, topicId, contact) {
-  const existing = await resend.contacts.get({ email: contact.email });
+  const existing = await resendRequest(() =>
+    resend.contacts.get({ email: contact.email }),
+  );
   if (existing.error && existing.error.name !== "not_found") throw new Error(existing.error.message);
   if (!existing.data) {
-    const created = await resend.contacts.create({
+    const created = await resendRequest(() =>
+      resend.contacts.create({
+        email: contact.email,
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        unsubscribed: false,
+        segments: [{ id: segmentId }],
+        topics: [{ id: topicId, subscription: "opt_in" }],
+      }),
+    );
+    if (created.error) throw new Error(created.error.message);
+    return { id: created.data.id, subscriptionStatus: "subscribed" };
+  }
+
+  const currentTopics = await resendRequest(() =>
+    resend.contacts.topics.list({ email: contact.email }),
+  );
+  if (currentTopics.error) throw new Error(currentTopics.error.message);
+  const marketUpdateTopic = currentTopics.data.data.find(
+    (topic) => topic.id === topicId,
+  );
+  if (
+    existing.data.unsubscribed ||
+    marketUpdateTopic?.subscription === "opt_out"
+  ) {
+    return { id: existing.data.id, subscriptionStatus: "unsubscribed" };
+  }
+
+  const updated = await resendRequest(() =>
+    resend.contacts.update({
       email: contact.email,
       firstName: contact.firstName,
       lastName: contact.lastName,
       unsubscribed: false,
-      segments: [{ id: segmentId }],
-      topics: [{ id: topicId, subscription: "opt_in" }],
-    });
-    if (created.error) throw new Error(created.error.message);
-    return created.data.id;
-  }
-  const updated = await resend.contacts.update({
-    email: contact.email,
-    firstName: contact.firstName,
-    lastName: contact.lastName,
-    unsubscribed: false,
-  });
+    }),
+  );
   if (updated.error) throw new Error(updated.error.message);
-  const segments = await resend.contacts.segments.list({ email: contact.email });
+  const segments = await resendRequest(() =>
+    resend.contacts.segments.list({ email: contact.email }),
+  );
   if (segments.error) throw new Error(segments.error.message);
   if (!segments.data.data.some((segment) => segment.id === segmentId)) {
-    const added = await resend.contacts.segments.add({ email: contact.email, segmentId });
+    const added = await resendRequest(() =>
+      resend.contacts.segments.add({ email: contact.email, segmentId }),
+    );
     if (added.error) throw new Error(added.error.message);
   }
-  const topics = await resend.contacts.topics.update({
-    email: contact.email,
-    topics: [{ id: topicId, subscription: "opt_in" }],
-  });
+  const topics = await resendRequest(() =>
+    resend.contacts.topics.update({
+      email: contact.email,
+      topics: [{ id: topicId, subscription: "opt_in" }],
+    }),
+  );
   if (topics.error) throw new Error(topics.error.message);
-  return existing.data.id;
+  return { id: existing.data.id, subscriptionStatus: "subscribed" };
 }
 
 async function main() {
@@ -163,7 +209,7 @@ async function main() {
       continue;
     }
     try {
-      const resendContactId = await syncContact(
+      const syncResult = await syncContact(
         resend,
         env.RESEND_MARKET_UPDATES_SEGMENT_ID,
         env.RESEND_MARKET_UPDATES_TOPIC_ID,
@@ -173,12 +219,14 @@ async function main() {
         first_name: contact.firstName,
         last_name: contact.lastName,
         email: contact.email,
-        subscription_status: "subscribed",
+        subscription_status: syncResult.subscriptionStatus,
         consent_source: "existing_client_batch",
         consent_confirmed_by: "Ryan Stulp",
         consent_confirmed_at: confirmedAt,
         consent_batch_id: batch.id,
-        resend_contact_id: resendContactId,
+        unsubscribed_at:
+          syncResult.subscriptionStatus === "unsubscribed" ? confirmedAt : null,
+        resend_contact_id: syncResult.id,
         resend_sync_status: "synced",
         resend_sync_error: null,
       };
@@ -186,7 +234,8 @@ async function main() {
         ? await supabase.from("newsletter_contacts").update(payload).eq("id", existing.id)
         : await supabase.from("newsletter_contacts").insert(payload);
       if (result.error) throw result.error;
-      imported += 1;
+      if (syncResult.subscriptionStatus === "unsubscribed") preserved += 1;
+      else imported += 1;
     } catch {
       failed += 1;
       console.error(`Failed contact ${index + 1}. Review the provider and database logs.`);

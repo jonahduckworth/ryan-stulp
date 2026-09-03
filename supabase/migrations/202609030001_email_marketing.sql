@@ -277,8 +277,14 @@ begin
   if v_contact_id is not null then
     update public.newsletter_contacts
     set
-      last_delivery_status = p_status,
-      last_delivery_at = p_status_at,
+      last_delivery_status = case
+        when last_delivery_at is null or p_status_at >= last_delivery_at then p_status
+        else last_delivery_status
+      end,
+      last_delivery_at = case
+        when last_delivery_at is null or p_status_at >= last_delivery_at then p_status_at
+        else last_delivery_at
+      end,
       subscription_status = case
         when p_status in ('bounced', 'suppressed', 'complained') then 'suppressed'
         else subscription_status
@@ -298,7 +304,11 @@ begin
         else unsubscribed_at
       end
     where id = v_contact_id
-      and (last_delivery_at is null or p_status_at >= last_delivery_at);
+      and (
+        p_status in ('bounced', 'suppressed', 'complained')
+        or last_delivery_at is null
+        or p_status_at >= last_delivery_at
+      );
   end if;
 end;
 $$;
