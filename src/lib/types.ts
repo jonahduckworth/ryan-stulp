@@ -150,3 +150,80 @@ export type MarketUpdate = {
   created_at: string;
   updated_at: string;
 };
+
+export type NewsletterSubscriptionStatus =
+  | "subscribed"
+  | "unsubscribed"
+  | "suppressed";
+
+export type NewsletterDeliveryStatus =
+  | "scheduled"
+  | "sent"
+  | "delivered"
+  | "delivery_delayed"
+  | "bounced"
+  | "failed"
+  | "suppressed"
+  | "complained";
+
+export type NewsletterContact = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  subscription_status: NewsletterSubscriptionStatus;
+  consent_source: "existing_client_batch" | "public_signup" | "admin_added";
+  consent_confirmed_by: string;
+  consent_confirmed_at: string;
+  consent_batch_id: string | null;
+  unsubscribed_at: string | null;
+  suppressed_at: string | null;
+  suppression_reason: string | null;
+  resend_contact_id: string | null;
+  resend_sync_status: "pending" | "synced" | "failed";
+  resend_sync_error: string | null;
+  last_delivery_status: NewsletterDeliveryStatus | null;
+  last_delivery_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NewsletterCampaignStatus =
+  | "prepared"
+  | "sending"
+  | "sent"
+  | "failed";
+
+export type NewsletterCampaign = {
+  id: string;
+  market_update_id: string | null;
+  market_update_title: string;
+  market_update_slug: string;
+  subject: string;
+  preview_text: string;
+  article_excerpt: string;
+  article_body: string;
+  article_cover_image_url: string | null;
+  status: NewsletterCampaignStatus;
+  resend_broadcast_id: string | null;
+  recipient_count: number;
+  delivered_count: number;
+  problem_count: number;
+  sent_at: string | null;
+  failure_message: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NewsletterDelivery = {
+  id: string;
+  campaign_id: string;
+  contact_id: string | null;
+  resend_email_id: string;
+  recipient_email: string;
+  status: NewsletterDeliveryStatus;
+  status_at: string;
+  detail: string | null;
+  created_at: string;
+  updated_at: string;
+};

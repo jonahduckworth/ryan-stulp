@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CtaBand } from "@/components/cta-band";
 import { JsonLd } from "@/components/json-ld";
 import { MarketUpdateCard } from "@/components/market-update-card";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 import { PageHero } from "@/components/page-hero";
 import { getPublishedMarketUpdates } from "@/lib/data/public";
 import { SITE } from "@/lib/site";
@@ -89,6 +90,11 @@ export default async function MarketUpdatesPage() {
               talk to Ryan about the details behind your decision.
             </p>
           </div>
+        </div>
+      </section>
+      <section className="section section-tight">
+        <div className="container">
+          <NewsletterSignup />
         </div>
       </section>
       <CtaBand

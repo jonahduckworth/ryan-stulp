@@ -51,7 +51,10 @@ resources, or business updates.
    image works best for the archive and sharing previews.
 5. Use **Preview** to inspect the complete article without making it public.
 6. Change the status to **Published** when the copy is approved. Publishing
-   displays a confirmation before the article goes live.
+   displays a confirmation before the article goes live, then asks whether to
+   send the update to subscribed contacts now. Send a test first when useful,
+   choose **Send** for the live list, or choose **Not now** and return to the
+   prepared campaign under **Email marketing** later.
 
 **Draft** and **Archived** updates are visible only to administrators.
 **Published** updates appear in the public market-update archive, relevant
@@ -60,6 +63,25 @@ homepage section, sitemap, and their own search-friendly article page.
 Use one clear takeaway per article. Explain what changed, why it matters, and
 which property types, locations, or decisions it affects. Avoid publishing a
 thin rewrite of a statistic without Ryan's practical context.
+
+## Email marketing
+
+Open **Email marketing** to see prepared and sent market-update campaigns,
+individual operational delivery results, and the current subscriber list.
+
+- **Add subscriber** adds a former client who has already agreed to receive
+  Ryan's updates. No additional confirmation email is sent.
+- **Unsubscribe** removes a person from future market updates. Their record is
+  retained so a later import cannot add them back by mistake.
+- **Restore** is available for a previously unsubscribed person when Ryan knows
+  they should be added again.
+- Suppressed contacts had a bounce, spam complaint, or another provider-level
+  delivery problem. They are excluded automatically and should be resolved in
+  Resend rather than restored from the dashboard.
+
+The campaign detail page shows scheduled, sent, delivered, delayed, bounced,
+failed, suppressed, and spam-complaint results. Email opens and link clicks are
+not tracked. Every live campaign includes an unsubscribe link.
 
 ## Leads
 
@@ -104,7 +126,8 @@ confirming the exact wording required by Ryan's brokerage and RECA.
 1. Review new leads daily.
 2. Keep listing statuses current.
 3. Review draft market updates and keep published advice current.
-4. Confirm every newly published property or update on desktop and mobile.
-5. Archive sold, withdrawn, or outdated content when it should no longer be promoted.
-6. Report reproducible defects during the included 30-day post-launch bug-fix
+4. Review delivery problems and unsubscribe requests after each market update.
+5. Confirm every newly published property or update on desktop and mobile.
+6. Archive sold, withdrawn, or outdated content when it should no longer be promoted.
+7. Report reproducible defects during the included 30-day post-launch bug-fix
    period.

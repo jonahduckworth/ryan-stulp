@@ -4,7 +4,13 @@ import { notFound } from "next/navigation";
 import { DeleteMarketUpdateForm } from "@/components/admin/delete-market-update-form";
 import { MarketUpdateCoverManager } from "@/components/admin/market-update-cover-manager";
 import { MarketUpdateForm } from "@/components/admin/market-update-form";
-import { getAdminMarketUpdate } from "@/lib/data/admin";
+import { NewsletterCampaignControls } from "@/components/admin/newsletter-campaign-controls";
+import {
+  getAdminMarketUpdate,
+  getAdminNewsletterCampaignForMarketUpdate,
+  getAdminNewsletterContacts,
+} from "@/lib/data/admin";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Edit market update" };
 
@@ -13,11 +19,18 @@ export default async function EditMarketUpdatePage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ created?: string; saved?: string }>;
+  searchParams: Promise<{ created?: string; saved?: string; published?: string }>;
 }) {
   const [{ id }, query] = await Promise.all([params, searchParams]);
-  const marketUpdate = await getAdminMarketUpdate(id);
+  const [marketUpdate, campaign, contacts] = await Promise.all([
+    getAdminMarketUpdate(id),
+    getAdminNewsletterCampaignForMarketUpdate(id),
+    getAdminNewsletterContacts(),
+  ]);
   if (!marketUpdate) notFound();
+  const recipientCount = contacts.filter(
+    (contact) => contact.subscription_status === "subscribed" && contact.resend_sync_status === "synced",
+  ).length;
 
   return (
     <div className="admin-page">
@@ -57,6 +70,16 @@ export default async function EditMarketUpdatePage({
         <div className="admin-success" role="status">
           Market update changes saved.
         </div>
+      ) : null}
+      {query.published === "1" && campaign && (campaign.status === "prepared" || campaign.status === "failed") ? (
+        <NewsletterCampaignControls
+          campaignId={campaign.id}
+          title={campaign.market_update_title}
+          recipientCount={recipientCount}
+          sender={process.env.NEWSLETTER_EMAIL_FROM || "Ryan Stulp <updates@ryanstulp.ca>"}
+          replyTo={process.env.NEWSLETTER_REPLY_TO || SITE.email}
+          dialog
+        />
       ) : null}
       <MarketUpdateForm marketUpdate={marketUpdate} />
       <MarketUpdateCoverManager

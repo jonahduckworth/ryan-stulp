@@ -214,4 +214,28 @@ export const marketUpdateSchema = z
     }
   });
 
+const newsletterContactFields = {
+  firstName: z.string().trim().min(1, "Enter a first name.").max(100),
+  lastName: z.string().trim().max(100),
+  email: z.email("Enter a valid email address.").trim().toLowerCase(),
+};
+
+export const adminNewsletterContactSchema = z.object(newsletterContactFields);
+
+export const publicNewsletterSignupSchema = z.object({
+  ...newsletterContactFields,
+  website: z.string().max(0, "Unable to subscribe."),
+  turnstileToken: z.string().optional(),
+});
+
+export const newsletterContactStatusSchema = z.object({
+  id: z.uuid(),
+  action: z.enum(["subscribe", "unsubscribe", "sync"]),
+});
+
+export const newsletterCampaignActionSchema = z.object({
+  campaignId: z.uuid(),
+  action: z.enum(["test", "send"]),
+});
+
 export type LeadInput = z.infer<typeof leadSchema>;

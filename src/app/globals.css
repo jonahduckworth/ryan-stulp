@@ -1426,6 +1426,67 @@ p {
   color: var(--success);
 }
 
+.newsletter-signup {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  gap: clamp(2rem, 7vw, 6rem);
+  margin: clamp(2rem, 6vw, 5rem) auto;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  border-top: 5px solid var(--signal);
+  background: var(--ink);
+  color: var(--white);
+}
+
+.newsletter-signup-copy {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.newsletter-signup-copy h2,
+.newsletter-signup-success h2 {
+  color: var(--white);
+  font-size: clamp(2rem, 4vw, 3.4rem);
+}
+
+.newsletter-signup-copy > p:last-child,
+.newsletter-signup-success > p:last-child {
+  color: #d4d1cb;
+}
+
+.newsletter-signup-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 1rem;
+}
+
+.newsletter-signup-form .field input {
+  border-color: #817d77;
+}
+
+.newsletter-signup-email,
+.newsletter-turnstile,
+.newsletter-signup-form > .button,
+.newsletter-signup-form > .form-note,
+.newsletter-signup-form > .form-status {
+  grid-column: 1 / -1;
+}
+
+.newsletter-signup-form > .button {
+  justify-self: start;
+}
+
+.newsletter-signup-form .form-note,
+.newsletter-signup-form .form-status {
+  color: #c8c5c0;
+}
+
+.newsletter-signup-success {
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+}
+
 .honeypot {
   position: absolute;
   left: -9999px;
@@ -2140,13 +2201,21 @@ p {
 .status-badge[data-status="active"],
 .status-badge[data-status="published"],
 .status-badge[data-status="qualified"],
-.status-badge[data-status="closed"] {
+.status-badge[data-status="closed"],
+.status-badge[data-status="subscribed"],
+.status-badge[data-status="synced"],
+.status-badge[data-status="sent"],
+.status-badge[data-status="delivered"] {
   background: #e2f3e9;
   color: #14603e;
 }
 
 .status-badge[data-status="new"],
-.status-badge[data-status="pending"] {
+.status-badge[data-status="pending"],
+.status-badge[data-status="prepared"],
+.status-badge[data-status="scheduled"],
+.status-badge[data-status="sending"],
+.status-badge[data-status="delivery_delayed"] {
   background: #fff2d9;
   color: #774509;
 }
@@ -2156,6 +2225,114 @@ p {
   justify-items: start;
   gap: 0.75rem;
   padding: 2rem;
+}
+
+.admin-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.admin-summary-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid var(--line);
+  background: var(--white);
+}
+
+.admin-summary-card span {
+  color: var(--slate);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.admin-summary-card strong {
+  font-family: var(--font-display);
+  font-size: 2rem;
+}
+
+.newsletter-contact-form {
+  border: 0;
+}
+
+.newsletter-send-panel {
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border-left: 4px solid var(--signal);
+  background: #fff7f8;
+}
+
+.newsletter-send-dialog {
+  width: min(680px, calc(100vw - 2rem));
+  max-height: calc(100svh - 2rem);
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--line);
+  background: var(--white);
+  box-shadow: 0 24px 80px rgb(17 17 17 / 0.24);
+}
+
+.newsletter-send-dialog::backdrop {
+  background: rgb(17 17 17 / 0.65);
+  backdrop-filter: blur(3px);
+}
+
+.newsletter-send-content {
+  display: grid;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 5vw, 2.5rem);
+}
+
+.newsletter-send-content h2 {
+  margin-block: 0.25rem 0.6rem;
+  font-size: clamp(1.75rem, 4vw, 2.6rem);
+}
+
+.newsletter-send-details {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.newsletter-send-details > div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.newsletter-send-details dt {
+  color: var(--slate);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.newsletter-send-details dd {
+  overflow-wrap: anywhere;
+}
+
+.newsletter-send-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.button-compact {
+  min-height: 2.4rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+.status-badge[data-status="unsubscribed"],
+.status-badge[data-status="suppressed"],
+.status-badge[data-status="bounced"],
+.status-badge[data-status="failed"],
+.status-badge[data-status="complained"] {
+  background: #f9e3e0;
+  color: #7d2019;
 }
 
 .admin-form {
@@ -2911,6 +3088,10 @@ p {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .admin-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .lead-detail-grid {
     grid-template-columns: 1fr;
   }
@@ -2939,11 +3120,25 @@ p {
   }
 
   .stat-grid,
+  .admin-summary-grid,
   .admin-form,
   .admin-form-section,
   .admin-filter-bar,
   .admin-progress {
     grid-template-columns: 1fr;
+  }
+
+  .newsletter-signup,
+  .newsletter-signup-form {
+    grid-template-columns: 1fr;
+  }
+
+  .newsletter-signup-email,
+  .newsletter-turnstile,
+  .newsletter-signup-form > .button,
+  .newsletter-signup-form > .form-note,
+  .newsletter-signup-form > .form-status {
+    grid-column: auto;
   }
 
   .admin-progress li {

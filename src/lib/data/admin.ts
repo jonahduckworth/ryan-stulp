@@ -8,6 +8,9 @@ import type {
   Listing,
   ListingMedia,
   MarketUpdate,
+  NewsletterCampaign,
+  NewsletterContact,
+  NewsletterDelivery,
   SiteSettings,
 } from "@/lib/types";
 
@@ -112,6 +115,75 @@ export const getAdminMarketUpdate = cache(
       .maybeSingle();
     if (error) throw new Error("Unable to load the market update.");
     return data as MarketUpdate | null;
+  },
+);
+
+export const getAdminNewsletterContacts = cache(
+  async (): Promise<NewsletterContact[]> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("newsletter_contacts")
+      .select("*")
+      .order("updated_at", { ascending: false });
+    if (error) throw new Error("Unable to load newsletter contacts.");
+    return (data ?? []) as NewsletterContact[];
+  },
+);
+
+export const getAdminNewsletterCampaigns = cache(
+  async (): Promise<NewsletterCampaign[]> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("newsletter_campaigns")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error("Unable to load newsletter campaigns.");
+    return (data ?? []) as NewsletterCampaign[];
+  },
+);
+
+export const getAdminNewsletterCampaignForMarketUpdate = cache(
+  async (marketUpdateId: string): Promise<NewsletterCampaign | null> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("newsletter_campaigns")
+      .select("*")
+      .eq("market_update_id", marketUpdateId)
+      .maybeSingle();
+    if (error) throw new Error("Unable to load the prepared email campaign.");
+    return data as NewsletterCampaign | null;
+  },
+);
+
+export const getAdminNewsletterCampaign = cache(
+  async (id: string): Promise<NewsletterCampaign | null> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("newsletter_campaigns")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw new Error("Unable to load the email campaign.");
+    return data as NewsletterCampaign | null;
+  },
+);
+
+export const getAdminNewsletterDeliveries = cache(
+  async (campaignId?: string): Promise<NewsletterDelivery[]> => {
+    await verifyAdmin();
+    const supabase = await createSupabaseServerClient();
+    let query = supabase
+      .from("newsletter_deliveries")
+      .select("*")
+      .order("status_at", { ascending: false });
+    if (campaignId) query = query.eq("campaign_id", campaignId);
+    const { data, error } = await query;
+    if (error) throw new Error("Unable to load newsletter delivery statuses.");
+    return (data ?? []) as NewsletterDelivery[];
   },
 );
 
