@@ -38,6 +38,7 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
 - [x] Email HTML escapes article content and converts internal links to absolute URLs.
 - [x] Every live broadcast template contains the Resend unsubscribe placeholder.
 - [x] Open and click events are ignored by the operational-status mapper.
+- [ ] Open Tracking and Click Tracking are disabled for the sending domain in Resend.
 - [ ] Initial import creates 290 unique subscribers and preserves the three
       duplicate spreadsheet rows as a reported dry-run count.
 - [ ] Publishing a new market update opens the send-now prompt for Ryan.

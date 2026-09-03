@@ -81,7 +81,8 @@ individual operational delivery results, and the current subscriber list.
 
 The campaign detail page shows scheduled, sent, delivered, delayed, bounced,
 failed, suppressed, and spam-complaint results. Email opens and link clicks are
-not tracked. Every live campaign includes an unsubscribe link.
+not stored in Ryan's dashboard. Every live campaign includes an unsubscribe
+link.
 
 ## Leads
 

@@ -69,7 +69,9 @@ listed in `.env.example`. The webhook endpoint is
 `https://ryanstulp.ca/api/resend/webhook`; subscribe it to email scheduled,
 sent, delivered, delivery delayed, bounced, failed, suppressed, and complained
 events, plus contact created, updated, and deleted events. Open and click events
-are intentionally not stored.
+are intentionally not stored by the website. Disable Open Tracking and Click
+Tracking for the sending domain in Resend before the first live campaign if
+either setting is enabled.
 
 After the migration and Resend configuration are verified, export the approved
 workbook as CSV and validate it without changing external systems:

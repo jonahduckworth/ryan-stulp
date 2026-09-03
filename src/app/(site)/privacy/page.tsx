@@ -32,8 +32,9 @@ export default async function PrivacyPage() {
             If you subscribe to market updates, or previously agreed to receive
             them as Ryan&apos;s client, your name, email address, subscription
             preference, and operational delivery results are processed to send
-            those updates. Email opens and link clicks are not tracked for this
-            feature. Every market update email includes an unsubscribe link.
+            those updates. This website&apos;s admin dashboard does not store
+            email-open or link-click activity. Every market update email includes
+            an unsubscribe link.
           </p>
           <h2>Site operations and analytics</h2>
           <p>
