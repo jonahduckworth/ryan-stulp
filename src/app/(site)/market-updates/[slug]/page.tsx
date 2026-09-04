@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { MarketUpdateDetailView } from "@/components/market-update-detail-view";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 import { getPublishedMarketUpdateBySlug } from "@/lib/data/public";
 import { SITE } from "@/lib/site";
 
@@ -117,6 +118,11 @@ export default async function MarketUpdatePage({
         }}
       />
       <MarketUpdateDetailView update={update} />
+      <section className="section section-tight">
+        <div className="container">
+          <NewsletterSignup />
+        </div>
+      </section>
     </>
   );
 }

@@ -30,6 +30,24 @@ Run on desktop and mobile widths of 375, 768, 1024, and 1440 pixels.
 - [x] No names, emails, phone numbers, property addresses, or messages appear in
       analytics events or production application logs.
 
+## Market update email
+
+- [x] Signup renders without horizontal overflow at desktop and 375-pixel widths.
+- [x] Signup fields have visible labels, semantic email input, loading feedback,
+      and an announced success or recovery message.
+- [x] Email HTML escapes article content and converts internal links to absolute URLs.
+- [x] Every live broadcast template contains the Resend unsubscribe placeholder.
+- [x] Open and click events are ignored by the operational-status mapper.
+- [ ] Open Tracking and Click Tracking are disabled for the sending domain in Resend.
+- [ ] Initial import creates 290 unique subscribers and preserves the three
+      duplicate spreadsheet rows as a reported dry-run count.
+- [ ] Publishing a new market update opens the send-now prompt for Ryan.
+- [ ] A test email goes only to `ryanstulp@gmail.com`.
+- [ ] A live send excludes unsubscribed, suppressed, and unsynced contacts.
+- [ ] Signed Resend webhook events populate individual operational delivery statuses.
+- [ ] Using the unsubscribe link updates both Resend and the admin subscriber list.
+- [ ] Re-running the import cannot restore an unsubscribed or suppressed email.
+
 ## Administration
 
 - [x] Anonymous `/admin` access redirects to login.

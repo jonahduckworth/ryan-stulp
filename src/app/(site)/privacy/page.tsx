@@ -27,6 +27,15 @@ export default async function PrivacyPage() {
             authorized administrators use this information to respond to your
             request and manage the relationship.
           </p>
+          <h2>Market update emails</h2>
+          <p>
+            If you subscribe to market updates, or previously agreed to receive
+            them as Ryan&apos;s client, your name, email address, subscription
+            preference, and operational delivery results are processed to send
+            those updates. This website&apos;s admin dashboard does not store
+            email-open or link-click activity. Every market update email includes
+            an unsubscribe link.
+          </p>
           <h2>Site operations and analytics</h2>
           <p>
             Security checks may process a privacy-preserving request identifier
@@ -48,7 +57,7 @@ export default async function PrivacyPage() {
             records may need to be retained where required by law or brokerage
             obligations.
           </p>
-          <p>Last updated: July 27, 2026.</p>
+          <p>Last updated: September 3, 2026.</p>
         </div>
       </section>
     </>

@@ -10,6 +10,7 @@ export function AdminNav({ email }: { email: string }) {
     { href: "/admin", label: "Dashboard" },
     { href: "/admin/listings", label: "Listings" },
     { href: "/admin/market-updates", label: "Market updates" },
+    { href: "/admin/email-marketing", label: "Email marketing" },
     { href: "/admin/leads", label: "Leads" },
     { href: "/admin/settings", label: "Settings" },
   ];

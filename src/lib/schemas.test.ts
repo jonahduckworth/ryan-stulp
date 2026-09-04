@@ -3,7 +3,9 @@ import {
   leadSchema,
   listingSchema,
   marketUpdateSchema,
+  adminNewsletterContactSchema,
   passwordSetupSchema,
+  publicNewsletterSignupSchema,
   siteSettingsSchema,
 } from "@/lib/schemas";
 
@@ -36,6 +38,32 @@ describe("leadSchema", () => {
       website: "spam.example",
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("newsletter contact schemas", () => {
+  it("accepts an existing-client contact without a second consent field", () => {
+    const result = adminNewsletterContactSchema.parse({
+      firstName: " Pat ",
+      lastName: " Lee ",
+      email: "PAT@EXAMPLE.COM",
+    });
+    expect(result).toEqual({
+      firstName: "Pat",
+      lastName: "Lee",
+      email: "pat@example.com",
+    });
+  });
+
+  it("treats a public form submission as the subscription request", () => {
+    expect(
+      publicNewsletterSignupSchema.safeParse({
+        firstName: "Sam",
+        lastName: "",
+        email: "sam@example.com",
+        website: "",
+      }).success,
+    ).toBe(true);
   });
 });
 

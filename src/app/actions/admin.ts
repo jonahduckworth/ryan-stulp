@@ -537,7 +537,7 @@ export async function saveMarketUpdate(
   const { data: existing } = update.id
     ? await supabase
         .from("market_updates")
-        .select("published_at")
+        .select("published_at, status")
         .eq("id", update.id)
         .maybeSingle()
     : { data: null };
@@ -582,8 +582,12 @@ export async function saveMarketUpdate(
   }
 
   revalidateMarketUpdatePaths();
+  const wasJustPublished =
+    update.status === "published" && existing?.status !== "published";
   redirect(
-    `/admin/market-updates/${result.data.id}?${update.id ? "saved=1" : "created=1"}`,
+    `/admin/market-updates/${result.data.id}?${
+      wasJustPublished ? "published=1" : update.id ? "saved=1" : "created=1"
+    }`,
   );
 }
 

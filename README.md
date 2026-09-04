@@ -31,6 +31,7 @@ Ryan Stulp at The Real Estate District.
 - TypeScript
 - Supabase Postgres, Auth, and Storage
 - Resend for transactional lead alerts
+- Resend Contacts, Topics, Broadcasts, and signed webhooks for market update emails
 - Cloudflare Turnstile for production form protection
 - Vercel-compatible deployment
 
@@ -57,6 +58,32 @@ zero-listing state. Forms and `/admin` require Supabase configuration.
 4. Configure a verified Resend sending domain on `ryanstulp.ca`.
 5. Create Turnstile keys for the production domain.
 6. Add the GA4 measurement ID once access is confirmed.
+
+### Market update email setup
+
+This feature requires the email-marketing migration plus a Resend Segment and
+Topic dedicated to market updates. Configure `NEWSLETTER_EMAIL_FROM` as
+`Ryan Stulp <updates@ryanstulp.ca>`, `NEWSLETTER_REPLY_TO` as
+`ryanstulp@gmail.com`, and add the Segment, Topic, and webhook secret values
+listed in `.env.example`. The webhook endpoint is
+`https://ryanstulp.ca/api/resend/webhook`; subscribe it to email scheduled,
+sent, delivered, delivery delayed, bounced, failed, suppressed, and complained
+events, plus contact created, updated, and deleted events. Open and click events
+are intentionally not stored by the website. Disable Open Tracking and Click
+Tracking for the sending domain in Resend before the first live campaign if
+either setting is enabled.
+
+After the migration and Resend configuration are verified, export the approved
+workbook as CSV and validate it without changing external systems:
+
+```bash
+npm run newsletter:import -- /absolute/path/to/contacts.csv
+```
+
+Run the same command with `--apply` only during the approved production rollout.
+The import records Ryan's confirmation for the initial former-client batch and
+preserves any email already marked unsubscribed or suppressed. Never add the CSV
+or source workbook to the repository.
 
 Never put `SUPABASE_SERVICE_ROLE_KEY`, `TURNSTILE_SECRET_KEY`,
 `RESEND_API_KEY`, or `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` in a

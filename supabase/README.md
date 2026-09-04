@@ -22,7 +22,12 @@ where id = (
    public page.
 8. Create a private market-update draft, preview it, publish it, and confirm the
    archive and article page before removing the test content.
+9. After the email-marketing migration is applied and Resend is configured,
+   validate the subscriber import in dry-run mode before approving `--apply`.
+10. Publish a disposable market update, send a test campaign, and verify signed
+    webhook delivery statuses before approving a live-list send.
 
-The service-role key is used only by the server-side lead submission action.
-Admin listing, market-update, and lead operations use the signed-in Ryan session
-plus row-level security.
+The service-role key is used only by server-side public submissions, the guarded
+newsletter import, and signed Resend webhook processing. Admin listing,
+market-update, contact, campaign, and lead operations use the signed-in Ryan
+session plus row-level security.

@@ -3,6 +3,7 @@ import { SiteSettingsForm } from "@/components/admin/site-settings-form";
 import { getAdminSiteSettings } from "@/lib/data/admin";
 import { resolveSiteIdentity, SITE } from "@/lib/site";
 import { hasPublicSupabaseEnv, hasServiceSupabaseEnv } from "@/lib/supabase/env";
+import { hasNewsletterResendEnv } from "@/lib/newsletter-resend";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -24,6 +25,8 @@ export default async function SettingsPage() {
       "Lead email notifications",
       Boolean(process.env.RESEND_API_KEY && process.env.LEAD_EMAIL_FROM),
     ],
+    ["Market update email delivery", hasNewsletterResendEnv()],
+    ["Resend delivery webhooks", Boolean(process.env.RESEND_WEBHOOK_SECRET)],
     [
       "Spam protection",
       Boolean(
