@@ -3,8 +3,8 @@ export const GOOGLE_REVIEW_PROFILE_URL =
 
 export const GOOGLE_REVIEW_SUMMARY = {
   rating: 4.9,
-  count: 32,
-  verifiedOn: "September 5, 2026",
+  count: 33,
+  verifiedOn: "October 1, 2026",
 } as const;
 
 export const FEATURED_TESTIMONIALS = [
