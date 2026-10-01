@@ -39,6 +39,12 @@ npm run build
 
 ## Verification
 
+- In cloud tasks, use `bash scripts/cloud/run.sh npm ...` for each command;
+  a setup shell's Node activation does not activate future command shells.
+  If needed, run `bash scripts/cloud/setup.sh` first. See
+  `docs/CLOUD-DEVELOPMENT.md` for credential-free browser verification and
+  the distinction between task files and saved environment configuration.
+
 - Logic/data changes: run targeted Vitest coverage, then lint, typecheck, tests,
   and build.
 - UI changes: also verify public and `/admin` loading, empty, error, retry, and

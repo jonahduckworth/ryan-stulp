@@ -9,7 +9,8 @@ Ryan Stulp at The Real Estate District.
   home evaluation, about, contact, and privacy.
 - Honest empty states so the site can launch before listings are entered.
 - Secure lead forms with server validation, a honeypot, database-backed rate
-  limiting, optional Cloudflare Turnstile, and optional email notifications.
+  limiting, Cloudflare Turnstile protection for production submissions, and
+  optional email notifications.
 - Private Supabase-authenticated admin dashboard.
 - Listing create, edit, duplicate, preview, publish, archive, delete, and ordered
   multi-image galleries.
@@ -41,13 +42,17 @@ No GoHighLevel account is required. The listings and lead workflow are custom.
 
 ```bash
 nvm use
-npm install
-cp .env.example .env.local
+npm ci
 npm run dev
 ```
 
 The public site renders without service credentials and shows a correct
-zero-listing state. Forms and `/admin` require Supabase configuration.
+zero-listing state. Do not create `.env.local` for ordinary frontend work.
+Forms and authenticated `/admin` workflows require Supabase configuration.
+Copy `.env.example` only when configuring an isolated integration environment.
+
+For cloud Node 22 activation, browser screenshots/video, and reusable setup,
+see [Cloud development](docs/CLOUD-DEVELOPMENT.md).
 
 ## Service setup
 

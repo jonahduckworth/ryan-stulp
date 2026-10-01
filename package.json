@@ -10,7 +10,8 @@
     "newsletter:import": "node scripts/import-newsletter-contacts.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "browser:smoke": "node scripts/browser-smoke.mjs"
   },
   "engines": {
     "node": "22.x"
@@ -29,6 +30,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "playwright": "1.57.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
     "@types/react": "^19",
